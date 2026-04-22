@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stars, PerspectiveCamera, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Import các hành tinh
 import Sun from "../src/components/planets/Sun";
@@ -12,7 +13,7 @@ import Saturn from "../src/components/planets/saturn";
 import Mercury from "../src/components/planets/mecury";
 import Neptune from "../src/components/planets/neptune"; 
 import Uranus from "../src/components/planets/uranus";   
-import Venus from "../src/components/planets/venus";     
+import Venus from "../src/components/planets/venus";      
 
 // 1. Component điều khiển Camera bay và xoay tâm nhìn
 function CameraController({ currentHash }: { currentHash: string }) {
@@ -37,19 +38,15 @@ function CameraController({ currentHash }: { currentHash: string }) {
       const targetVec = new THREE.Vector3(...config.cameraPos);
       const targetCenter = new THREE.Vector3(...config.target);
 
-      // NẾU HASH THAY ĐỔI (Người dùng vừa cuộn chuột sang hành tinh mới)
       if (lastHash.current !== currentHash) {
-        // Bay mượt tới vị trí chính diện mới
         camera.position.lerp(targetVec, 0.05);
         controls.target.lerp(targetCenter, 0.05);
         
-        // Nếu đã bay gần tới nơi (khoảng cách < 0.5) thì xác nhận xong lượt chuyển
         if (camera.position.distanceTo(targetVec) < 0.5) {
           lastHash.current = currentHash;
         }
         controls.update();
       } 
-      // NẾU ĐANG Ở YÊN MỘT HÀNH TINH: Trả lại quyền tự do hoàn toàn cho OrbitControls
       else if (controls.active) {
         controls.update();
       }
@@ -63,7 +60,6 @@ export default function SolarSystem() {
   const [currentHash, setCurrentHash] = useState("#overview");
   const [controlsEnabled, setControlsEnabled] = useState(true);
 
-  // Thứ tự hành tinh để cuộn
   const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
   useEffect(() => {
@@ -74,9 +70,7 @@ export default function SolarSystem() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // 2. Logic xử lý vuốt chuột để chuyển Hash
   const handleWheel = (e: React.WheelEvent) => {
-    // Chặn việc nhảy quá nhanh
     const currentIndex = planetHashes.indexOf(currentHash);
     if (e.deltaY > 50 && currentIndex < planetHashes.length - 1) {
       window.location.hash = planetHashes[currentIndex + 1];
@@ -87,24 +81,22 @@ export default function SolarSystem() {
 
   return (
     <div 
-      onWheel={handleWheel} // Bắt sự kiện vuốt chuột ở đây
+      onWheel={handleWheel}
       style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
     >
       <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
         <Suspense fallback={null}>
           <PerspectiveCamera makeDefault fov={50} far={10000} />
           
-          {/* OrbitControls: Cho phép xoay ngắm bao quát */}
           <OrbitControls 
             makeDefault 
             enablePan={false} 
             minDistance={10} 
             maxDistance={3000}
             enableDamping={true}
-			dampingFactor={0.05} // Giúp xoay chuột mượt hơn, có độ quán tính
-			rotateSpeed={0.8}
+            dampingFactor={0.05}
+            rotateSpeed={0.8}
             onStart={() => {
-     // Khi ông bắt đầu nhấn chuột xoay hoặc zoom
               controlsEnabled && setControlsEnabled(true);
             }}
           />
@@ -115,7 +107,6 @@ export default function SolarSystem() {
           <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
           <Stars radius={300} depth={60} count={15000} factor={7} saturation={0} fade speed={1} />
 
-          {/* Các hành tinh */}
           <Sun isActive={currentHash === "#overview"} />
           <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} />
           <Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} />
