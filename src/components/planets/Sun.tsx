@@ -18,14 +18,14 @@ const Sun = () => {
 	return (
 		<>
 			<Planet
-				position={[58, 0, 250]}
+				position={[58, 0, 0]}
 				meshMaterialPath="/sun.jpeg"
 				spinSpeed={0.005}
 				size={70}
 			/>
 			<Text
 				color={"white"}
-				position={[-80, 20, 250]}
+				position={[-80, 20, 0]}
 				maxWidth={130}
 				font="/fonts/futura_medium.ttf"
 				lineHeight={1.2}
@@ -37,7 +37,7 @@ const Sun = () => {
 			</Text>
 			<Image
 				url="/icons/linkedin.png"
-				position={[-141, -10, 250]}
+				position={[-141, -10, 0]}
 				color={"white"}
 				scale={8}
 				onClick={handleOnClickLinkedIn}
@@ -46,7 +46,7 @@ const Sun = () => {
 			/>
 			<Image
 				url="/icons/github.png"
-				position={[-126, -10, 250]}
+				position={[-126, -10, 0]}
 				color={"white"}
 				scale={7}
 				onClick={handleOnClickGithub}
@@ -55,7 +55,7 @@ const Sun = () => {
 			/>
 			<Image
 				url="/icons/substack.png"
-				position={[-111, -10, 250]}
+				position={[-111, -10, 0]}
 				color={"white"}
 				scale={6}
 				onClick={handleOnClickSubstack}
@@ -64,7 +64,7 @@ const Sun = () => {
 			/>
 			<Text
 				color={"#787878"}
-				position={[-118, -40, 250]}
+				position={[-118, -40, 0]}
 				fontSize={5}
 				font="/fonts/futura_medium.ttf"
 			>
@@ -72,7 +72,7 @@ const Sun = () => {
 			</Text>
 			<Text
 				color={"#787878"}
-				position={[-130.5, -48, 250]}
+				position={[-130.5, -48, 0]}
 				fontSize={5}
 				font="/fonts/futura_medium.ttf"
 			>

@@ -13,7 +13,7 @@ const Jupiter: React.FC<JupiterProps> = ({ setControlsEnabled }) => {
         <>
             <Planet
                 position={[70, -5, 180]}
-                meshMaterialPath="/2k_jupiter.jpeg"
+                meshMaterialPath="/2k_jupiter.jpg"
                 spinSpeed={0.01}
                 size={12} // Jupiter khổng lồ
             />

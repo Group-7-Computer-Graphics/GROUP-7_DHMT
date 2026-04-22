@@ -38,7 +38,7 @@ const Neptune: React.FC<NeptuneProps> = ({ setControlsEnabled }) => {
         <>
             <Planet
                 position={[80, -5, 400]}
-                meshMaterialPath="/2k_neptune.jpeg"
+                meshMaterialPath="/2k_neptune.jpg"
                 spinSpeed={0.004}
                 size={7.5}
             />

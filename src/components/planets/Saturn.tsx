@@ -33,13 +33,13 @@ const Saturn: React.FC<SaturnProps> = ({ setControlsEnabled }) => {
         <group position={[110, 0, 250]}>
             <Planet
                 position={[0, 0, 0]}
-                meshMaterialPath="/2k_saturn.jpeg"
+                meshMaterialPath="/2k_saturn.jpg"
                 spinSpeed={0.008}
-                size={10}
+                size={6}
             />
             {/* Vòng nhẫn Saturn đặc trưng */}
             <mesh rotation={[Math.PI / 2.5, 0, 0]}>
-                <ringGeometry args={[13, 22, 64]} />
+                <ringGeometry args={[8,14,64]} />
                 <meshStandardMaterial 
                     color="#c5ab6e" 
                     side={2} 

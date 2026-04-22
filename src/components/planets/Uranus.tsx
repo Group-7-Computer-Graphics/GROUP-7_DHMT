@@ -33,7 +33,7 @@ const Uranus: React.FC<UranusProps> = ({ setControlsEnabled }) => {
         <group position={[-60, 10, 320]}>
             <Planet
                 position={[0, 0, 0]}
-                meshMaterialPath="/2k_uranus.jpeg"
+                meshMaterialPath="/2k_uranus.jpg"
                 spinSpeed={-0.005} // Quay ngược
                 size={7}
             />

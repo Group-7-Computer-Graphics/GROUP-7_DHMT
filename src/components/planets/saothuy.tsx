@@ -33,7 +33,7 @@ const Mercury: React.FC<MercuryProps> = ({ setControlsEnabled }) => {
         <>
             <Planet
                 position={[-15, 0, 10]}
-                meshMaterialPath="/2k_mercury.jpeg"
+                meshMaterialPath="/2k_mercury.jpg"
                 spinSpeed={0.001}
                 size={2}
             />

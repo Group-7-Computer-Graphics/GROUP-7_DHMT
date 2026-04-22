@@ -69,7 +69,13 @@ export default function App() {
                 setInitialCameraPosition([70, 0, 220]);
                 break;
             case h === '#saturn':
-                setInitialCameraPosition([110, 0, 300]);
+                const saturnPos: [number, number, number] = [110, 0, 370];
+                setInitialCameraPosition(saturnPos);
+				if (cameraRef.current) {
+                   cameraRef.current.position.set(...saturnPos);
+        // Nhìn vào hành tinh Saturn (tọa độ group là 110, 0, 250)
+                   cameraRef.current.lookAt(110, 0, 250); 
+                }
                 break;
             case h === '#uranus':
                 setInitialCameraPosition([-60, 10, 350]);

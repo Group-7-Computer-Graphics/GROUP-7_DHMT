@@ -85,7 +85,7 @@ const DynamicNav = () => {
                 <button onClick={() => animateTo("#earth", 0, 0, 38)}>Earth</button>
                 <button onClick={() => animateTo("#projects", 0, 0, 124)}>Mars</button>
                 <button onClick={() => animateTo("#jupiter", 70, 0, 220)}>Jupiter</button>
-                <button onClick={() => animateTo("#saturn", 110, 0, 300)}>Saturn</button>
+                <button onClick={() => animateTo("#saturn", 110, 0, 370)}>Saturn</button>
                 <button onClick={() => animateTo("#uranus", -60, 10, 350)}>Uranus</button>
                 <button onClick={() => animateTo("#neptune", 80, -5, 440)}>Neptune</button>
             </Html>

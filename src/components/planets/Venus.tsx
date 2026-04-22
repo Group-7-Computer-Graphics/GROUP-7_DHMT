@@ -33,7 +33,7 @@ const Venus: React.FC<VenusProps> = ({ setControlsEnabled }) => {
         <>
             <Planet
                 position={[30, 2, -20]}
-                meshMaterialPath="/2k_venus_surface.jpeg"
+                meshMaterialPath="/2k_venus_surface.jpg"
                 spinSpeed={-0.002} // Sao Kim quay ngược (Retrograde rotation)
                 size={3.5}
             />
