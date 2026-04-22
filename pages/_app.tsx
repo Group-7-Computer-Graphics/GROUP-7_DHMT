@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import "tailwindcss/tailwind.css";
+import "@/styles/globals.css";
 import { AppProps } from "next/app";
 import { Inter } from "next/font/google";
 

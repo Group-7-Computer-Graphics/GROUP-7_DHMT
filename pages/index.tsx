@@ -1,210 +1,136 @@
-import css from "@/styles/Home.module.css";
-import React, { useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars, PerspectiveCamera } from "@react-three/drei";
-import Earth from "@/components/planets/Earth";
-import Sun from "@/components/planets/Sun";
-import Mercury from "@/components/planets/Mercury";
-import Mars from "@/components/planets/Mars";
-import { ChakraProvider } from "@chakra-ui/react";
-import DynamicNav from "@/components/DynamicNav";
-import { Loader } from "@react-three/drei";
+import React, { useState, useEffect, Suspense, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Stars, PerspectiveCamera, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ✏️  Import component màn hình intro mới tạo
-import IntroScreen from "@/components/IntroScreen";
+// Import các hành tinh
+import Sun from "../src/components/planets/Sun";
+import Earth from "../src/components/planets/Earth";
+import Mars from "../src/components/planets/Mars";
+import Jupiter from "../src/components/planets/Jupiter";
+import Saturn from "../src/components/planets/saturn"; 
+import Mercury from "../src/components/planets/mecury";
+import Neptune from "../src/components/planets/neptune"; 
+import Uranus from "../src/components/planets/uranus";   
+import Venus from "../src/components/planets/venus";      
 
-// ─────────────────────────────────────────────────────────────
-// Component nội bộ: bật/tắt OrbitControls
-// ─────────────────────────────────────────────────────────────
-interface ToggleOrbitControlsProps {
-  enabled: boolean;
+// 1. Component điều khiển Camera bay và xoay tâm nhìn
+function CameraController({ currentHash }: { currentHash: string }) {
+  const { camera, controls } = useThree() as any;
+  const lastHash = useRef(currentHash);
+
+  const targetPositions: Record<string, { cameraPos: [number, number, number], target: [number, number, number] }> = {
+    "#overview": { cameraPos: [250, 150, 500], target: [0, 0, 0] },
+    "#mercury":  { cameraPos: [0, 10, 110],    target: [0, 0, 80] },
+    "#venus":    { cameraPos: [0, 10, 175],    target: [0, 0, 140] },
+    "#earth":    { cameraPos: [0, 10, 245],    target: [0, 0, 210] },
+    "#mars":     { cameraPos: [0, 10, 335],    target: [0, 0, 300] },
+    "#jupiter":  { cameraPos: [0, 30, 580],    target: [0, 0, 480] },
+    "#saturn":   { cameraPos: [0, 30, 780],    target: [0, 0, 680] },
+    "#uranus":   { cameraPos: [0, 20, 960],    target: [0, 0, 880] },
+    "#neptune":  { cameraPos: [0, 20, 1130],   target: [0, 0, 1050] },
+  };
+
+  useFrame(() => {
+    if (controls) {
+      const config = targetPositions[currentHash] || targetPositions["#overview"];
+      const targetVec = new THREE.Vector3(...config.cameraPos);
+      const targetCenter = new THREE.Vector3(...config.target);
+
+      if (lastHash.current !== currentHash) {
+        camera.position.lerp(targetVec, 0.05);
+        controls.target.lerp(targetCenter, 0.05);
+        
+        if (camera.position.distanceTo(targetVec) < 0.5) {
+          lastHash.current = currentHash;
+        }
+        controls.update();
+      } 
+      else if (controls.active) {
+        controls.update();
+      }
+    }
+  });
+
+  return null;
 }
 
-const ToggleOrbitControls: React.FC<ToggleOrbitControlsProps> = ({
-  enabled,
-}) => {
-  const controlsRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.enabled = enabled;
-    }
-  }, [enabled]);
-
-  return (
-    <OrbitControls zoomSpeed={0.3} enablePan={false} ref={controlsRef} />
-  );
-};
-
-// ─────────────────────────────────────────────────────────────
-// Trang chính
-// ─────────────────────────────────────────────────────────────
-export default function App() {
-  // ── State: màn hình intro ──────────────────────────────
-  // true  → đang hiển thị intro screen
-  // false → đã chuyển sang không gian 3D
-  const [showIntro, setShowIntro] = useState(true);
-
-  // Khi Canvas 3D xuất hiện, cho phép fade-in mượt
-  const [sceneVisible, setSceneVisible] = useState(false);
-
-  // ── State: điều hướng camera ──────────────────────────
+export default function SolarSystem() {
+  const [currentHash, setCurrentHash] = useState("#overview");
   const [controlsEnabled, setControlsEnabled] = useState(true);
-  const [initialCameraPosition, setInitialCameraPosition] = useState<
-    [number, number, number]
-  >([0, 0, 500]);
 
-  // ── State: các panel đang mở ──────────────────────────
-  const [shouldShowVisuals, setShouldShowVisuals] = useState(false);
-  const [shouldShowWriting, setShouldShowWriting] = useState(false);
-  const [activeProject, setActiveProject] = useState<string | null>(null);
-
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-
-  // ── Xử lý chuyển từ Intro → 3D ───────────────────────
-  const handleEnterScene = () => {
-    // Bước 1: Ẩn intro screen (IntroScreen tự chạy animation mờ dần)
-    setShowIntro(false);
-    // Bước 2: Sau 0.5s, bắt đầu fade-in Canvas 3D
-    setTimeout(() => {
-      setSceneVisible(true);
-    }, 500);
-  };
-
-  // ── Xử lý URL hash (điều hướng qua URL) ──────────────
-  const processHash = (hash: string) => {
-    if (hash.startsWith("#projects")) {
-      setInitialCameraPosition([0, 0, 124]);
-      if (hash === "#projects-dance") {
-        setActiveProject("dance");
-        setControlsEnabled(false);
-      } else if (hash === "#projects-scios") {
-        setActiveProject("scios");
-        setControlsEnabled(false);
-      } else if (hash === "#projects-personal") {
-        setActiveProject("personal");
-        setControlsEnabled(false);
-      } else {
-        setActiveProject(null);
-        setControlsEnabled(true);
-      }
-      setShouldShowVisuals(false);
-      setShouldShowWriting(false);
-    } else if (hash === "#visuals") {
-      setInitialCameraPosition([0, 0, 38]);
-      setShouldShowVisuals(true);
-      setShouldShowWriting(false);
-      setActiveProject(null);
-      setControlsEnabled(false);
-    } else if (hash === "#writing") {
-      setInitialCameraPosition([0, 0, 38]);
-      setShouldShowVisuals(false);
-      setShouldShowWriting(true);
-      setActiveProject(null);
-      setControlsEnabled(false);
-    } else if (hash === "#earth") {
-      setInitialCameraPosition([0, 0, 38]);
-      setShouldShowVisuals(false);
-      setShouldShowWriting(false);
-      setActiveProject(null);
-      setControlsEnabled(true);
-    } else if (hash === "#connect") {
-      setInitialCameraPosition([0, 0, 20]);
-      setShouldShowVisuals(false);
-      setShouldShowWriting(false);
-      setActiveProject(null);
-      setControlsEnabled(true);
-    } else if (hash === "#about") {
-      setInitialCameraPosition([0, 0, 500]);
-      setShouldShowVisuals(false);
-      setShouldShowWriting(false);
-      setActiveProject(null);
-      setControlsEnabled(true);
-    }
-  };
+  const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hash = window.location.hash.toLowerCase();
-      processHash(hash);
-
-      const handleHashChange = () => {
-        processHash(window.location.hash.toLowerCase());
-      };
-
-      window.addEventListener("hashchange", handleHashChange);
-      return () => window.removeEventListener("hashchange", handleHashChange);
-    }
+    const handleHashChange = () => {
+      setCurrentHash(window.location.hash || "#overview");
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
+  const handleWheel = (e: React.WheelEvent) => {
+    const currentIndex = planetHashes.indexOf(currentHash);
+    if (e.deltaY > 50 && currentIndex < planetHashes.length - 1) {
+      window.location.hash = planetHashes[currentIndex + 1];
+    } else if (e.deltaY < -50 && currentIndex > 0) {
+      window.location.hash = planetHashes[currentIndex - 1];
+    }
+  };
+
   return (
-    <ChakraProvider>
-      <div className={css.scene} style={{ position: "relative" }}>
+    <div 
+      onWheel={handleWheel}
+      style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
+    >
+      <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
+        <Suspense fallback={null}>
+          <PerspectiveCamera makeDefault fov={50} far={10000} />
+          
+          <OrbitControls 
+            makeDefault 
+            enablePan={false} 
+            minDistance={10} 
+            maxDistance={3000}
+            enableDamping={true}
+            dampingFactor={0.05}
+            rotateSpeed={0.8}
+            onStart={() => {
+              controlsEnabled && setControlsEnabled(true);
+            }}
+          />
 
-        {/* ── Canvas 3D (luôn render phía dưới) ──────────── */}
-        {/*
-          Canvas bắt đầu với opacity=0 và fade-in khi sceneVisible=true.
-          Điều này tạo hiệu ứng "xuất hiện dần" sau khi rời intro.
-        */}
-        <motion.div
-          animate={{ opacity: sceneVisible ? 1 : 0 }}
-          transition={{ duration: 1.2, ease: "easeIn" }}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <Canvas>
-            <PerspectiveCamera
-              makeDefault
-              position={initialCameraPosition}
-              ref={cameraRef}
-            />
+          <CameraController currentHash={currentHash} />
 
-            {/* Ẩn nav khi controls bị tắt (đang xem project) */}
-            {controlsEnabled ? <DynamicNav /> : null}
+          <ambientLight intensity={0.1} /> 
+          <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
+          <Stars radius={300} depth={60} count={15000} factor={7} saturation={0} fade speed={1} />
 
-            <ToggleOrbitControls enabled={controlsEnabled} />
+          <Sun isActive={currentHash === "#overview"} />
+          <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} />
+          <Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} />
+          <Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} />
+          <Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} />
+          <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} />
+          <Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} />
+          <Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} />
+          <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} />
 
-            <ambientLight intensity={0.2} />
-            <spotLight position={[30, 30, 10]} />
-
-            <Stars
-              count={10000}
-              radius={100}
-              speed={2}
-              factor={8}
-              fade={true}
-            />
-
-            {/* Các hành tinh */}
-            <Sun />
-            <Mars
-              setControlsEnabled={setControlsEnabled}
-              initialProject={activeProject}
-            />
-            <Earth
-              setControlsEnabled={setControlsEnabled}
-              initialShowVisuals={shouldShowVisuals}
-              initialShowWriting={shouldShowWriting}
-            />
-            <Mercury setControlsEnabled={setControlsEnabled} />
-          </Canvas>
-          <Loader />
-        </motion.div>
-
-        {/* ── Intro Screen (nằm phủ lên trên Canvas) ───── */}
-        {/*
-          AnimatePresence cho phép component chạy exit animation
-          trước khi bị xóa khỏi DOM.
-          Khi showIntro = false, IntroScreen sẽ mờ dần rồi biến mất.
-        */}
-        <AnimatePresence>
-          {showIntro && (
-            <IntroScreen onEnter={handleEnterScene} />
-          )}
-        </AnimatePresence>
-
-      </div>
-    </ChakraProvider>
+        </Suspense>
+      </Canvas>
+      
+      <button 
+        onClick={() => window.location.hash = "#overview"}
+        style={{
+          position: "fixed", bottom: "40px", right: "40px", zIndex: 100,
+          padding: "10px 24px", backgroundColor: "rgba(255, 255, 255, 0.1)",
+          color: "white", border: "1px solid rgba(255, 255, 255, 0.3)",
+          borderRadius: "99px", cursor: "pointer", backdropFilter: "blur(10px)"
+        }}
+      >
+        BACK TO START
+      </button>
+    </div>
   );
 }
