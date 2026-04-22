@@ -1,165 +1,144 @@
 import css from "@/styles/Home.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Canvas, Vector3 } from "@react-three/fiber";
-import { OrbitControls, Stars, PerspectiveCamera } from "@react-three/drei";
-import Earth from "@/components/planets/Earth";
-import Sun from "@/components/planets/Sun";
-import Mercury from "@/components/planets/Mercury";
-import Mars from "@/components/planets/Mars";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Stars, PerspectiveCamera, Loader } from "@react-three/drei";
 import { ChakraProvider } from "@chakra-ui/react";
-import DynamicNav from "@/components/DynamicNav";
-import { Loader } from "@react-three/drei";
 import * as THREE from "three";
 
-interface ToggleOrbitControlsProps {
-	enabled: boolean;
-}
-const ToggleOrbitControls: React.FC<ToggleOrbitControlsProps> = ({
-	enabled,
-}) => {
-	const controlsRef = useRef<any>(null);
+// Import các hành tinh (Đảm bảo ông đã tạo các file này trong thư mục planets)
+import Sun from "@/components/planets/Sun";
+import Mercury from "@/components/planets/Mercury";
+import Venus from "@/components/planets/Venus";
+import Earth from "@/components/planets/Earth";
+import Mars from "@/components/planets/Mars";
+import Jupiter from "@/components/planets/Jupiter";
+import Saturn from "@/components/planets/Saturn";
+import Uranus from "@/components/planets/Uranus";
+import Neptune from "@/components/planets/Neptune";
+import UFO from "@/components/planets/UFO";
 
-	// Update controls' enabled state
-	useEffect(() => {
-		controlsRef.current.enabled = enabled;
-	}, [enabled]);
+import DynamicNav from "@/components/DynamicNav";
 
-	return (
-		<OrbitControls zoomSpeed={0.3} enablePan={false} ref={controlsRef} />
-	);
+// Component điều khiển xoay camera
+const ToggleOrbitControls = ({ enabled }: { enabled: boolean }) => {
+    const controlsRef = useRef<any>(null);
+    useEffect(() => {
+        if (controlsRef.current) controlsRef.current.enabled = enabled;
+    }, [enabled]);
+    return <OrbitControls zoomSpeed={0.3} enablePan={false} ref={controlsRef} />;
 };
 
 export default function App() {
-	const [controlsEnabled, setControlsEnabled] = useState(true);
-	const [initialCameraPosition, setInitialCameraPosition] = useState<[number, number, number]>([0, 0, 500]);
-	const [initialHash, setInitialHash] = useState("");
-	const [shouldShowVisuals, setShouldShowVisuals] = useState(false);
-	const [shouldShowWriting, setShouldShowWriting] = useState(false);
-	const [activeProject, setActiveProject] = useState<string | null>(null);
-	const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-	
-	// Process URL hash (both on initial load and hash changes)
-	const processHash = (hash: string) => {
-		// Set camera position based on hash
-		if (hash.startsWith('#projects')) {
-			setInitialCameraPosition([0, 0, 124]);
-			
-			// Set specific project to show if specified
-			if (hash === '#projects-dance') {
-				setActiveProject('dance');
-				setControlsEnabled(false);
-			} else if (hash === '#projects-scios') {
-				setActiveProject('scios');
-				setControlsEnabled(false);
-			} else if (hash === '#projects-personal') {
-				setActiveProject('personal');
-				setControlsEnabled(false);
-			} else if (hash === '#projects-brex') {
-				setActiveProject('brex');
-				setControlsEnabled(false);
-			} else if (hash === '#projects-wiki') {
-				setActiveProject('wiki');
-				setControlsEnabled(false);
-			} else {
-				// Generic #projects - reset any active projects
-				setActiveProject(null);
-				setControlsEnabled(true);
-			}
-			
-			// Reset visuals/writing state
-			setShouldShowVisuals(false);
-			setShouldShowWriting(false);
-		} else if (hash === '#visuals') {
-			setInitialCameraPosition([0, 0, 38]);
-			setShouldShowVisuals(true);
-			setShouldShowWriting(false);
-			setActiveProject(null);
-			setControlsEnabled(false);
-		} else if (hash === '#writing') {
-			setInitialCameraPosition([0, 0, 38]);
-			setShouldShowVisuals(false);
-			setShouldShowWriting(true);
-			setActiveProject(null);
-			setControlsEnabled(false);
-		} else if (hash === '#earth') {
-			setInitialCameraPosition([0, 0, 38]);
-			setShouldShowVisuals(false);
-			setShouldShowWriting(false);
-			setActiveProject(null);
-			setControlsEnabled(true);
-		} else if (hash === '#connect') {
-			setInitialCameraPosition([0, 0, 20]);
-			setShouldShowVisuals(false);
-			setShouldShowWriting(false);
-			setActiveProject(null);
-			setControlsEnabled(true);
-		} else if (hash === '#about') {
-			setInitialCameraPosition([0, 0, 500]);
-			setShouldShowVisuals(false);
-			setShouldShowWriting(false);
-			setActiveProject(null);
-			setControlsEnabled(true);
-		}
-	};
-	
-	// Process the URL hash on initial load and hash changes
-	useEffect(() => {
-		// Only run this on the client side
-		if (typeof window !== 'undefined') {
-			const hash = window.location.hash.toLowerCase();
-			setInitialHash(hash);
-			
-			// Process initial hash
-			processHash(hash);
-			
-			// Add listener for hash changes
-			const handleHashChange = () => {
-				const newHash = window.location.hash.toLowerCase();
-				processHash(newHash);
-			};
-			
-			window.addEventListener("hashchange", handleHashChange);
-			return () => {
-				window.removeEventListener("hashchange", handleHashChange);
-			};
-		}
-	}, []);
+    const [controlsEnabled, setControlsEnabled] = useState(true);
+    const [initialCameraPosition, setInitialCameraPosition] = useState<[number, number, number]>([0, 0, 500]);
+    const [shouldShowVisuals, setShouldShowVisuals] = useState(false);
+    const [shouldShowWriting, setShouldShowWriting] = useState(false);
+    const [activeProject, setActiveProject] = useState<string | null>(null);
+    const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+    
+    const processHash = (hash: string) => {
+        const h = hash.toLowerCase();
+        
+        // Reset states
+        setShouldShowVisuals(false);
+        setShouldShowWriting(false);
+        setActiveProject(null);
+        setControlsEnabled(true);
 
-	return (
-		<ChakraProvider>
-			<div className={css.scene}>
-				<Canvas>
-					<PerspectiveCamera 
-						makeDefault 
-						position={initialCameraPosition}
-						ref={cameraRef}
-					/>
-					{controlsEnabled ? <DynamicNav /> : null}
-					<ToggleOrbitControls enabled={controlsEnabled} />
+        switch (true) {
+            case h === '#mercury':
+                setInitialCameraPosition([-15, 0, 25]);
+                break;
+            case h === '#venus':
+                setInitialCameraPosition([30, 0, -5]);
+                break;
+            case h === '#earth' || h === '#visuals' || h === '#writing':
+                setInitialCameraPosition([0, 0, 38]);
+                if (h === '#visuals') setShouldShowVisuals(true);
+                if (h === '#writing') setShouldShowWriting(true);
+                if (h !== '#earth') setControlsEnabled(false);
+                break;
+            case h.startsWith('#projects'):
+                setInitialCameraPosition([0, 0, 124]);
+                if (h.includes('-')) {
+                    setActiveProject(h.split('-')[1]);
+                    setControlsEnabled(false);
+                }
+                break;
+            case h === '#jupiter':
+                setInitialCameraPosition([70, 0, 220]);
+                break;
+            case h === '#saturn':
+                setInitialCameraPosition([110, 0, 300]);
+                break;
+            case h === '#uranus':
+                setInitialCameraPosition([-60, 10, 350]);
+                break;
+            case h === '#neptune':
+                setInitialCameraPosition([80, -5, 440]);
+                break;
+            case h === '#connect':
+                setInitialCameraPosition([0, 0, 20]);
+                break;
+            case h === '#about':
+            default:
+                setInitialCameraPosition([0, 0, 500]);
+                break;
+        }
+    };
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            processHash(window.location.hash);
+            const handleHashChange = () => processHash(window.location.hash);
+            window.addEventListener("hashchange", handleHashChange);
+            return () => window.removeEventListener("hashchange", handleHashChange);
+        }
+    }, []);
 
-					<ambientLight intensity={0.2} />
-					<spotLight position={[30, 30, 10]} />
-					<Stars
-						count={10000}
-						radius={100}
-						speed={2}
-						factor={8}
-						fade={true}
-					/>
-					<Sun />
-					<Mars 
-						setControlsEnabled={setControlsEnabled} 
-						initialProject={activeProject}
-					/>
-					<Earth 
-						setControlsEnabled={setControlsEnabled}
-						initialShowVisuals={shouldShowVisuals}
-						initialShowWriting={shouldShowWriting}
-					/>
-					<Mercury setControlsEnabled={setControlsEnabled} />
-				</Canvas>
-				<Loader />
-			</div>
-		</ChakraProvider>
-	);
+    return (
+        <ChakraProvider>
+            <div className={css.scene}>
+                <Canvas>
+                    <PerspectiveCamera 
+                        makeDefault 
+                        position={initialCameraPosition}
+                        ref={cameraRef}
+                    />
+                    
+                    {controlsEnabled && <DynamicNav />}
+                    <ToggleOrbitControls enabled={controlsEnabled} />
+
+                    <ambientLight intensity={0.3} />
+                    <pointLight position={[0, 0, 0]} intensity={2} color="#fff" />
+                    
+                    <Stars count={10000} radius={200} factor={7} fade />
+
+                    <Sun />
+                    <UFO />
+
+                    {/* Render toàn bộ hệ mặt trời */}
+                    <Mercury setControlsEnabled={setControlsEnabled} />
+                    <Venus setControlsEnabled={setControlsEnabled} />
+                    
+                    <Earth 
+                        setControlsEnabled={setControlsEnabled}
+                        initialShowVisuals={shouldShowVisuals}
+                        initialShowWriting={shouldShowWriting}
+                    />
+                    
+                    <Mars 
+                        setControlsEnabled={setControlsEnabled} 
+                        initialProject={activeProject}
+                    />
+
+                    <Jupiter setControlsEnabled={setControlsEnabled} />
+                    <Saturn setControlsEnabled={setControlsEnabled} />
+                    <Uranus setControlsEnabled={setControlsEnabled} />
+                    <Neptune setControlsEnabled={setControlsEnabled} />
+
+                </Canvas>
+                <Loader />
+            </div>
+        </ChakraProvider>
+    );
 }
