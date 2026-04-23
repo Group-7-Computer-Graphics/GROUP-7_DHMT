@@ -14,6 +14,7 @@ import Mercury from "../src/components/planets/mecury";
 import Neptune from "../src/components/planets/neptune"; 
 import Uranus from "../src/components/planets/uranus";   
 import Venus from "../src/components/planets/venus";      
+import StarBackground from "../src/components/StarBackground"; // Giả sử đường dẫn này, ông chỉnh lại cho đúng nhé
 
 // --- 1. COMPONENT VẼ ĐƯỜNG QUỸ ĐẠO ---
 function OrbitLine({ radius }: { radius: number }) {
@@ -156,8 +157,11 @@ export default function SolarSystem() {
 
           <ambientLight intensity={0.1} /> 
           <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
+
+          {/* 2. CHÈN THÊM STAR BACKGROUND CỦA ÔNG VÀO ĐÂY */}
+          <StarBackground />
           
-          <Stars radius={3000} depth={150} count={20000} factor={7} saturation={0} fade speed={1} />
+          <Stars radius={3000} depth={150} count={20000} factor={50} saturation={1} fade speed={1} />
 
           <Sun isActive={currentHash === "#overview"} />
 
