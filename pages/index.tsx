@@ -25,7 +25,7 @@ function OrbitLine({ radius }: { radius: number }) {
     }
     return pts;
   }, [radius]);
-  return <Line points={points} color="white" lineWidth={2} transparent opacity={0.4} />;
+  return <Line points={points} color="white" lineWidth={1.8} transparent opacity={0.3} />;
 }
 
 // --- 2. COMPONENT TRỤC QUAY CHO HÀNH TINH ---
