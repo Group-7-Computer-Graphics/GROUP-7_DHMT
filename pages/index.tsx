@@ -1,10 +1,10 @@
-import React, { useState, useEffect, Suspense, useRef } from "react";
+import React, { useState, useEffect, Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Stars, PerspectiveCamera, OrbitControls } from "@react-three/drei";
+import { Stars, PerspectiveCamera, OrbitControls, Line } from "@react-three/drei"; 
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Import các hành tinh
+// Import các hành tinh (Giữ nguyên của ông)
 import Sun from "../src/components/planets/Sun";
 import Earth from "../src/components/planets/Earth";
 import Mars from "../src/components/planets/Mars";
@@ -15,42 +15,93 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";   
 import Venus from "../src/components/planets/venus";      
 
-// 1. Component điều khiển Camera bay và xoay tâm nhìn
+// --- 1. COMPONENT VẼ ĐƯỜNG QUỸ ĐẠO ---
+function OrbitLine({ radius }: { radius: number }) {
+  const points = useMemo(() => {
+    const pts = [];
+    for (let i = 0; i <= 64; i++) {
+      const angle = (i / 64) * 2 * Math.PI;
+      pts.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
+    }
+    return pts;
+  }, [radius]);
+  return <Line points={points} color="white" lineWidth={2} transparent opacity={0.4} />;
+}
+
+// --- 2. COMPONENT TRỤC QUAY CHO HÀNH TINH ---
+function OrbitGroup({ speed, children }: { speed: number, children: React.ReactNode }) {
+  const groupRef = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = clock.getElapsedTime() * speed;
+    }
+  });
+  return <group ref={groupRef}>{children}</group>;
+}
+
+// --- 3. CAMERA CONTROLLER ĐÃ FIX LỖI GIẬT CAM ---
 function CameraController({ currentHash }: { currentHash: string }) {
   const { camera, controls } = useThree() as any;
-  const lastHash = useRef(currentHash);
+  // Thêm cờ nhận biết người dùng đang kéo chuột
+  const isUserDragging = useRef(false);
 
-  const targetPositions: Record<string, { cameraPos: [number, number, number], target: [number, number, number] }> = {
-    "#overview": { cameraPos: [250, 150, 500], target: [0, 0, 0] },
-    "#mercury":  { cameraPos: [0, 10, 110],    target: [0, 0, 80] },
-    "#venus":    { cameraPos: [0, 10, 175],    target: [0, 0, 140] },
-    "#earth":    { cameraPos: [0, 10, 245],    target: [0, 0, 210] },
-    "#mars":     { cameraPos: [0, 10, 335],    target: [0, 0, 300] },
-    "#jupiter":  { cameraPos: [0, 30, 580],    target: [0, 0, 480] },
-    "#saturn":   { cameraPos: [0, 30, 780],    target: [0, 0, 680] },
-    "#uranus":   { cameraPos: [0, 20, 960],    target: [0, 0, 880] },
-    "#neptune":  { cameraPos: [0, 20, 1130],   target: [0, 0, 1050] },
-  };
+  const orbitConfig: Record<string, { radius: number, speed: number, camOffset: [number, number, number] }> = useMemo(() => ({
+    "#mercury":  { radius: 80,   speed: 0.5,  camOffset: [0, 10, 30] },
+    "#venus":    { radius: 140,  speed: 0.35, camOffset: [0, 10, 35] },
+    "#earth":    { radius: 210,  speed: 0.25, camOffset: [0, 10, 35] },
+    "#mars":     { radius: 300,  speed: 0.2,  camOffset: [0, 10, 35] },
+    "#jupiter":  { radius: 480,  speed: 0.1,  camOffset: [0, 30, 100] },
+    "#saturn":   { radius: 680,  speed: 0.08, camOffset: [0, 30, 100] },
+    "#uranus":   { radius: 880,  speed: 0.05, camOffset: [0, 20, 80] },
+    "#neptune":  { radius: 1050, speed: 0.03, camOffset: [0, 20, 80] },
+  }), []);
 
-  useFrame(() => {
-    if (controls) {
-      const config = targetPositions[currentHash] || targetPositions["#overview"];
-      const targetVec = new THREE.Vector3(...config.cameraPos);
-      const targetCenter = new THREE.Vector3(...config.target);
+  // Bắt sự kiện khi người dùng click/chạm vào màn hình để xoay cam
+  useEffect(() => {
+    if (!controls) return;
+    const onStartDrag = () => { isUserDragging.current = true; };
+    controls.addEventListener("start", onStartDrag);
+    return () => controls.removeEventListener("start", onStartDrag);
+  }, [controls]);
 
-      if (lastHash.current !== currentHash) {
-        camera.position.lerp(targetVec, 0.05);
-        controls.target.lerp(targetCenter, 0.05);
-        
-        if (camera.position.distanceTo(targetVec) < 0.5) {
-          lastHash.current = currentHash;
-        }
-        controls.update();
-      } 
-      else if (controls.active) {
-        controls.update();
-      }
+  // Reset lại trạng thái khi bấm sang hành tinh khác
+  useEffect(() => {
+    isUserDragging.current = false;
+  }, [currentHash]);
+
+  useFrame(({ clock }) => {
+    if (!controls) return;
+
+    const time = clock.getElapsedTime();
+    let targetCenter = new THREE.Vector3(0, 0, 0); 
+    let targetCamPos = new THREE.Vector3(250, 150, 500); 
+
+    if (currentHash !== "#overview" && orbitConfig[currentHash]) {
+      const config = orbitConfig[currentHash];
+      const angle = time * config.speed; 
+      
+      const planetX = Math.sin(angle) * config.radius;
+      const planetZ = Math.cos(angle) * config.radius;
+      
+      targetCenter.set(planetX, 0, planetZ);
+
+      targetCamPos.set(
+        planetX + config.camOffset[0],
+        config.camOffset[1],
+        planetZ + config.camOffset[2]
+      );
     }
+
+    // 1. Luôn cho tâm ngắm (target) bám theo hành tinh đang chạy
+    controls.target.lerp(targetCenter, 0.05);
+
+    // 2. CHỈ ép vị trí camera khi người dùng chưa tự ý xoay tay
+    if (!isUserDragging.current) {
+      camera.position.lerp(targetCamPos, 0.05);
+    }
+
+    // 3. Cập nhật thay đổi
+    controls.update();
   });
 
   return null;
@@ -105,17 +156,30 @@ export default function SolarSystem() {
 
           <ambientLight intensity={0.1} /> 
           <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
-          <Stars radius={300} depth={60} count={15000} factor={7} saturation={0} fade speed={1} />
+          
+          <Stars radius={3000} depth={150} count={20000} factor={7} saturation={0} fade speed={1} />
 
           <Sun isActive={currentHash === "#overview"} />
-          <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} />
-          <Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} />
-          <Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} />
-          <Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} />
-          <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} />
-          <Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} />
-          <Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} />
-          <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} />
+
+          {/* QUỸ ĐẠO MỜ */}
+          <OrbitLine radius={80} />
+          <OrbitLine radius={140} />
+          <OrbitLine radius={210} />
+          <OrbitLine radius={300} />
+          <OrbitLine radius={480} />
+          <OrbitLine radius={680} />
+          <OrbitLine radius={880} />
+          <OrbitLine radius={1050} />
+
+          {/* HÀNH TINH BAY QUANH MẶT TRỜI */}
+          <OrbitGroup speed={0.5}><Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} /></OrbitGroup>
+          <OrbitGroup speed={0.35}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
+          <OrbitGroup speed={0.25}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
+          <OrbitGroup speed={0.2}><Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} /></OrbitGroup>
+          <OrbitGroup speed={0.1}><Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} /></OrbitGroup>
+          <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
+          <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
+          <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
 
         </Suspense>
       </Canvas>

@@ -20,7 +20,7 @@ const Earth: React.FC<EarthProps> = ({
     const [showVisuals, setShowVisuals] = useState(false);
     const [showWriting, setShowWriting] = useState(false);
 
-    const pos: [number, number, number] = [0, 0, 220]; 
+    const pos: [number, number, number] = [0, 0, 210]; 
 
     const handleVisualsClose = () => {
         setShowVisuals(false);
