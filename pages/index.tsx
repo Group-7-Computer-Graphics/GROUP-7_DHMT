@@ -17,7 +17,8 @@ import Saturn from "../src/components/planets/saturn";
 import Mercury from "../src/components/planets/mecury";
 import Neptune from "../src/components/planets/neptune"; 
 import Uranus from "../src/components/planets/uranus";   
-import Venus from "../src/components/planets/venus";      
+import Venus from "../src/components/planets/venus";   
+import {AsteroidBelt} from "../src/components/AsteroidBelt";   
 
 //Vân Thêm khai báo type cho planetData 
 const planetData: Record<string, any> = {
@@ -453,6 +454,42 @@ export default function SolarSystem() {
           <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
           <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
           <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
+        {/* 1. CHÈN THÊM STAR BACKGROUND VÀO ĐÂY */}
+          {/* Cập nhật thông số Stars cho rực rỡ hơn theo code của bạn */}
+          <Stars radius={3000} depth={150} count={20000} factor={50} saturation={1} fade speed={1} />
+          
+          <Sun isActive={currentHash === "#overview"} />
+          
+          {/* GỌI ĐĨA BAY RA MÀN HÌNH */}
+          <UFO currentHash={currentHash} isShaking={isShaking} />
+
+          {/* QUỸ ĐẠO MỜ */}
+          <OrbitLine radius={80} /> 
+          <OrbitLine radius={140} /> 
+          <OrbitLine radius={210} /> 
+          <OrbitLine radius={300} /> 
+          <OrbitLine radius={480} /> 
+          <OrbitLine radius={680} /> 
+          <OrbitLine radius={880} /> 
+          <OrbitLine radius={1050} />
+
+          {/* HÀNH TINH VÀ VÀNH ĐAI TIỂU HÀNH TINH */}
+          <OrbitGroup speed={0.5}><Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} /></OrbitGroup>
+          <OrbitGroup speed={0.35}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
+          <OrbitGroup speed={0.25}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
+          <OrbitGroup speed={0.2}><Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} /></OrbitGroup>
+
+          {/* VÀNH ĐAI 1: Nằm giữa Mars (300) và Jupiter (480) */}
+          <AsteroidBelt count={1200} innerRadius={360} outerRadius={420} speedFactor={0.3} />
+
+          <OrbitGroup speed={0.1}><Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} /></OrbitGroup>
+          <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
+          <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
+          <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
+
+          {/* VÀNH ĐAI 2: Nằm ngoài cùng (Sau Neptune 1050) */}
+          <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
+
         </Suspense>
       </Canvas>
       
@@ -460,7 +497,9 @@ export default function SolarSystem() {
         <PlanetInfoPanel currentHash={currentHash} onCorrect={handleCorrectAnswer} onWrong={handleWrongAnswer} />
       )}
 
-      <button onClick={() => window.location.hash = "#overview"} style={{ position: "fixed", bottom: "40px", right: "40px", zIndex: 100, padding: "10px 24px", backgroundColor: "rgba(255, 255, 255, 0.1)", color: "white", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "99px", cursor: "pointer", backdropFilter: "blur(10px)" }}>
+      <button 
+        onClick={() => window.location.hash = "#overview"}
+style={{ position: "fixed", bottom: "40px", right: "40px", zIndex: 100, padding: "10px 24px", backgroundColor: "rgba(255, 255, 255, 0.1)", color: "white", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "99px", cursor: "pointer", backdropFilter: "blur(10px)" }}>
         BACK TO START
       </button>
        {/* --- THANH ĐIỀU HƯỚNG DƯỚI CÙNG --- */}
