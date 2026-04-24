@@ -457,6 +457,50 @@ export default function SolarSystem() {
       >
         BACK TO START
       </button>
+      {/* --- THANH ĐIỀU HƯỚNG DƯỚI CÙNG --- */}
+<div style={{
+  position: "fixed",
+  bottom: "20px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "flex",
+  gap: "10px",
+  zIndex: 100,
+  padding: "10px",
+  background: "rgba(0, 0, 0, 0.5)",
+  backdropFilter: "blur(10px)",
+  borderRadius: "50px",
+  border: "1px solid rgba(0, 243, 255, 0.2)",
+  boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)"
+}}>
+  {Object.keys(ORBIT_CONFIG).map((hash) => (
+    <button
+      key={hash}
+      onClick={() => window.location.hash = hash}
+      style={{
+        padding: "8px 15px",
+        backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
+        color: currentHash === hash ? "#00f3ff" : "#fff",
+        border: "none",
+        borderRadius: "20px",
+        fontSize: "12px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        textTransform: "uppercase",
+        transition: "all 0.3s ease",
+        borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none"
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
+      }}
+    >
+      {hash.replace("#", "")}
+    </button>
+  ))}
+</div>
     </div>
   );
 }
