@@ -396,7 +396,7 @@ function CameraController({ currentHash, isCinematic }: { currentHash: string, i
       const distance = 1200;
       camera.position.x = Math.sin(t) * distance;
       camera.position.z = Math.cos(t) * distance;
-      camera.position.y = distance * 0.4;
+      camera.position.y = 0;
       camera.lookAt(0, 0, 0);
       controls.target.set(0, 0, 0);
       controls.update();
@@ -472,7 +472,7 @@ export default function SolarSystem() {
   };
 
   return (
-    <div onWheel={handleWheel} style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden", position: "relative" }}>
+    <div onWheel={handleWheel} style={{ width: "100vw", height: "100vh", backgroundImage: "url(/icons/b2.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", overflow: "hidden", position: "relative" }}>
       <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
         <Suspense fallback={null}>
           <PerspectiveCamera makeDefault fov={50} far={10000} />
