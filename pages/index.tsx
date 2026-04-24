@@ -441,6 +441,10 @@ export default function SolarSystem() {
 
         </Suspense>
       </Canvas>
+      //Vân
+      {currentHash !== "#overview" && (
+        <PlanetInfoPanel currentHash={currentHash} />
+      )}
       
       <button 
         onClick={() => window.location.hash = "#overview"}
