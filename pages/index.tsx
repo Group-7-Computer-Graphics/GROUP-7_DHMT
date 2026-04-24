@@ -27,7 +27,7 @@ function OrbitLine({ radius }: { radius: number }) {
     }
     return pts;
   }, [radius]);
-  return <Line points={points} color="white" lineWidth={1.8} transparent opacity={0.3} />;
+  return <Line points={points} color="white" lineWidth={2} transparent opacity={0.4} />;
 }
 
 // --- 2. COMPONENT TRỤC QUAY CHO HÀNH TINH ---
@@ -197,10 +197,10 @@ export default function SolarSystem() {
 
           {/* VÀNH ĐAI 2: Nằm ngoài cùng (Sau Neptune 1050) */}
 <AsteroidBelt 
-  count={2000} 
-  innerRadius={1200} // Bắt đầu từ 1200
+  count={4000} 
+  innerRadius={1300} // Bắt đầu từ 1200
   outerRadius={1500} // Kéo dài ra vùng tối
-  speedFactor={0.1} 
+  speedFactor={0.07} 
 />
 
         </Suspense>
