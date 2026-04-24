@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 // @ts-ignore
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { HUDControls } from "../src/components/HUDControls"; 
+import { EffectComposer, Bloom, ToneMapping } from "@react-three/postprocessing";
 
 // Import các hành tinh 
 import Sun from "../src/components/planets/Sun";
