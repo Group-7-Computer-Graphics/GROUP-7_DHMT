@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const StarBackground: React.FC = () => {
   // 1. Load ảnh texture từ thư mục public/icons
-  const texture = useTexture("/icons/bg2.jpg");
+  const texture = useTexture("/icons/bg3.jpg");
   const sphereRef = useRef<THREE.Mesh>(null);
 
   // 2. (Tùy chọn) Cho bầu trời xoay nhè nhẹ để tạo cảm giác vũ trụ đang chuyển động
