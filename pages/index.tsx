@@ -7,7 +7,8 @@ import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import { HUDControls } from "../src/components/HUDControls"; 
 import { EffectComposer, Bloom, ToneMapping } from "@react-three/postprocessing";
 import IntroScreen from "../src/components/IntroScreen"
-
+import Danhsachthanhvien from "../src/components/Danhsachthanhvien"
+import {TEAM_MEMBERS} from "../src/components/Danhsachthanhvien"
 // Chỉnh lại đường dẫn cho đúng với nơi ông đặt file nhé
 
 // Import các hành tinh (Giữ nguyên của ông)
@@ -21,6 +22,7 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";   
 import Venus from "../src/components/planets/venus";      
 import StarBackground from "../src/components/StarBackground"; // Giả sử đường dẫn này, ông chỉnh lại cho đúng nhé
+import MembersDropdown from "../src/components/Danhsachthanhvien";
 
 //Vân Thêm khai báo type cho planetData 
 const planetData: Record<string, any> = {
@@ -164,7 +166,7 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         style={{
           // 1. ĐÃ SỬA VỊ TRÍ: Đẩy lên 8% từ cạnh trên, không còn bị sát đáy nữa
-          position: "absolute", top: "8%", left: "60px", 
+          position: "absolute", top: "11%", left: "60px", 
           width: "380px", zIndex: 10, color: "white", fontFamily: "sans-serif",
           
           // 2. TRANG TRÍ NỀN: Kết hợp kính mờ và hiệu ứng đường quét (Scanlines)
@@ -481,6 +483,9 @@ export default function SolarSystem() {
         </Suspense>
       </Canvas>
       {/* Gọi file riêng ở đây */}
+
+
+
       {/* Đừng quên gọi HUDControls ở ngoài Canvas */}
     <HUDControls 
       solarSpeed={solarSpeed} 
@@ -550,6 +555,19 @@ export default function SolarSystem() {
       {hash.replace("#", "")}
     </button>
   ))}
+</div>
+<div style={{   position: "fixed",
+    top: "23px",
+    left: "10%",
+    transform: "translateX(-50%)",
+    fontWeight: "bolder",
+    padding: "5px",
+    background: "rgba(73, 73, 73, 0.2)",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(0, 243, 255, 0.2)",
+    boxShadow: "0 0 10px rgba(255, 255, 255, 0.5)"
+     }}>
+    <MembersDropdown members={TEAM_MEMBERS} />
 </div>
     </motion.div>
     {/*PHỦ INTRO SCREEN LÊN LỚP NGOÀI CÙNG */}
