@@ -20,6 +20,9 @@ import Uranus from "../src/components/planets/uranus";
 import Venus from "../src/components/planets/venus";      
 import StarBackground from "../src/components/StarBackground"; // Giả sử đường dẫn này, ông chỉnh lại cho đúng nhé
 
+import UFO from "../src/components/UFO";
+import UFOQuizModal from "../src/components/UFOQuizModal";
+
 //Vân Thêm khai báo type cho planetData 
 const planetData: Record<string, any> = {
   "#mercury": {
@@ -141,7 +144,7 @@ function MenuButton({ text, onClick, highlight = false }: { text: string, onClic
 }
 
 // --- BẢNG THÔNG TIN ĐÃ FIX VỊ TRÍ & TRANG TRÍ CỰC NGẦU ---
-function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
+function PlanetInfoPanel({ currentHash, onCorrect, onWrong }: { currentHash: string, onCorrect: () => void, onWrong: () => void }) {
   const [activeView, setActiveView] = useState<string>("menu");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const data = planetData[currentHash];
@@ -151,7 +154,17 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
   if (!data) return null;
 
   const handleAnswerClick = (index: number) => {
-    if (selectedAnswer === null) setSelectedAnswer(index);
+    if (selectedAnswer !== null) return; // Khóa không cho bấm liên tục
+    setSelectedAnswer(index);
+
+    if (index === data.correctAnswer) {
+      // Đúng: Đợi 1.5s xem màu xanh rồi bay đi
+      setTimeout(() => { onCorrect(); }, 1500);
+    } else {
+      // Sai: Gọi hàm rung đĩa bay, reset lại câu hỏi sau 0.8s
+      onWrong();
+      setTimeout(() => { setSelectedAnswer(null); }, 800);
+    }
   };
 
   return (
@@ -359,15 +372,28 @@ export default function SolarSystem() {
   const [bloomIntensity, setBloomIntensity] = useState(1.5); // Độ sáng hiệu ứng
   const [isCinematic, setIsCinematic] = useState(false); // Chế độ tự động quay
 
+  // UFO State
+  const [ufoCurrentPlanet, setUfoCurrentPlanet] = useState("#earth");
+  const [ufoTargetPlanet, setUfoTargetPlanet] = useState("#earth");
+  const [ufoIsMoving, setUfoIsMoving] = useState(false);
+  const [ufoColor, setUfoColor] = useState("#ffffff");
+  const [showUFOQuiz, setShowUFOQuiz] = useState(false);
+  const [ufoQuizData, setUfoQuizData] = useState<any>(null);
+  const [isShaking, setIsShaking] = useState(false); // Trạng thái Rung
+
   const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
   useEffect(() => {
     const handleHashChange = () => {
-      setCurrentHash(window.location.hash || "#overview");
+      const newHash = window.location.hash || "#overview";
+      setCurrentHash(newHash);
+      if (newHash !== "#overview" && !ufoIsMoving) {
+        launchUFOToPlanet(newHash);
+      }
     };
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
+  }, [ufoIsMoving]);
 
   const handleWheel = (e: React.WheelEvent) => {
     const currentIndex = planetHashes.indexOf(currentHash);
@@ -376,6 +402,36 @@ export default function SolarSystem() {
     } else if (e.deltaY < -50 && currentIndex > 0) {
       window.location.hash = planetHashes[currentIndex - 1];
     }
+  };
+
+  const handleCorrectAnswer = () => {
+    const currentIndex = planetHashes.indexOf(currentHash);
+    if (currentIndex < planetHashes.length - 1) {
+      const nextPlanet = planetHashes[currentIndex + 1];
+      setUfoTargetPlanet(nextPlanet);
+      setUfoIsMoving(true);
+    }
+  };
+
+  const handleWrongAnswer = () => {
+    setIsShaking(true);
+    setUfoColor("#ff0000");
+    setTimeout(() => {
+      setIsShaking(false);
+      setUfoColor("#ffffff");
+    }, 500);
+  };
+
+  const handleUFOArrive = () => {
+    setUfoCurrentPlanet(ufoTargetPlanet);
+    setUfoIsMoving(false);
+    // Optionally, navigate to the planet or show quiz
+    // window.location.hash = ufoTargetPlanet; // Already set
+  };
+
+  const launchUFOToPlanet = (planet: string) => {
+    setUfoTargetPlanet(planet);
+    setUfoIsMoving(true);
   };
 
   return (
@@ -445,6 +501,16 @@ export default function SolarSystem() {
           <OrbitGroup speed={0.05* solarSpeed}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
           <OrbitGroup speed={0.03* solarSpeed}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
 
+          {/* UFO */}
+          <UFO 
+            currentPlanet={ufoCurrentPlanet}
+            targetPlanet={ufoTargetPlanet}
+            isMoving={ufoIsMoving}
+            isShaking={isShaking}
+            onArrive={handleUFOArrive}
+            color={ufoColor}
+          />
+
           {/* VÀNH ĐAI 2: Nằm ngoài cùng (Sau Neptune 1050) */}
 <AsteroidBelt 
   count={4000} 
@@ -477,7 +543,7 @@ export default function SolarSystem() {
       
       //Vân
       {currentHash !== "#overview" && (
-        <PlanetInfoPanel currentHash={currentHash} />
+        <PlanetInfoPanel currentHash={currentHash} onCorrect={handleCorrectAnswer} onWrong={handleWrongAnswer} />
       )}
       
       <button 
