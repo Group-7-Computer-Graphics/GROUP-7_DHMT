@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import { HUDControls } from "../src/components/HUDControls"; 
 import { EffectComposer, Bloom, ToneMapping } from "@react-three/postprocessing";
+import IntroScreen from "../src/components/IntroScreen"
+
 // Chỉnh lại đường dẫn cho đúng với nơi ông đặt file nhé
 
 // Import các hành tinh (Giữ nguyên của ông)
@@ -359,6 +361,9 @@ export default function SolarSystem() {
   const [bloomIntensity, setBloomIntensity] = useState(1.5); // Độ sáng hiệu ứng
   const [isCinematic, setIsCinematic] = useState(false); // Chế độ tự động quay
 
+  // 1. THÊM STATE CHO INTRO SCREEN
+  const [showIntro, setShowIntro] = useState(true);
+  const [sceneVisible, setSceneVisible] = useState(false);
   const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
   useEffect(() => {
@@ -370,6 +375,8 @@ export default function SolarSystem() {
   }, []);
 
   const handleWheel = (e: React.WheelEvent) => {
+    // Tắt cuộn chuột chuyển hành tinh nếu đang ở Intro
+    if (showIntro) return;
     const currentIndex = planetHashes.indexOf(currentHash);
     if (e.deltaY > 50 && currentIndex < planetHashes.length - 1) {
       window.location.hash = planetHashes[currentIndex + 1];
@@ -377,18 +384,27 @@ export default function SolarSystem() {
       window.location.hash = planetHashes[currentIndex - 1];
     }
   };
-
+// 2. THÊM HÀM XỬ LÝ KHI BẤM ENTER TỪ INTRO
+  const handleEnterScene = () => {
+    setShowIntro(false);
+    setTimeout(() => {
+      setSceneVisible(true);
+    }, 500); // Khớp với thời gian exit animation của IntroScreen
+  };
   return (
   <div 
     onWheel={handleWheel}
-    style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
+    style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden",position: "relative" }}
   >
+    {/*Bọc không gian 3D và UI vào motion.div để hiện dần lên khi bấm vào enter */}
+    <motion.div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
     <Canvas 
       gl={{ 
         antialias: false, // Tắt antialias mặc định để Bloom mượt hơn
         stencil: false 
+        
       }} 
-      dpr={[1, 2]}
+      dpr={[1, 2]} style={{width: "100%", height :"100%"}}
     >
       <Suspense fallback={null}>
         <PerspectiveCamera makeDefault fov={50} far={10000} />
@@ -535,6 +551,13 @@ export default function SolarSystem() {
     </button>
   ))}
 </div>
+    </motion.div>
+    {/*PHỦ INTRO SCREEN LÊN LỚP NGOÀI CÙNG */}
+    <AnimatePresence>
+      {showIntro && (
+        <IntroScreen onEnter={handleEnterScene} />
+      )}
+    </AnimatePresence>
     </div>
   );
 }
