@@ -15,12 +15,7 @@ interface CardProps {
 	rotation?: Euler;
 	text: string;
 	ProjectComponent?: React.ComponentType<any>;
-	cardSize?: [
-		width?: number | undefined,
-		height?: number | undefined,
-		widthSegments?: number | undefined,
-		heightSegments?: number | undefined,
-	];
+	cardSize?: [number, number];
 	fontSize?: number;
 	setControlsEnabled: Dispatch<SetStateAction<boolean>>;
 }
@@ -33,34 +28,42 @@ const Card: React.FC<CardProps> = ({
 	fontSize = 1,
 	setControlsEnabled,
 }) => {
-	const positionArr = position as number[];
+	const positionArr = [position.x, position.y, position.z];
 	const [hovered, setHovered] = useState(false);
 	useCursor(hovered);
 
-	const offSet = (ref: MutableRefObject<any>) => {
-		const originalPosition = useRef({
-			x: positionArr[0],
-			y: positionArr[1],
-			z: positionArr[2],
-		});
-		useEffect(() => {
-			originalPosition.current = ref.current.position.clone();
-		}, []);
-
-		useFrame(() => {
-			if (hovered) {
-				ref.current.position.y = originalPosition.current.y + 0.1;
-				ref.current.position.x = originalPosition.current.x + 0.1;
-			} else {
-				ref.current.position.copy(originalPosition.current);
-			}
-		});
-	};
-
 	const planeRef = useRef<any>(null);
 	const textRef = useRef<any>(null);
-	offSet(planeRef);
-	offSet(textRef);
+	const originalPlanePosition = useRef<THREE.Vector3 | null>(null);
+	const originalTextPosition = useRef<THREE.Vector3 | null>(null);
+
+	useEffect(() => {
+		if (planeRef.current) {
+			originalPlanePosition.current = planeRef.current.position.clone();
+		}
+		if (textRef.current) {
+			originalTextPosition.current = textRef.current.position.clone();
+		}
+	}, []);
+
+	useFrame(() => {
+		if (planeRef.current && originalPlanePosition.current) {
+			if (hovered) {
+				planeRef.current.position.y = originalPlanePosition.current.y + 0.1;
+				planeRef.current.position.x = originalPlanePosition.current.x + 0.1;
+			} else {
+				planeRef.current.position.copy(originalPlanePosition.current);
+			}
+		}
+		if (textRef.current && originalTextPosition.current) {
+			if (hovered) {
+				textRef.current.position.y = originalTextPosition.current.y + 0.1;
+				textRef.current.position.x = originalTextPosition.current.x + 0.1;
+			} else {
+				textRef.current.position.copy(originalTextPosition.current);
+			}
+		}
+	});
 
 	const handleHover = () => {
 		setHovered(true);

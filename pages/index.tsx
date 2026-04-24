@@ -87,7 +87,7 @@ const planetData: Record<string, any> = {
   }
 };
 
-// Dán đoạn này ngay dưới planetData
+// quỹ đạo quay của ufo
 const ORBIT_CONFIG: Record<string, { radius: number, speed: number, camOffset: [number, number, number] }> = {
   "#mercury":  { radius: 80,   speed: 0.5,  camOffset: [0, 10, 30] },
   "#venus":    { radius: 140,  speed: 0.35, camOffset: [0, 10, 35] },
@@ -135,8 +135,8 @@ function MenuButton({ text, onClick, highlight = false }: { text: string, onClic
   );
 }
 
-// --- BẢNG THÔNG TIN ĐÃ FIX VỊ TRÍ & TRANG TRÍ CỰC NGẦU ---
-function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
+// --- BẢNG THÔNG TIN CÓ TÍNH NĂNG CHẤM ĐIỂM ---
+function PlanetInfoPanel({ currentHash, onCorrect, onWrong }: { currentHash: string, onCorrect: () => void, onWrong: () => void }) {
   const [activeView, setActiveView] = useState<string>("menu");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const data = planetData[currentHash];
@@ -146,7 +146,17 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
   if (!data) return null;
 
   const handleAnswerClick = (index: number) => {
-    if (selectedAnswer === null) setSelectedAnswer(index);
+    if (selectedAnswer !== null) return; // Khóa không cho bấm liên tục
+    setSelectedAnswer(index);
+
+    if (index === data.correctAnswer) {
+      // Đúng: Đợi 1.5s xem màu xanh rồi bay đi
+      setTimeout(() => { onCorrect(); }, 1500);
+    } else {
+      // Sai: Gọi hàm rung đĩa bay, reset lại câu hỏi sau 0.8s
+      onWrong();
+      setTimeout(() => { setSelectedAnswer(null); }, 800);
+    }
   };
 
   return (
@@ -156,45 +166,24 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
         initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         style={{
-          // 1. ĐÃ SỬA VỊ TRÍ: Đẩy lên 8% từ cạnh trên, không còn bị sát đáy nữa
           position: "absolute", top: "8%", left: "60px", 
           width: "380px", zIndex: 10, color: "white", fontFamily: "sans-serif",
-          
-          // 2. TRANG TRÍ NỀN: Kết hợp kính mờ và hiệu ứng đường quét (Scanlines)
-          background: `
-            repeating-linear-gradient(
-              0deg,
-              rgba(0, 0, 0, 0.1),
-              rgba(0, 0, 0, 0.1) 1px,
-              transparent 1px,
-              transparent 2px
-            ),
-            linear-gradient(135deg, rgba(2, 11, 26, 0.85) 0%, rgba(0, 34, 68, 0.6) 100%)
-          `,
-          border: "1px solid rgba(0, 243, 255, 0.3)",
-          borderTop: "3px solid #00f3ff", // Vạch sáng dày ở trên
-          borderBottom: "3px solid #00f3ff", // Vạch sáng dày ở dưới
+          background: `repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 2px), linear-gradient(135deg, rgba(2, 11, 26, 0.85) 0%, rgba(0, 34, 68, 0.6) 100%)`,
+          border: "1px solid rgba(0, 243, 255, 0.3)", borderTop: "3px solid #00f3ff", borderBottom: "3px solid #00f3ff",
           boxShadow: "0 0 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1)",
           borderRadius: "4px", padding: "30px", backdropFilter: "blur(15px)",
-          // 3. TRANG TRÍ HÌNH DÁNG: Vát góc dưới bên phải kiểu UI phi thuyền
           clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%)"
         }}
       >
-        {/* TRANG TRÍ: Hiển thị trạng thái hệ thống giả lập */}
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#00f3ff", marginBottom: "15px", opacity: 0.8, letterSpacing: "2px", textTransform: "uppercase" }}>
-          <span>SYS.DAT // {currentHash.replace("#", "")}</span>
-          <span>[ SCANNING... ]</span>
+          <span>SYS.DAT // {currentHash.replace("#", "")}</span> <span>[ UFO LINKED ]</span>
         </div>
 
-        {/* TIÊU ĐỀ: Thêm viền đứt đoạn và hiệu ứng phát sáng neon mạnh hơn */}
         <div style={{ textAlign: "center", marginBottom: "30px", borderBottom: "1px dashed rgba(0, 243, 255, 0.4)", paddingBottom: "15px", position: "relative" }}>
           <h1 style={{ margin: 0, fontSize: "44px", fontWeight: "900", letterSpacing: "6px", color: "#e0f7fa", textShadow: "0 0 20px #00f3ff, 0 0 40px #00f3ff" }}>
             {data.name}
           </h1>
-          <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#00f3ff", letterSpacing: "8px" }}>
-            {data.type}
-          </p>
-          {/* TRANG TRÍ: 2 chấm sáng ở góc viền */}
+          <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#00f3ff", letterSpacing: "8px" }}>{data.type}</p>
           <div style={{ position: "absolute", bottom: "-3px", left: "0", width: "5px", height: "5px", backgroundColor: "#00f3ff", boxShadow: "0 0 10px #00f3ff" }}></div>
           <div style={{ position: "absolute", bottom: "-3px", right: "0", width: "5px", height: "5px", backgroundColor: "#00f3ff", boxShadow: "0 0 10px #00f3ff" }}></div>
         </div>
@@ -210,12 +199,8 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
 
         {["visit", "encyclopedia", "structure"].includes(activeView) && (
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <h3 style={{ marginTop: 0, color: "#00f3ff", fontSize: "16px", textTransform: "uppercase", letterSpacing: "2px" }}>
-              {activeView}
-            </h3>
-            <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#d0e8f2", marginBottom: "25px", fontWeight: "300" }}>
-              {data[activeView]}
-            </p>
+            <h3 style={{ marginTop: 0, color: "#00f3ff", fontSize: "16px", textTransform: "uppercase", letterSpacing: "2px" }}>{activeView}</h3>
+            <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#d0e8f2", marginBottom: "25px", fontWeight: "300" }}>{data[activeView]}</p>
             <MenuButton text="BACK TO MENU" onClick={() => setActiveView("menu")} highlight />
           </motion.div>
         )}
@@ -226,18 +211,14 @@ function PlanetInfoPanel({ currentHash }: { currentHash: string }) {
             <p style={{ fontSize: "16px", lineHeight: "1.5", marginBottom: "20px", color: "#e0f7fa" }}>{data.question}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
               {data.options.map((option: string, index: number) => {
-                let bgColor = "rgba(0, 0, 0, 0.4)";
-                let borderColor = "rgba(0, 243, 255, 0.2)";
-                let textColor = "white";
+                let bgColor = "rgba(0, 0, 0, 0.4)"; let borderColor = "rgba(0, 243, 255, 0.2)"; let textColor = "white";
                 if (selectedAnswer !== null) {
                   if (index === data.correctAnswer) { bgColor = "rgba(0, 255, 0, 0.2)"; borderColor = "#00ff00"; textColor = "#00ff00"; }
-                  else if (index === selectedAnswer) { bgColor = "rgba(255, 0, 0, 0.2)"; borderColor = "#ff0000"; textColor = "#ff0000"; }
+                  else if (index === selectedAnswer) { bgColor = "rgba(255, 0, 0, 0.4)"; borderColor = "#ff0000"; textColor = "#ff0000"; }
                 }
                 return (
-                  <button
-                    key={index} onClick={() => handleAnswerClick(index)}
-                    style={{ padding: "12px", textAlign: "left", backgroundColor: bgColor, border: `1px solid ${borderColor}`, color: textColor, cursor: selectedAnswer === null ? "pointer" : "default", borderRadius: "4px", transition: "all 0.3s", clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%)" }}
-                  >
+                  <button key={index} onClick={() => handleAnswerClick(index)}
+                    style={{ padding: "12px", textAlign: "left", backgroundColor: bgColor, border: `1px solid ${borderColor}`, color: textColor, cursor: selectedAnswer === null ? "pointer" : "default", borderRadius: "4px", transition: "all 0.3s", clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%)" }}>
                     {option}
                   </button>
                 );
@@ -275,44 +256,96 @@ function OrbitGroup({ speed, children }: { speed: number, children: React.ReactN
   return <group ref={groupRef}>{children}</group>;
 }
 
-// --- 3. CAMERA CONTROLLER ĐÃ THÊM TÍNH NĂNG ĐẨY HÀNH TINH SANG PHẢI ---
+/// ==========================================
+// 3. MÔ HÌNH ĐĨA BAY (UFO) - ĐÃ CHỈNH MÀU NỔI BẬT HƠN
+// ==========================================
+function UFO({ currentHash, isShaking }: { currentHash: string, isShaking: boolean }) {
+  const ufoRef = useRef<THREE.Group>(null);
+
+  useFrame(({ clock }) => {
+    if (!ufoRef.current) return;
+    const time = clock.getElapsedTime();
+    let targetPos = new THREE.Vector3(0, 30, 80);
+
+    if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
+      const config = ORBIT_CONFIG[currentHash];
+      const angle = time * config.speed;
+      targetPos.set((Math.sin(angle) * config.radius) + 5, 12, (Math.cos(angle) * config.radius) + 15);
+    }
+
+    ufoRef.current.position.lerp(targetPos, 0.04);
+    ufoRef.current.rotation.y += 0.05;
+    ufoRef.current.position.y += Math.sin(time * 3) * 0.1;
+
+    // HIỆU ỨNG RUNG
+    if (isShaking) {
+      ufoRef.current.position.x += (Math.random() - 0.5) * 4;
+      ufoRef.current.position.y += (Math.random() - 0.5) * 4;
+      ufoRef.current.position.z += (Math.random() - 0.5) * 4;
+      ufoRef.current.children[2].scale.set(1.5, 1.5, 1.5); // Phóng to đèn đỏ to hơn chút
+    } else {
+      ufoRef.current.children[2].scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+    }
+  });
+
+  return (
+    <group ref={ufoRef}>
+      {/* 1. VÒM KÍNH BUỒNG LÁI (Làm sáng hơn) */}
+      <mesh position={[0, 1.5, 0]}>
+        <sphereGeometry args={[3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial 
+          color="#aaddff" 
+          transparent 
+          opacity={0.6} 
+          roughness={0.1}
+          emissive="#e425db" // Kính tự phát sáng nhẹ
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+      
+      {/* 2. THÂN ĐĨA BAY (Đổi thành màu Bạc/Trắng và tự phát sáng) */}
+      <mesh>
+        <cylinderGeometry args={[8, 2, 1.5, 32]} />
+        <meshStandardMaterial 
+          color="#ffffff" // Màu gốc là trắng sáng
+          metalness={0.6} // Giảm độ kim loại xuống để đỡ bị ám đen
+          roughness={0.2} 
+          emissive="#8e0557" // Phủ một lớp ánh sáng xanh dương viễn tưởng
+          emissiveIntensity={0.6}
+        />
+      </mesh>
+      
+      {/* 3. ĐÈN LÕI/ĐỘNG CƠ (Phát sáng chói hơn) */}
+      <mesh position={[0, -0.8, 0]}>
+        <cylinderGeometry args={[3, 3, 0.5, 32]} />
+        {/* Dùng meshStandardMaterial kết hợp emissive để đèn tỏa sáng */}
+        <meshStandardMaterial 
+          color={isShaking ? "#ff0000" : "#00f3ff"} 
+          emissive={isShaking ? "#ff0000" : "#00f3ff"}
+          emissiveIntensity={2} // Tăng cường độ phát sáng
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// --- CAMERA CONTROLLER ---
 function CameraController({ currentHash }: { currentHash: string }) {
   const { camera, controls } = useThree() as any;
   const isUserDragging = useRef(false);
 
-  // ==========================================================
-  // ĐÂY LÀ PHÉP MÀU: MÁNH KHÓE ĐẨY HÀNH TINH SANG PHẢI
-  // ==========================================================
   useEffect(() => {
     const updateOffset = () => {
       if (currentHash !== "#overview") {
-        // Shift camera sang trái 20% màn hình (0.2), ép vật thể bay sang phải
-        const shift = window.innerWidth * 0.2; 
-        camera.setViewOffset(window.innerWidth, window.innerHeight, -shift, 0, window.innerWidth, window.innerHeight);
-      } else {
-        camera.clearViewOffset(); // Reset căn giữa khi về màn hình tổng (Mặt Trời)
-      }
+        camera.setViewOffset(window.innerWidth, window.innerHeight, -(window.innerWidth * 0.2), 0, window.innerWidth, window.innerHeight);
+      } else { camera.clearViewOffset(); }
       camera.updateProjectionMatrix();
     };
-    
     updateOffset();
     window.addEventListener("resize", updateOffset);
     return () => window.removeEventListener("resize", updateOffset);
   }, [currentHash, camera]);
-  // ==========================================================
 
-  const orbitConfig: Record<string, { radius: number, speed: number, camOffset: [number, number, number] }> = useMemo(() => ({
-    "#mercury":  { radius: 80,   speed: 0.5,  camOffset: [0, 10, 30] },
-    "#venus":    { radius: 140,  speed: 0.35, camOffset: [0, 10, 35] },
-    "#earth":    { radius: 210,  speed: 0.25, camOffset: [0, 10, 35] },
-    "#mars":     { radius: 300,  speed: 0.2,  camOffset: [0, 10, 35] },
-    "#jupiter":  { radius: 480,  speed: 0.1,  camOffset: [0, 30, 100] },
-    "#saturn":   { radius: 680,  speed: 0.08, camOffset: [0, 30, 100] },
-    "#uranus":   { radius: 880,  speed: 0.05, camOffset: [0, 20, 80] },
-    "#neptune":  { radius: 1050, speed: 0.03, camOffset: [0, 20, 80] },
-  }), []);
-
-  // Bắt sự kiện khi người dùng click/chạm vào màn hình để xoay cam
   useEffect(() => {
     if (!controls) return;
     const onStartDrag = () => { isUserDragging.current = true; };
@@ -320,114 +353,84 @@ function CameraController({ currentHash }: { currentHash: string }) {
     return () => controls.removeEventListener("start", onStartDrag);
   }, [controls]);
 
-  // Reset lại trạng thái khi bấm sang hành tinh khác
-  useEffect(() => {
-    isUserDragging.current = false;
-  }, [currentHash]);
+  useEffect(() => { isUserDragging.current = false; }, [currentHash]);
 
   useFrame(({ clock }) => {
     if (!controls) return;
-
     const time = clock.getElapsedTime();
     let targetCenter = new THREE.Vector3(0, 0, 0); 
     let targetCamPos = new THREE.Vector3(250, 150, 500); 
 
-    if (currentHash !== "#overview" && orbitConfig[currentHash]) {
-      const config = orbitConfig[currentHash];
+    if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
+      const config = ORBIT_CONFIG[currentHash];
       const angle = time * config.speed; 
-      
       const planetX = Math.sin(angle) * config.radius;
       const planetZ = Math.cos(angle) * config.radius;
-      
       targetCenter.set(planetX, 0, planetZ);
-
-      targetCamPos.set(
-        planetX + config.camOffset[0],
-        config.camOffset[1],
-        planetZ + config.camOffset[2]
-      );
+      targetCamPos.set(planetX + config.camOffset[0], config.camOffset[1], planetZ + config.camOffset[2]);
     }
-
-    // 1. Luôn cho tâm ngắm (target) bám theo hành tinh đang chạy
     controls.target.lerp(targetCenter, 0.05);
-
-    // 2. CHỈ ép vị trí camera khi người dùng chưa tự ý xoay tay
-    if (!isUserDragging.current) {
-      camera.position.lerp(targetCamPos, 0.05);
-    }
-
-    // 3. Cập nhật thay đổi
+    if (!isUserDragging.current) { camera.position.lerp(targetCamPos, 0.05); }
     controls.update();
   });
-
   return null;
 }
 
+// --- HÀM CHÍNH KHỞI TẠO TẤT CẢ ---
 export default function SolarSystem() {
   const [currentHash, setCurrentHash] = useState("#overview");
   const [controlsEnabled, setControlsEnabled] = useState(true);
+  const [isShaking, setIsShaking] = useState(false); // Trạng thái Rung
 
   const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setCurrentHash(window.location.hash || "#overview");
-    };
+    const handleHashChange = () => { setCurrentHash(window.location.hash || "#overview"); };
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   const handleWheel = (e: React.WheelEvent) => {
     const currentIndex = planetHashes.indexOf(currentHash);
-    if (e.deltaY > 50 && currentIndex < planetHashes.length - 1) {
+    if (e.deltaY > 50 && currentIndex < planetHashes.length - 1) { window.location.hash = planetHashes[currentIndex + 1]; } 
+    else if (e.deltaY < -50 && currentIndex > 0) { window.location.hash = planetHashes[currentIndex - 1]; }
+  };
+
+  // --- LOGIC TRÒ CHƠI ---
+  const handleWrongAnswer = () => {
+    setIsShaking(true);
+    setTimeout(() => { setIsShaking(false); }, 500); // Tắt rung sau 0.5s
+  };
+
+  const handleCorrectAnswer = () => {
+    const currentIndex = planetHashes.indexOf(currentHash);
+    if (currentIndex < planetHashes.length - 1) {
+      // Bay sang hành tinh tiếp theo
       window.location.hash = planetHashes[currentIndex + 1];
-    } else if (e.deltaY < -50 && currentIndex > 0) {
-      window.location.hash = planetHashes[currentIndex - 1];
+    } else {
+      // Về đích
+      window.location.hash = "#overview";
+      setTimeout(() => alert("Chúc mừng Thuyền trưởng! Bạn đã chinh phục toàn bộ Hệ Mặt Trời!"), 500);
     }
   };
 
   return (
-    <div 
-      onWheel={handleWheel}
-      style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
-    >
+    <div onWheel={handleWheel} style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden", position: "relative" }}>
       <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
         <Suspense fallback={null}>
           <PerspectiveCamera makeDefault fov={50} far={10000} />
-          
-          <OrbitControls 
-            makeDefault 
-            enablePan={false} 
-            minDistance={10} 
-            maxDistance={3000}
-            enableDamping={true}
-            dampingFactor={0.05}
-            rotateSpeed={0.8}
-            onStart={() => {
-              controlsEnabled && setControlsEnabled(true);
-            }}
-          />
-
+          <OrbitControls makeDefault enablePan={false} minDistance={10} maxDistance={3000} enableDamping={true} dampingFactor={0.05} rotateSpeed={0.8} onStart={() => { controlsEnabled && setControlsEnabled(true); }} />
           <CameraController currentHash={currentHash} />
-
           <ambientLight intensity={0.1} /> 
           <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
-          
           <Stars radius={3000} depth={150} count={20000} factor={7} saturation={0} fade speed={1} />
-
+          
           <Sun isActive={currentHash === "#overview"} />
+          {/* GỌI ĐĨA BAY RA MÀN HÌNH */}
+          <UFO currentHash={currentHash} isShaking={isShaking} />
 
-          {/* QUỸ ĐẠO MỜ */}
-          <OrbitLine radius={80} />
-          <OrbitLine radius={140} />
-          <OrbitLine radius={210} />
-          <OrbitLine radius={300} />
-          <OrbitLine radius={480} />
-          <OrbitLine radius={680} />
-          <OrbitLine radius={880} />
-          <OrbitLine radius={1050} />
+          <OrbitLine radius={80} /> <OrbitLine radius={140} /> <OrbitLine radius={210} /> <OrbitLine radius={300} /> <OrbitLine radius={480} /> <OrbitLine radius={680} /> <OrbitLine radius={880} /> <OrbitLine radius={1050} />
 
-          {/* HÀNH TINH BAY QUANH MẶT TRỜI */}
           <OrbitGroup speed={0.5}><Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} /></OrbitGroup>
           <OrbitGroup speed={0.35}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
           <OrbitGroup speed={0.25}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
@@ -436,24 +439,14 @@ export default function SolarSystem() {
           <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
           <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
           <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
-
         </Suspense>
       </Canvas>
-
-      //Vân
+      
       {currentHash !== "#overview" && (
-        <PlanetInfoPanel currentHash={currentHash} />
+        <PlanetInfoPanel currentHash={currentHash} onCorrect={handleCorrectAnswer} onWrong={handleWrongAnswer} />
       )}
 
-      <button 
-        onClick={() => window.location.hash = "#overview"}
-        style={{
-          position: "fixed", bottom: "40px", right: "40px", zIndex: 100,
-          padding: "10px 24px", backgroundColor: "rgba(255, 255, 255, 0.1)",
-          color: "white", border: "1px solid rgba(255, 255, 255, 0.3)",
-          borderRadius: "99px", cursor: "pointer", backdropFilter: "blur(10px)"
-        }}
-      >
+      <button onClick={() => window.location.hash = "#overview"} style={{ position: "fixed", bottom: "40px", right: "40px", zIndex: 100, padding: "10px 24px", backgroundColor: "rgba(255, 255, 255, 0.1)", color: "white", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "99px", cursor: "pointer", backdropFilter: "blur(10px)" }}>
         BACK TO START
       </button>
     </div>
