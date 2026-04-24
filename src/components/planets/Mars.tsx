@@ -45,7 +45,7 @@ const Mars: React.FC<MarsProps> = ({
                 position={pos}
                 meshMaterialPath="/mars.jpeg"
                 spinSpeed={0.002}
-                size={4} 
+                size={6} 
                 // 3. TRUYỀN onClick VÀO ĐÂY
                 onClick={onClick} 
             />

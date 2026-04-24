@@ -17,7 +17,7 @@ const Uranus: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick }
                 position={pos}
                 meshMaterialPath="/icons/Uranus.jpg"
                 spinSpeed={0.003}
-                size={7} 
+                size={30} 
                 onClick={onClick} 
             />
             

@@ -16,7 +16,7 @@ const Sun: React.FC<SunProps> = ({ isActive, onClick }) => {
                 position={pos}
                 meshMaterialPath="/sun.jpeg"
                 spinSpeed={0.002} 
-                size={50} 
+                size={65} 
                 onClick={onClick} 
             />
 

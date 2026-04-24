@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stars, PerspectiveCamera, OrbitControls, Line } from "@react-three/drei"; 
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
+import { AsteroidBelt } from "../src/components/AsteroidBelt";
 
 // Import các hành tinh (Giữ nguyên của ông)
 import Sun from "../src/components/planets/Sun";
@@ -180,10 +181,27 @@ export default function SolarSystem() {
           <OrbitGroup speed={0.35}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
           <OrbitGroup speed={0.25}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
           <OrbitGroup speed={0.2}><Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} /></OrbitGroup>
+
+          {/* VÀNH ĐAI 1: Nằm giữa Mars (300) và Jupiter (480) */}
+<AsteroidBelt 
+  count={1200} 
+  innerRadius={360} // Cách Mars 60 đơn vị
+  outerRadius={420} // Cách Jupiter 60 đơn vị
+  speedFactor={0.3} 
+/>
+
           <OrbitGroup speed={0.1}><Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} /></OrbitGroup>
           <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
           <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
           <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
+
+          {/* VÀNH ĐAI 2: Nằm ngoài cùng (Sau Neptune 1050) */}
+<AsteroidBelt 
+  count={2000} 
+  innerRadius={1200} // Bắt đầu từ 1200
+  outerRadius={1500} // Kéo dài ra vùng tối
+  speedFactor={0.1} 
+/>
 
         </Suspense>
       </Canvas>
