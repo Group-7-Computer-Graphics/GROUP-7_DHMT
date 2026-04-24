@@ -285,10 +285,9 @@ function OrbitGroup({ speed, children }: { speed: number, children: React.ReactN
   return <group ref={groupRef}>{children}</group>;
 }
 
-// --- 3. CAMERA CONTROLLER ĐÃ FIX LỖI GIẬT CAM ---
+// --- 3. CAMERA CONTROLLER (ĐÃ FIX DẤU NGOẶC VÀ TYPE) ---
 function CameraController({ currentHash, isCinematic }: { currentHash: string, isCinematic: boolean }) {
   const { camera, controls } = useThree() as any;
-  // Thêm cờ nhận biết người dùng đang kéo chuột
   const isUserDragging = useRef(false);
 
   const orbitConfig: Record<string, { radius: number, speed: number, camOffset: [number, number, number] }> = useMemo(() => ({
@@ -302,7 +301,6 @@ function CameraController({ currentHash, isCinematic }: { currentHash: string, i
     "#neptune":  { radius: 1050, speed: 0.03, camOffset: [0, 20, 80] },
   }), []);
 
-  // Bắt sự kiện khi người dùng click/chạm vào màn hình để xoay cam
   useEffect(() => {
     if (!controls) return;
     const onStartDrag = () => { isUserDragging.current = true; };
@@ -310,43 +308,44 @@ function CameraController({ currentHash, isCinematic }: { currentHash: string, i
     return () => controls.removeEventListener("start", onStartDrag);
   }, [controls]);
 
-  // Reset lại trạng thái khi bấm sang hành tinh khác
   useEffect(() => {
     isUserDragging.current = false;
   }, [currentHash]);
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
     if (!controls) return;
 
-    const time = clock.getElapsedTime();
+    // CHẾ ĐỘ CINEMATIC
+    if (isCinematic) {
+      const t = state.clock.getElapsedTime() * 0.1;
+      const distance = 1200;
+      camera.position.x = Math.sin(t) * distance;
+      camera.position.z = Math.cos(t) * distance;
+      camera.position.y = distance * 0.4;
+      camera.lookAt(0, 0, 0);
+      controls.target.set(0, 0, 0);
+      controls.update();
+      return;
+    }
+
+    // CHẾ ĐỘ THEO DÕI HÀNH TINH
+    const time = state.clock.getElapsedTime();
     let targetCenter = new THREE.Vector3(0, 0, 0); 
     let targetCamPos = new THREE.Vector3(250, 150, 500); 
 
     if (currentHash !== "#overview" && orbitConfig[currentHash]) {
       const config = orbitConfig[currentHash];
       const angle = time * config.speed; 
-      
       const planetX = Math.sin(angle) * config.radius;
       const planetZ = Math.cos(angle) * config.radius;
-      
       targetCenter.set(planetX, 0, planetZ);
-
-      targetCamPos.set(
-        planetX + config.camOffset[0],
-        config.camOffset[1],
-        planetZ + config.camOffset[2]
-      );
+      targetCamPos.set(planetX + config.camOffset[0], config.camOffset[1], planetZ + config.camOffset[2]);
     }
 
-    // 1. Luôn cho tâm ngắm (target) bám theo hành tinh đang chạy
     controls.target.lerp(targetCenter, 0.05);
-
-    // 2. CHỈ ép vị trí camera khi người dùng chưa tự ý xoay tay
     if (!isUserDragging.current) {
       camera.position.lerp(targetCamPos, 0.05);
     }
-
-    // 3. Cập nhật thay đổi
     controls.update();
   });
 
@@ -405,7 +404,6 @@ export default function SolarSystem() {
           // Sửa nhẹ chỗ này để logic đồng nhất
           onStart={() => setControlsEnabled?.(true)}
         />
-
           <CameraController currentHash={currentHash} isCinematic={isCinematic}/>
 
           <ambientLight intensity={0.1} /> 
