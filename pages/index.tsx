@@ -1,10 +1,14 @@
 import React, { useState, useEffect, Suspense, useRef, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import { Stars, PerspectiveCamera, OrbitControls, Line } from "@react-three/drei"; 
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
+// @ts-ignore
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+// @ts-ignore
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 
-// Import các hành tinh (Giữ nguyên của ông)
+// Import các hành tinh 
 import Sun from "../src/components/planets/Sun";
 import Earth from "../src/components/planets/Earth";
 import Mars from "../src/components/planets/Mars";
@@ -255,12 +259,43 @@ function OrbitGroup({ speed, children }: { speed: number, children: React.ReactN
   });
   return <group ref={groupRef}>{children}</group>;
 }
-
-/// ==========================================
-// 3. MÔ HÌNH ĐĨA BAY (UFO) - ĐÃ CHỈNH MÀU NỔI BẬT HƠN
+// ==========================================
+// 3. MÔ HÌNH ĐĨA BAY (UFO) - ÉP THÂN THÀNH MÀU BẠC THÀNH CÔNG 100%
 // ==========================================
 function UFO({ currentHash, isShaking }: { currentHash: string, isShaking: boolean }) {
   const ufoRef = useRef<THREE.Group>(null);
+
+  // 1. TẢI KHUNG XƯƠNG (FILE .OBJ)
+  const obj = useLoader(OBJLoader, '/models/ufo.obj');
+
+  // 2. TẢI 4 TẤM ẢNH TỪ THƯ MỤC
+  const [colorMap, normalMap, specMap, glowMap] = useLoader(THREE.TextureLoader, [
+    '/models/ufo_diffuse.png',
+    '/models/ufo_normal.png', 
+    '/models/ufo_spec.png',
+    '/models/ufo_diffuse_glow.png'
+  ]);
+
+  // 3. ÉP MÀU XÁM TRẮNG CHO ĐĨA BAY
+  useMemo(() => {
+    obj.traverse((child: any) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          normalMap: normalMap,        // Giữ lại các rãnh cắt cơ khí
+          emissiveMap: glowMap,        // Giữ lại vòm kính sáng màu xanh
+          
+          // ĐÃ XÓA roughnessMap: specMap Ở ĐÂY ĐỂ TRÁNH BỊ PHẢN CHIẾU ĐEN
+          
+          // Tự do pha màu thân đĩa bay ở đây:
+          color: new THREE.Color("#ffffff"), // Màu xám trắng (Silver)
+          emissive: new THREE.Color("#ffffff"), // Bật sáng vòm kính
+          emissiveIntensity: 1.2,      
+          metalness: 0.1, // Hạ hẳn độ kim loại xuống để nó bám màu xám trắng tốt hơn
+          roughness: 0.6  // Chỉnh độ nhám cao lên để nó giống nhôm/nhựa trắng
+        });
+      }
+    });
+  }, [obj, normalMap, glowMap]); // Đã bỏ specMap và colorMap ra khỏi mảng
 
   useFrame(({ clock }) => {
     if (!ufoRef.current) return;
@@ -270,61 +305,40 @@ function UFO({ currentHash, isShaking }: { currentHash: string, isShaking: boole
     if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
       const config = ORBIT_CONFIG[currentHash];
       const angle = time * config.speed;
-      targetPos.set((Math.sin(angle) * config.radius) + 5, 12, (Math.cos(angle) * config.radius) + 15);
+      
+      // Kéo UFO bay sát hành tinh
+      targetPos.set(
+        (Math.sin(angle) * config.radius) + 12, 
+        5, 
+        (Math.cos(angle) * config.radius) + 12
+      );
     }
 
     ufoRef.current.position.lerp(targetPos, 0.04);
-    ufoRef.current.rotation.y += 0.05;
+    ufoRef.current.rotation.y += 0.02;
     ufoRef.current.position.y += Math.sin(time * 3) * 0.1;
 
-    // HIỆU ỨNG RUNG
+    // HIỆU ỨNG RUNG KHI TRẢ LỜI SAI
     if (isShaking) {
       ufoRef.current.position.x += (Math.random() - 0.5) * 4;
       ufoRef.current.position.y += (Math.random() - 0.5) * 4;
       ufoRef.current.position.z += (Math.random() - 0.5) * 4;
-      ufoRef.current.children[2].scale.set(1.5, 1.5, 1.5); // Phóng to đèn đỏ to hơn chút
-    } else {
-      ufoRef.current.children[2].scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
     }
   });
 
   return (
     <group ref={ufoRef}>
-      {/* 1. VÒM KÍNH BUỒNG LÁI (Làm sáng hơn) */}
-      <mesh position={[0, 1.5, 0]}>
-        <sphereGeometry args={[3, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial 
-          color="#aaddff" 
-          transparent 
-          opacity={0.6} 
-          roughness={0.1}
-          emissive="#e425db" // Kính tự phát sáng nhẹ
-          emissiveIntensity={0.5}
-        />
-      </mesh>
+      {/* Thay đổi kích thước UFO ở đây nếu cần */}
+      <primitive object={obj} scale={0.5} position={[0, 0, 0]} />
       
-      {/* 2. THÂN ĐĨA BAY (Đổi thành màu Bạc/Trắng và tự phát sáng) */}
-      <mesh>
-        <cylinderGeometry args={[8, 2, 1.5, 32]} />
-        <meshStandardMaterial 
-          color="#ffffff" // Màu gốc là trắng sáng
-          metalness={0.6} // Giảm độ kim loại xuống để đỡ bị ám đen
-          roughness={0.2} 
-          emissive="#8e0557" // Phủ một lớp ánh sáng xanh dương viễn tưởng
-          emissiveIntensity={0.6}
-        />
-      </mesh>
+      {/* Thêm 2 đèn chiếu sáng vào thân UFO để nó bừng sáng lên */}
+      <pointLight position={[0, 10, 0]} intensity={100} color="#ffffff" distance={30} />
+      <pointLight position={[10, -5, 10]} intensity={50} color="#ffffff" distance={30} />
       
-      {/* 3. ĐÈN LÕI/ĐỘNG CƠ (Phát sáng chói hơn) */}
-      <mesh position={[0, -0.8, 0]}>
-        <cylinderGeometry args={[3, 3, 0.5, 32]} />
-        {/* Dùng meshStandardMaterial kết hợp emissive để đèn tỏa sáng */}
-        <meshStandardMaterial 
-          color={isShaking ? "#ff0000" : "#00f3ff"} 
-          emissive={isShaking ? "#ff0000" : "#00f3ff"}
-          emissiveIntensity={2} // Tăng cường độ phát sáng
-        />
-      </mesh>
+      {/* ĐÈN BÁO ĐỘNG KHI TRẢ LỜI SAI */}
+      {isShaking && (
+        <pointLight position={[0, 0, 0]} color="#ff0000" intensity={200} distance={80} />
+      )}
     </group>
   );
 }
