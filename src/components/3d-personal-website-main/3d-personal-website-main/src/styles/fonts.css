@@ -1,0 +1,10 @@
+/* styles/fonts.css */
+
+@font-face {
+    font-family: 'Episcene';
+    src: url('/public/fonts/TestEpiceneDisplay-Regular.otf') format('otf');
+    /* Add more src URLs for different font formats if necessary */
+    font-weight: normal;
+    font-style: normal;
+  }
+  
