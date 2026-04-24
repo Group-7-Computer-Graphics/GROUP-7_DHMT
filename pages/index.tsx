@@ -4,6 +4,8 @@ import { Stars, PerspectiveCamera, OrbitControls, Line } from "@react-three/drei
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
+import { HUDControls } from "../src/components/HUDControls"; 
+// Chỉnh lại đường dẫn cho đúng với nơi ông đặt file nhé
 
 // Import các hành tinh (Giữ nguyên của ông)
 import Sun from "../src/components/planets/Sun";
@@ -348,6 +350,9 @@ function CameraController({ currentHash }: { currentHash: string }) {
 export default function SolarSystem() {
   const [currentHash, setCurrentHash] = useState("#overview");
   const [controlsEnabled, setControlsEnabled] = useState(true);
+  const [solarSpeed, setSolarSpeed] = useState(1); // Tốc độ hệ thống
+  const [bloomIntensity, setBloomIntensity] = useState(1.5); // Độ sáng hiệu ứng
+  const [isCinematic, setIsCinematic] = useState(false); // Chế độ tự động quay
 
   const planetHashes = ["#overview", "#mercury", "#venus", "#earth", "#mars", "#jupiter", "#saturn", "#uranus", "#neptune"];
 
@@ -441,6 +446,16 @@ export default function SolarSystem() {
 
         </Suspense>
       </Canvas>
+      {/* Gọi file riêng ở đây */}
+      <HUDControls 
+        solarSpeed={solarSpeed} 
+        setSolarSpeed={setSolarSpeed} 
+        bloomIntensity={bloomIntensity} 
+        setBloomIntensity={setBloomIntensity} 
+        isCinematic={isCinematic} 
+        setIsCinematic={setIsCinematic} 
+      />
+      
       //Vân
       {currentHash !== "#overview" && (
         <PlanetInfoPanel currentHash={currentHash} />
