@@ -9,6 +9,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { HUDControls } from "../src/components/HUDControl"; 
 import { EffectComposer, Bloom, ToneMapping } from "@react-three/postprocessing";
+import {AsteroidBelt} from "../src/components/AsteroidBelt"; 
 
 // Import các hành tinh 
 import Sun from "../src/components/planets/Sun";
@@ -20,7 +21,7 @@ import Mercury from "../src/components/planets/mecury";
 import Neptune from "../src/components/planets/neptune"; 
 import Uranus from "../src/components/planets/uranus";   
 import Venus from "../src/components/planets/venus";   
-import {AsteroidBelt} from "../src/components/AsteroidBelt";   
+import StarBackground from "../src/components/StarBackground";
 
 //Vân Thêm khai báo type cho planetData 
 const planetData: Record<string, any> = {
