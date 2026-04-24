@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import { HUDControls } from "../src/components/HUDControls"; 
+import { EffectComposer, Bloom, ToneMapping } from "@react-three/postprocessing";
 // Chỉnh lại đường dẫn cho đúng với nơi ông đặt file nhé
 
 // Import các hành tinh (Giữ nguyên của ông)
@@ -267,20 +268,25 @@ function OrbitLine({ radius }: { radius: number }) {
   }, [radius]);
   return <Line points={points} color="white" lineWidth={2} transparent opacity={0.4} />;
 }
-
-// --- 2. COMPONENT TRỤC QUAY CHO HÀNH TINH ---
+// --- 2. COMPONENT TRỤC QUAY CHO HÀNH TINH (BẢN ĐÃ SỬA MƯỢT) ---
 function OrbitGroup({ speed, children }: { speed: number, children: React.ReactNode }) {
   const groupRef = useRef<THREE.Group>(null);
-  useFrame(({ clock }) => {
+
+  // Chúng ta lấy 'delta' thay vì 'clock'
+  // delta là khoảng thời gian rất nhỏ giữa 2 khung hình (thường là 1/60 giây)
+  useFrame((_, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = clock.getElapsedTime() * speed;
+      // SỬA TẠI ĐÂY: Dùng += để cộng dồn góc quay hiện tại
+      // Nó sẽ xoay tiếp từ vị trí cũ, không bị tính lại từ đầu theo thời gian tổng
+      groupRef.current.rotation.y += speed * delta;
     }
   });
+
   return <group ref={groupRef}>{children}</group>;
 }
 
 // --- 3. CAMERA CONTROLLER ĐÃ FIX LỖI GIẬT CAM ---
-function CameraController({ currentHash }: { currentHash: string }) {
+function CameraController({ currentHash, isCinematic }: { currentHash: string, isCinematic: boolean }) {
   const { camera, controls } = useThree() as any;
   // Thêm cờ nhận biết người dùng đang kéo chuột
   const isUserDragging = useRef(false);
@@ -374,32 +380,37 @@ export default function SolarSystem() {
   };
 
   return (
-    <div 
-      onWheel={handleWheel}
-      style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
+  <div 
+    onWheel={handleWheel}
+    style={{ width: "100vw", height: "100vh", backgroundColor: "black", overflow: "hidden" }}
+  >
+    <Canvas 
+      gl={{ 
+        antialias: false, // Tắt antialias mặc định để Bloom mượt hơn
+        stencil: false 
+      }} 
+      dpr={[1, 2]}
     >
-      <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
-        <Suspense fallback={null}>
-          <PerspectiveCamera makeDefault fov={50} far={10000} />
-          
-          <OrbitControls 
-            makeDefault 
-            enablePan={false} 
-            minDistance={10} 
-            maxDistance={3000}
-            enableDamping={true}
-            dampingFactor={0.05}
-            rotateSpeed={0.8}
-            onStart={() => {
-              controlsEnabled && setControlsEnabled(true);
-            }}
-          />
+      <Suspense fallback={null}>
+        <PerspectiveCamera makeDefault fov={50} far={10000} />
+        
+        <OrbitControls 
+          makeDefault 
+          enablePan={false} 
+          minDistance={10} 
+          maxDistance={3000}
+          enableDamping={true}
+          dampingFactor={0.05}
+          rotateSpeed={0.8}
+          // Sửa nhẹ chỗ này để logic đồng nhất
+          onStart={() => setControlsEnabled?.(true)}
+        />
 
-          <CameraController currentHash={currentHash} />
+          <CameraController currentHash={currentHash} isCinematic={isCinematic}/>
 
           <ambientLight intensity={0.1} /> 
           <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
-
+          
           {/* 2. CHÈN THÊM STAR BACKGROUND CỦA ÔNG VÀO ĐÂY */}
           <StarBackground />
           
@@ -418,10 +429,10 @@ export default function SolarSystem() {
           <OrbitLine radius={1050} />
 
           {/* HÀNH TINH BAY QUANH MẶT TRỜI */}
-          <OrbitGroup speed={0.5}><Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} /></OrbitGroup>
-          <OrbitGroup speed={0.35}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
-          <OrbitGroup speed={0.25}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
-          <OrbitGroup speed={0.2}><Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} /></OrbitGroup>
+          <OrbitGroup speed={0.5* solarSpeed}><Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mercury"} /></OrbitGroup>
+          <OrbitGroup speed={0.35* solarSpeed}><Venus isActive={currentHash === "#venus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#venus"} /></OrbitGroup>
+          <OrbitGroup speed={0.25* solarSpeed}><Earth isActive={currentHash === "#earth"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#earth"} /></OrbitGroup>
+          <OrbitGroup speed={0.2* solarSpeed}><Mars isActive={currentHash === "#mars"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#mars"} /></OrbitGroup>
 
           {/* VÀNH ĐAI 1: Nằm giữa Mars (300) và Jupiter (480) */}
 <AsteroidBelt 
@@ -431,10 +442,10 @@ export default function SolarSystem() {
   speedFactor={0.3} 
 />
 
-          <OrbitGroup speed={0.1}><Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} /></OrbitGroup>
-          <OrbitGroup speed={0.08}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
-          <OrbitGroup speed={0.05}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
-          <OrbitGroup speed={0.03}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
+          <OrbitGroup speed={0.1* solarSpeed}><Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#jupiter"} /></OrbitGroup>
+          <OrbitGroup speed={0.08* solarSpeed}><Saturn isActive={currentHash === "#saturn"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#saturn"} /></OrbitGroup>
+          <OrbitGroup speed={0.05* solarSpeed}><Uranus isActive={currentHash === "#uranus"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#uranus"} /></OrbitGroup>
+          <OrbitGroup speed={0.03* solarSpeed}><Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => window.location.hash = "#neptune"} /></OrbitGroup>
 
           {/* VÀNH ĐAI 2: Nằm ngoài cùng (Sau Neptune 1050) */}
 <AsteroidBelt 
@@ -443,18 +454,28 @@ export default function SolarSystem() {
   outerRadius={1500} // Kéo dài ra vùng tối
   speedFactor={0.07} 
 />
+{/* --- PHẦN SỬA CHÍNH: HIỆU ỨNG BLOOM --- */}
+        <EffectComposer >
+          <Bloom 
+            intensity={bloomIntensity}     // Nối trực tiếp vào State từ thanh trượt
+            luminanceThreshold={0.2}        // Chỉ những thứ sáng hơn 0.2 mới phát sáng
+            mipmapBlur                      // Hiệu ứng mờ cực mượt
+            radius={0.5}                    // Độ tỏa của ánh sáng
+          />
+        </EffectComposer>
 
         </Suspense>
       </Canvas>
       {/* Gọi file riêng ở đây */}
-      <HUDControls 
-        solarSpeed={solarSpeed} 
-        setSolarSpeed={setSolarSpeed} 
-        bloomIntensity={bloomIntensity} 
-        setBloomIntensity={setBloomIntensity} 
-        isCinematic={isCinematic} 
-        setIsCinematic={setIsCinematic} 
-      />
+      {/* Đừng quên gọi HUDControls ở ngoài Canvas */}
+    <HUDControls 
+      solarSpeed={solarSpeed} 
+      setSolarSpeed={setSolarSpeed}
+      bloomIntensity={bloomIntensity}
+      setBloomIntensity={setBloomIntensity}
+      isCinematic={isCinematic}
+      setIsCinematic={setIsCinematic}
+    />
       
       //Vân
       {currentHash !== "#overview" && (

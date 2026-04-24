@@ -24,7 +24,7 @@ export function HUDControls({
       <div style={hudCardStyle}>
         <div style={labelStyle}>SYSTEM VELOCITY</div>
         <input 
-          type="range" min="0" max="5" step="0.1" 
+          type="range" min="0" max="20" step="0.1" 
           value={solarSpeed} 
           onChange={(e) => setSolarSpeed(parseFloat(e.target.value))}
           style={sliderStyle}
