@@ -106,7 +106,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     padding: "8px 16px",
-    color: "#ccc",
+    color: "#ffffff",
     fontSize: 9,
     letterSpacing: "1.5px",
     textDecoration: "none",

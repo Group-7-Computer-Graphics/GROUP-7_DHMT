@@ -562,6 +562,7 @@ export default function SolarSystem() {
     transform: "translateX(-50%)",
     fontWeight: "bolder",
     padding: "5px",
+    zIndex: 100,
     background: "rgba(73, 73, 73, 0.2)",
     backdropFilter: "blur(10px)",
     border: "1px solid rgba(0, 243, 255, 0.2)",
