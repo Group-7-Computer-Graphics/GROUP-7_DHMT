@@ -15,7 +15,7 @@ const Sun: React.FC<SunProps> = ({ isActive, onClick }) => {
             <Planet
                 position={pos}
                 meshMaterialPath="/sun.jpeg"
-                spinSpeed={0.002} 
+                spinSpeed={0.03} 
                 size={50} 
                 onClick={onClick} 
             />
