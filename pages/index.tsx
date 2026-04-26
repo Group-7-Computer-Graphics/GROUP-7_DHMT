@@ -9,6 +9,11 @@ import { HUDControls } from "../src/components/HUDControls";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 
+//Trang thêm
+import Head from 'next/head';
+//======
+
+
 import Sun from "../src/components/planets/Sun";
 import Earth from "../src/components/planets/Earth";
 import Mars from "../src/components/planets/Mars";
@@ -894,6 +899,12 @@ export default function SolarSystem() {
   };
 
   return (
+    //Trang thêm
+   <>
+    <Head>
+        <title>Solar System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
     <div
       onWheel={handleWheel}
       style={{
@@ -1077,5 +1088,8 @@ export default function SolarSystem() {
         ))}
       </div>
     </div>
+  //Trang thêm
+    </>
+    //======
   );
 }
