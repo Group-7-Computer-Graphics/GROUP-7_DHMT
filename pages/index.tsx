@@ -8,6 +8,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { HUDControls } from "../src/components/HUDControls";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
+import BackgroundEffects from "../src/components/BackgroundEffects";
 
 //Trang thêm
 import Head from 'next/head';
@@ -1009,6 +1010,8 @@ export default function SolarSystem() {
               radius={0.5}
             />
           </EffectComposer>
+          {/* DÁN HIỆU ỨNG VÀO ĐÂY */}
+          <BackgroundEffects />
         </Suspense>
       </Canvas>
 
