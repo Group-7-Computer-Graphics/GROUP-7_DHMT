@@ -10,6 +10,8 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import BackgroundEffects from "../src/components/BackgroundEffects";
 
+// [NHIỆM VỤ 1] Nhớ import IntroScreen nhé
+import IntroScreen from "../src/components/IntroScreen"; 
 import Head from 'next/head';
 
 import Sun from "../src/components/planets/Sun";
@@ -89,11 +91,11 @@ const planetData: Record<string, any> = {
   },
   "#neptune": {
     name: "NEPTUNE", type: "ICE GIANT",
-    visit: "Neptune is the farthest planet from the Sun and is known for its deep blue color and extremely strong winds, the fastest recorded in the Solar System. It has dynamic weather systems, including massive storms such as the Great Dark Spot. Neptune is a cold, distant, and mysterious world that remains less explored compared to other planets.",
-    encyclopedia: "Neptune is the eighth and farthest known planet from the Sun. It is another ice giant with a deep blue color caused by methane in its atmosphere. Neptune is famous for its extremely strong winds, which can reach speeds of over 2,000 km/h—the fastest in the Solar System. It has dynamic weather systems, including large storm formations such as the Great Dark Spot. Neptune has 14 known moons, with Triton being the largest and most interesting due to its retrograde orbit and potential geological activity.",
-    structure: "Neptune’s structure is similar to Uranus, consisting of a rocky core, an icy mantle, and a thick atmosphere of hydrogen, helium, and methane. The interior is extremely hot despite its cold outer atmosphere. This internal heat contributes to Neptune’s dynamic weather systems and strong winds.",
-    question: "Which planet is the farthest from the Sun?",
-    options: ["A. Uranus", "B. Neptune", "C. Saturn", "D. Jupiter"],
+    visit: "Dark, cold, and whipped by supersonic winds, Neptune is the last of the major planets in our solar system.",
+    encyclopedia: "The eighth and most distant major planet orbiting our Sun. It is an ice giant with a faint ring system and 14 known moons.",
+    structure: "Its structure is similar to Uranus, consisting of a hot, dense fluid or 'icy' mantle (water, ammonia, and methane) over an Earth-sized solid core.",
+    question: "Hành tinh xa Mặt Trời nhất là gì?",
+    options: ["A. Sao Thiên Vương", "B. Sao Hải Vương", "C. Sao Thổ", "D. Sao Mộc"],
     correctAnswer: 1,
   },
 };
@@ -119,8 +121,7 @@ const ORBIT_CONFIG: Record<
   "#neptune": { radius: 1050, speed: 0.03, camOffset: [0, 20, 80],  ufoHeight: 20, ufoScale: 0.38 },
 };
 
-// ─── [NHIỆM VỤ 1] ANIMATED BACKGROUND — MẠNH HƠN ──────────────────────────
-// Nebula khổng lồ + sao băng + aurora sóng + warp streak + parallax 3 lớp
+// ─── ANIMATED BACKGROUND — MẠNH HƠN ──────────────────────────
 function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -160,7 +161,7 @@ function AnimatedBackground() {
       });
     }
 
-    // ── Nebula blobs: to hơn, đậm hơn, nhiều lớp hơn ──────────────────
+    // ── Nebula blobs ──────────────────
     interface Nebula {
       cx: number; cy: number; rx: number; ry: number;
       hue: number; hue2: number; alpha: number; vx: number; vy: number;
@@ -172,11 +173,10 @@ function AnimatedBackground() {
       { cx: W*0.50, cy: H*0.85, rx: 480, ry: 300, hue: 185, hue2: 210, alpha: 0.16, vx:  0.05, vy: -0.06, rotSpeed: 0.0002, rot: 2 },
       { cx: W*0.88, cy: H*0.08, rx: 400, ry: 300, hue: 295, hue2: 320, alpha: 0.13, vx: -0.08, vy:  0.10, rotSpeed: 0.0004, rot: 3 },
       { cx: W*0.30, cy: H*0.65, rx: 360, ry: 280, hue: 160, hue2: 185, alpha: 0.12, vx:  0.09, vy:  0.04, rotSpeed: 0.0003, rot: 4 },
-      // Extra accent nebula
       { cx: W*0.62, cy: H*0.30, rx: 300, ry: 220, hue: 340, hue2: 20,  alpha: 0.10, vx: -0.06, vy: -0.05, rotSpeed: 0.0002, rot: 5 },
     ];
 
-    // ── Sao băng (shooting stars) ───────────────────────────────────────
+    // ── Sao băng ───────────────────────────────────────
     interface Meteor {
       x: number; y: number; vx: number; vy: number;
       len: number; alpha: number; active: boolean; timer: number; maxTimer: number;
@@ -197,7 +197,6 @@ function AnimatedBackground() {
       m.timer = 0;
       m.maxTimer = 40 + Math.random() * 30;
     }
-    // Stagger initial spawn
     meteors.forEach((m, i) => { m.timer = -i * 80 - Math.random() * 200; });
 
     // ── Aurora waves ────────────────────────────────────────────────────
@@ -212,7 +211,7 @@ function AnimatedBackground() {
       { baseY: H * 0.80, amplitude: 45, freq: 0.0040, phase: 0.7, phaseSpeed: 0.011, hue: 180, alpha: 0.040, width: 45 },
     ];
 
-    // ── Warp streaks (tia tốc độ nền) ──────────────────────────────────
+    // ── Warp streaks ──────────────────────────────────
     interface WarpStreak {
       x: number; y: number; len: number; alpha: number; speed: number; active: boolean; timer: number;
     }
@@ -248,21 +247,19 @@ function AnimatedBackground() {
       t += 0.01;
       ctx!.clearRect(0, 0, W, H);
 
-      // ── Deep space base gradient ──────────────────────────────────────
+      // ── Deep space base gradient (Đã giảm Alpha để thấy hình nền css chuyển động) ──
       const bg = ctx!.createRadialGradient(W * 0.4, H * 0.3, 0, W * 0.5, H * 0.5, Math.max(W, H));
-      bg.addColorStop(0,   "rgba(6, 8, 28, 1)");
-      bg.addColorStop(0.3, "rgba(4, 5, 20, 1)");
-      bg.addColorStop(0.7, "rgba(2, 3, 14, 1)");
-      bg.addColorStop(1,   "rgba(1, 1, 8,  1)");
+      bg.addColorStop(0,   "rgba(6, 8, 28, 0.85)");
+      bg.addColorStop(0.3, "rgba(4, 5, 20, 0.85)");
+      bg.addColorStop(0.7, "rgba(2, 3, 14, 0.85)");
+      bg.addColorStop(1,   "rgba(1, 1, 8,  0.85)");
       ctx!.fillStyle = bg;
       ctx!.fillRect(0, 0, W, H);
 
-      // ── Aurora waves (bottom layer) ──────────────────────────────────
       ctx!.globalCompositeOperation = "screen";
       auroraWaves.forEach(drawAurora);
       ctx!.globalCompositeOperation = "source-over";
 
-      // ── Nebulae: 2 passes each (core + outer glow) ──────────────────
       ctx!.globalCompositeOperation = "screen";
       nebulae.forEach((n) => {
         n.cx += n.vx; n.cy += n.vy; n.rot += n.rotSpeed;
@@ -278,7 +275,6 @@ function AnimatedBackground() {
         ctx!.translate(n.cx, n.cy);
         ctx!.rotate(n.rot);
 
-        // Outer glow (large, translucent)
         const outer = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 1.4);
         outer.addColorStop(0,   `hsla(${n.hue}, 85%, 55%, ${n.alpha * breathe})`);
         outer.addColorStop(0.3, `hsla(${n.hue2}, 75%, 45%, ${n.alpha * breathe * 0.7})`);
@@ -290,7 +286,6 @@ function AnimatedBackground() {
         ctx!.fillStyle = outer;
         ctx!.fill();
 
-        // Bright core
         const core = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 0.5);
         core.addColorStop(0,   `hsla(${n.hue2}, 100%, 75%, ${n.alpha * 2.2 * breathe})`);
         core.addColorStop(0.5, `hsla(${n.hue}, 90%, 60%, ${n.alpha * 1.2 * breathe})`);
@@ -304,7 +299,6 @@ function AnimatedBackground() {
       });
       ctx!.globalCompositeOperation = "source-over";
 
-      // ── Milky Way diagonal band ──────────────────────────────────────
       ctx!.save();
       ctx!.translate(W * 0.5, H * 0.5);
       ctx!.rotate(-0.35);
@@ -318,13 +312,11 @@ function AnimatedBackground() {
       ctx!.fillRect(-W, -H * 0.12, W * 2, H * 0.24);
       ctx!.restore();
 
-      // ── Stars ─────────────────────────────────────────────────────────
       stars.forEach((s) => {
         const driftSpeeds = [0, 0.025, 0.06];
         s.x = (s.x + driftSpeeds[s.layer] + W) % W;
         const twinkle = s.alpha * (0.55 + 0.45 * Math.sin(t * s.twinkleSpeed + s.twinkleOffset));
 
-        // Cross-flare for bright stars
         if (s.r > 1.8) {
           ctx!.save();
           ctx!.globalAlpha = twinkle * 0.25;
@@ -336,7 +328,6 @@ function AnimatedBackground() {
           ctx!.restore();
         }
 
-        // Bloom glow
         if (s.r > 1.0) {
           const glow = ctx!.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
           glow.addColorStop(0, `rgba(${s.color}, ${twinkle * 0.5})`);
@@ -347,14 +338,12 @@ function AnimatedBackground() {
           ctx!.fill();
         }
 
-        // Core dot
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(${s.color}, ${twinkle})`;
         ctx!.fill();
       });
 
-      // ── Warp streaks ─────────────────────────────────────────────────
       ctx!.globalCompositeOperation = "screen";
       warpStreaks.forEach((ws) => {
         ws.timer++;
@@ -384,7 +373,6 @@ function AnimatedBackground() {
       });
       ctx!.globalCompositeOperation = "source-over";
 
-      // ── Shooting stars (meteors) ─────────────────────────────────────
       meteors.forEach((m) => {
         m.timer++;
         if (!m.active) {
@@ -439,11 +427,7 @@ function AnimatedBackground() {
   );
 }
 
-// ─── [NHIỆM VỤ 2] PLANET ARRIVAL EFFECT ─────────────────────────────────────
-// Mỗi khi đổi hành tinh: warp flash trắng → shockwave ring tỏa ra → tên hành tinh
-// đổ xuống giữa màn hình rồi fade out → scan-line quét ngang → accent color riêng
-
-// Màu theme riêng cho từng hành tinh
+// ─── PLANET ARRIVAL EFFECT ─────────────────────────────────────
 const PLANET_THEME: Record<string, { color: string; glow: string; label: string }> = {
   "#mercury": { color: "#c0a060", glow: "rgba(192,160,96,",  label: "MERCURY"  },
   "#venus":   { color: "#ffcc66", glow: "rgba(255,204,102,", label: "VENUS"    },
@@ -474,7 +458,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
     const W = canvas.width;
     const H = canvas.height;
 
-    // Trigger khi hash thay đổi sang hành tinh mới
     if (currentHash === prevHash.current) return;
     prevHash.current = currentHash;
 
@@ -486,18 +469,13 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
 
     const theme = PLANET_THEME[currentHash] ?? PLANET_THEME["#earth"];
 
-    // Trạng thái animation
     let phase: "flash"|"ring"|"title"|"scan"|"fadeout" = "flash";
     let timer = 0;
-    // Ring state
     let ringR = 0;
-    // Title state
     let titleAlpha = 0;
     let titleY = H * 0.5 - 60;
-    // Scan state
     let scanY = 0;
     let scanAlpha = 0;
-    // Fadeout
     let overallAlpha = 1;
 
     cancelAnimationFrame(animRef.current);
@@ -507,11 +485,9 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
       timer++;
 
       if (phase === "flash") {
-        // Warp white flash: nhanh, sáng chói
         const a = timer < 6 ? timer / 6 : Math.max(0, 1 - (timer - 6) / 10);
         ctx!.fillStyle = `rgba(255,255,255,${a * 0.85})`;
         ctx!.fillRect(0, 0, W, H);
-        // Radial burst from center
         const burst = ctx!.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H) * 0.7);
         burst.addColorStop(0,   `${theme.glow}${a * 0.6})`);
         burst.addColorStop(0.5, `${theme.glow}${a * 0.2})`);
@@ -522,12 +498,10 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         if (timer >= 18) { phase = "ring"; timer = 0; }
 
       } else if (phase === "ring") {
-        // Shockwave rings tỏa ra từ tâm
         ringR += 28;
         const maxR = Math.max(W, H) * 0.9;
         const a = Math.max(0, 1 - ringR / maxR);
 
-        // 3 concentric rings at different offsets
         [0, 60, 120].forEach((offset) => {
           const r = ringR - offset;
           if (r <= 0) return;
@@ -542,7 +516,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
           ctx!.shadowBlur = 0;
         });
 
-        // Light edge vignette tinted with planet color
         const vig = ctx!.createRadialGradient(W/2, H/2, Math.max(W,H)*0.3, W/2, H/2, Math.max(W,H)*0.8);
         vig.addColorStop(0, `${theme.glow}0)`);
         vig.addColorStop(1, `${theme.glow}${a * 0.25})`);
@@ -552,7 +525,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         if (timer >= 1) { phase = "title"; timer = 0; }
 
       } else if (phase === "title") {
-        // Rings still lingering
         const lingerR = ringR + timer * 28;
         const la = Math.max(0, 1 - lingerR / (Math.max(W,H) * 1.2));
         if (la > 0) {
@@ -563,14 +535,12 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
           ctx!.stroke();
         }
 
-        // Title drops in from above
         titleAlpha = Math.min(1, timer / 15);
         titleY = H * 0.5 - 40 - Math.max(0, (20 - timer) * 3);
 
         ctx!.save();
         ctx!.globalAlpha = titleAlpha;
 
-        // Horizontal line above & below
         const lineW = 340;
         ctx!.strokeStyle = theme.color;
         ctx!.lineWidth = 1;
@@ -578,7 +548,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY - 28); ctx!.lineTo(W/2 + lineW/2, titleY - 28); ctx!.stroke();
         ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY + 52); ctx!.lineTo(W/2 + lineW/2, titleY + 52); ctx!.stroke();
 
-        // Sub label "ENTERING ORBIT"
         ctx!.globalAlpha = titleAlpha * 0.7;
         ctx!.fillStyle = theme.color;
         ctx!.font = "bold 11px 'Courier New', monospace";
@@ -586,7 +555,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.letterSpacing = "6px";
         ctx!.fillText("// ENTERING ORBIT //", W/2, titleY - 10);
 
-        // Main planet name
         ctx!.globalAlpha = titleAlpha;
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 30;
@@ -595,7 +563,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.textAlign = "center";
         ctx!.fillText(theme.label, W/2, titleY + 40);
 
-        // Double shadow for glow depth
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 60;
         ctx!.globalAlpha = titleAlpha * 0.5;
@@ -607,7 +574,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         if (timer >= 35) { phase = "scan"; scanY = 0; scanAlpha = 0; timer = 0; }
 
       } else if (phase === "scan") {
-        // Lặp lại title nhưng mờ dần
         titleAlpha = Math.max(0, 1 - timer / 30);
         ctx!.save();
         ctx!.globalAlpha = titleAlpha;
@@ -619,7 +585,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.fillText(theme.label, W/2, titleY + 40);
         ctx!.restore();
 
-        // Scan line quét từ trên xuống
         scanY = (timer / 30) * H;
         scanAlpha = Math.sin((timer / 30) * Math.PI) * 0.6;
         const scanGrd = ctx!.createLinearGradient(0, scanY - 40, 0, scanY + 40);
@@ -636,7 +601,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
       } else if (phase === "fadeout") {
         overallAlpha = Math.max(0, 1 - timer / 20);
         ctx!.globalAlpha = overallAlpha;
-        // faint lingering glow
         const fade = ctx!.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.6);
         fade.addColorStop(0, `${theme.glow}${overallAlpha * 0.06})`);
         fade.addColorStop(1, `${theme.glow}0)`);
@@ -646,7 +610,7 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
 
         if (timer >= 20) {
           ctx!.clearRect(0, 0, W, H);
-          return; // done — stop loop
+          return;
         }
       }
 
@@ -722,7 +686,7 @@ function MenuButton({
   );
 }
 
-// ─── BẢNG THÔNG TIN ───────────────────────────────────────────────────────────
+// ─── BẢNG THÔNG TIN (ĐÃ FIX HIỆU ỨNG TRẢ LỜI SAI) ─────────────────────────────
 function PlanetInfoPanel({
   currentHash,
   onCorrect,
@@ -908,17 +872,22 @@ function PlanetInfoPanel({
                 let bgColor = "rgba(0,0,0,0.4)";
                 let borderColor = "rgba(0, 243, 255, 0.2)";
                 let textColor = "white";
+
+                // [NHIỆM VỤ 4] CHỈ ĐỔI MÀU Ô MÀ NGƯỜI DÙNG BẤM, GIẤU ĐÁP ÁN ĐÚNG KHI SAI
                 if (selectedAnswer !== null) {
-                  if (index === data.correctAnswer) {
-                    bgColor = "rgba(0,255,0,0.2)";
-                    borderColor = "#00ff00";
-                    textColor = "#00ff00";
-                  } else if (index === selectedAnswer) {
-                    bgColor = "rgba(255,0,0,0.4)";
-                    borderColor = "#ff0000";
-                    textColor = "#ff0000";
+                  if (index === selectedAnswer) {
+                    if (index === data.correctAnswer) {
+                      bgColor = "rgba(0,255,0,0.2)";
+                      borderColor = "#00ff00";
+                      textColor = "#00ff00";
+                    } else {
+                      bgColor = "rgba(255,0,0,0.4)";
+                      borderColor = "#ff0000";
+                      textColor = "#ff0000";
+                    }
                   }
                 }
+
                 return (
                   <button
                     key={index}
@@ -967,7 +936,7 @@ function OrbitLine({ radius }: { radius: number }) {
   return <Line points={points} color="white" lineWidth={1} transparent opacity={0.25} />;
 }
 
-// ─── TRỤC QUAY CHO HÀNH TINH ─────────────────────────────────────────────────
+// ─── TRỤC QUAY CHO HÀNH TINH (ĐÃ FIX CHỐNG KHỰNG) ────────────────────────────
 function OrbitGroup({
   speed,
   children,
@@ -982,25 +951,27 @@ function OrbitGroup({
   const groupRef = useRef<THREE.Group>(null);
   useFrame((_, delta) => {
     if (!groupRef.current) return;
+    
+    // [NHIỆM VỤ 3] KHỐNG CHẾ DELTA ĐỂ TRÁNH NHẢY QUÃNG (KHỰNG) KHI CHUYỂN TAB HOẶC LAG
+    const safeDelta = Math.min(delta, 0.05);
+
     if (planetHash && anglesRef) {
-      anglesRef.current[planetHash] = (anglesRef.current[planetHash] ?? 0) + speed * delta;
+      anglesRef.current[planetHash] = (anglesRef.current[planetHash] ?? 0) + speed * safeDelta;
       groupRef.current.rotation.y = anglesRef.current[planetHash];
     } else {
-      groupRef.current.rotation.y += speed * delta;
+      groupRef.current.rotation.y += speed * safeDelta;
     }
   });
   return <group ref={groupRef}>{children}</group>;
 }
 
-// ─── [NHIỆM VỤ 3] ULTRA UFO TRAIL ───────────────────────────────────────────
-// Vệt sáng: plasma core cực sáng, 8 outer cone lines, energy rings dọc trail,
-// 24 sparks hào quang, rainbow color shift theo tốc độ
+// ─── ĐUÔI SÁNG UFO — KIỂU PHUN LỬA TÊN LỬA ──────────────────────────────────
 const TRAIL_RAW_MAX  = 120;
 const TRAIL_STEPS    = 80;
 const TRAIL_MAX_W    = 5.5;
 const TRAIL_OUTER_N  = 8;
 const SPARK_COUNT    = 24;
-const RING_COUNT     = 6;   // energy rings cắt ngang trail
+const RING_COUNT     = 6;   
 
 function RocketTrail({
   posRef,
@@ -1035,12 +1006,10 @@ function RocketTrail({
     return g;
   };
 
-  // Geometries
   const coreGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
-  const core2Geo  = useMemo(() => makeGeo(TRAIL_STEPS), []); // second brighter core pass
+  const core2Geo  = useMemo(() => makeGeo(TRAIL_STEPS), []); 
   const haloGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
   const outerGeos = useMemo(() => Array.from({ length: TRAIL_OUTER_N }, () => makeGeo(TRAIL_STEPS)), []);
-  // Energy rings: each ring = small circle of 32 points
   const RING_PTS  = 32;
   const ringGeos  = useMemo(() => Array.from({ length: RING_COUNT }, () => makeGeo(RING_PTS + 1)), []);
   const sparkGeo  = useMemo(() => {
@@ -1051,7 +1020,6 @@ function RocketTrail({
     return g;
   }, []);
 
-  // Materials
   const coreMat = useMemo(() => new THREE.LineBasicMaterial({
     vertexColors: true, transparent: true, opacity: 1.0,
     blending: THREE.AdditiveBlending, depthWrite: false,
@@ -1146,7 +1114,6 @@ function RocketTrail({
         .addScaledVector(_perpB.current, Math.sin(angle));
     }
 
-    // ── PLASMA CORE 1 — white-hot centre ────────────────────────────────
     const corePosA = coreGeo.attributes.position as THREE.BufferAttribute;
     const coreColA = coreGeo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
@@ -1154,7 +1121,6 @@ function RocketTrail({
       const pt = curve.getPoint(u, _pt.current);
       corePosA.setXYZ(i, pt.x, pt.y, pt.z);
       const a = Math.pow(u, 0.5);
-      // Rainbow hue cycle: cyan→violet→cyan based on time & position
       const hue = (t * 0.3 + u * 0.5) % 1.0;
       const r = a * (0.2 + 0.8 * Math.max(0, Math.sin(hue * Math.PI * 2)));
       const g = a * (0.7 + 0.3 * Math.cos(hue * Math.PI * 2 + 1));
@@ -1164,7 +1130,6 @@ function RocketTrail({
     coreGeo.setDrawRange(0, steps);
     corePosA.needsUpdate = true; coreColA.needsUpdate = true;
 
-    // ── PLASMA CORE 2 — pure white near UFO ─────────────────────────────
     const c2PosA = core2Geo.attributes.position as THREE.BufferAttribute;
     const c2ColA = core2Geo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
@@ -1172,12 +1137,11 @@ function RocketTrail({
       const pt = curve.getPoint(u, _pt.current);
       c2PosA.setXYZ(i, pt.x, pt.y, pt.z);
       const a = Math.pow(u, 0.3) * (1 - u * 0.6);
-      c2ColA.setXYZ(i, a, a, a); // pure white pulse near head
+      c2ColA.setXYZ(i, a, a, a); 
     }
     core2Geo.setDrawRange(0, steps);
     c2PosA.needsUpdate = true; c2ColA.needsUpdate = true;
 
-    // ── HALO — wide translucent glow ────────────────────────────────────
     const haloPosA = haloGeo.attributes.position as THREE.BufferAttribute;
     const haloColA = haloGeo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
@@ -1191,7 +1155,6 @@ function RocketTrail({
     haloGeo.setDrawRange(0, steps);
     haloPosA.needsUpdate = true; haloColA.needsUpdate = true;
 
-    // ── OUTER CONE LINES (8 lines, twisted, color-shifting) ─────────────
     outerGeos.forEach((geo, di) => {
       const dir      = outerDirs.current[di];
       const posAttr  = geo.attributes.position as THREE.BufferAttribute;
@@ -1210,7 +1173,6 @@ function RocketTrail({
           dir.x * Math.sin(twist) + dir.z * Math.cos(twist)
         );
         posAttr.setXYZ(i, pt.x + td.x * radius, pt.y + td.y * radius, pt.z + td.z * radius);
-        // Alternating: teal / purple / gold outer rays
         const a = Math.pow(u, 1.1) * 0.65;
         const colorCycle = (di % 3);
         const r = a * (colorCycle === 2 ? 1.0 : colorCycle === 1 ? 0.5 : 0.05);
@@ -1223,17 +1185,13 @@ function RocketTrail({
       (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
     });
 
-    // ── ENERGY RINGS — circles slicing through the trail ─────────────────
     ringGeos.forEach((geo, ri) => {
       const posAttr = geo.attributes.position as THREE.BufferAttribute;
       const colAttr = geo.attributes.color    as THREE.BufferAttribute;
-      // Each ring travels along the trail animated
       const ringU = ((t * 0.45 + ri / RING_COUNT) % 1.0);
       if (ringU < 0.02 || ringU > 0.98) { geo.setDrawRange(0, 0); return; }
       const ringPt = curve.getPoint(ringU, _pt.current);
-      // Ring radius grows toward tail
       const rRadius = TRAIL_MAX_W * (1 - ringU) * 1.2 * (0.8 + 0.2 * Math.sin(t * 8 + ri));
-      // Ring color pulses — each ring gets own hue
       const hue = (ri / RING_COUNT + t * 0.1) % 1.0;
       const rr = 0.3 + 0.7 * Math.sin(hue * Math.PI * 2);
       const rg = 0.5 + 0.5 * Math.cos(hue * Math.PI * 2);
@@ -1253,7 +1211,6 @@ function RocketTrail({
       (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
     });
 
-    // ── SPARKS — 24 glittering particles ────────────────────────────────
     const spkPos = sparkGeo.attributes.position as THREE.BufferAttribute;
     const spkCol = sparkGeo.attributes.color    as THREE.BufferAttribute;
     let   spkDrawn = 0;
@@ -1278,7 +1235,6 @@ function RocketTrail({
           pt.z + sp.offset.z * sp.life * 0.6
         );
         const flash = fade * (0.5 + 0.5 * Math.sin(t * 40 + si * 1.7));
-        // sparks cycle: white / cyan / violet
         const sc = si % 3;
         spkCol.setXYZ(spkDrawn,
           flash * (sc === 0 ? 1.0 : sc === 2 ? 0.8 : 0.1),
@@ -1315,7 +1271,7 @@ function RocketTrail({
   );
 }
 
-// ─── UFO ERROR EFFECT — electric bolts + red shockwave khi trả lời sai ──────
+// ─── UFO ERROR EFFECT ───────────────────────────────────────────────────────
 function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: React.MutableRefObject<THREE.Vector3> }) {
   const BOLT_COUNT = 8;
   const boltGeos = useMemo(() =>
@@ -1364,7 +1320,6 @@ function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: Rea
     const oy = ufoPos.current.y;
     const oz = ufoPos.current.z;
 
-    // Electric bolts — jagged lightning radiating out
     boltGeos.forEach((geo, bi) => {
       const posA = geo.attributes.position as THREE.BufferAttribute;
       const baseAngle = (bi / BOLT_COUNT) * Math.PI * 2 + t * 15;
@@ -1384,7 +1339,6 @@ function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: Rea
       posA.needsUpdate = true;
     });
 
-    // Expanding red shockwave rings
     shockGeos.forEach((geo, ri) => {
       const delay = ri * 0.07;
       const et = Math.max(0, errorTimer.current - delay);
@@ -1537,8 +1491,6 @@ function UFO({
 }
 
 // ─── [NHIỆM VỤ 2] CAMERA CONTROLLER (FIX CINEMATIC LOCK) ────────────────────
-// Thêm: khi isCinematic đổi từ true→false, reset isUserDragging để camera
-// không bị kẹt ở vị trí cinematic. Dùng ref `cinematicWasActive` để detect edge.
 function CameraController({
   currentHash,
   isCinematic,
@@ -1550,24 +1502,21 @@ function CameraController({
 }) {
   const { camera, controls } = useThree() as any;
   const isUserDragging   = useRef(false);
-  const cinematicWasOn   = useRef(false);        // ← NEW: track previous cinematic state
+  const cinematicWasOn   = useRef(false);
   const orbitConfig      = useMemo(() => ORBIT_CONFIG, []);
 
   useEffect(() => {
     if (!controls) return;
     const onStart = () => { isUserDragging.current = true; };
-    const onEnd   = () => { /* keep dragging true until hash changes */ };
     controls.addEventListener("start", onStart);
     return () => controls.removeEventListener("start", onStart);
   }, [controls]);
 
-  // Reset drag lock on hash change
   useEffect(() => { isUserDragging.current = false; }, [currentHash]);
 
-  // ── [FIX] Khi cinematic vừa tắt → bỏ khoá camera ───────────────────────
+  // [NHIỆM VỤ 2]: Fix mở khóa Camera khi tắt auto-rotate Cinematic
   useEffect(() => {
     if (!isCinematic && cinematicWasOn.current) {
-      // Cinematic vừa bị tắt → cho phép auto-follow lại
       isUserDragging.current = false;
     }
     cinematicWasOn.current = isCinematic;
@@ -1587,8 +1536,6 @@ function CameraController({
       return;
     }
 
-    // ── Khi KHÔNG cinematic: luôn cho phép OrbitControls hoạt động ──────
-    // Chỉ auto-move camera khi user chưa drag (isUserDragging = false)
     let targetCenter = new THREE.Vector3(0, 0, 0);
     let targetCamPos = new THREE.Vector3(250, 150, 500);
 
@@ -1601,14 +1548,10 @@ function CameraController({
       targetCamPos.set(px + cfg.camOffset[0], cfg.camOffset[1], pz + cfg.camOffset[2]);
     }
 
-    // Target (orbit pivot) always follows planet so you can orbit around it
     controls.target.lerp(targetCenter, 0.06);
-
-    // Only move camera position if user hasn't manually dragged
     if (!isUserDragging.current) {
       camera.position.lerp(targetCamPos, 0.04);
     }
-
     controls.update();
   });
 
@@ -1623,6 +1566,10 @@ export default function SolarSystem() {
   const [solarSpeed,      setSolarSpeed]      = useState(1);
   const [bloomIntensity,  setBloomIntensity]  = useState(1.5);
   const [isCinematic,     setIsCinematic]     = useState(false);
+
+  // [NHIỆM VỤ 1]: THÊM STATE CHO INTRO SCREEN
+  const [showIntro, setShowIntro] = useState(true);
+  const [sceneVisible, setSceneVisible] = useState(false);
 
   const ufoWorldPos = useRef(new THREE.Vector3());
   const ufoVelWorld = useRef(new THREE.Vector3());
@@ -1651,9 +1598,16 @@ export default function SolarSystem() {
   }, []);
 
   const handleWheel = (e: React.WheelEvent) => {
+    if (showIntro) return; // [NHIỆM VỤ 1] Không cho phép cuộn đổi hành tinh khi đang ở màn Intro
     const idx = planetHashes.indexOf(currentHash);
     if (e.deltaY > 50  && idx < planetHashes.length - 1) window.location.hash = planetHashes[idx + 1];
     else if (e.deltaY < -50 && idx > 0)                  window.location.hash = planetHashes[idx - 1];
+  };
+
+  // [NHIỆM VỤ 1] Ẩn Intro và từ từ hiện Scene 3D
+  const handleEnterScene = () => {
+    setShowIntro(false);
+    setTimeout(() => { setSceneVisible(true); }, 500);
   };
 
   const handleWrongAnswer = () => {
@@ -1676,211 +1630,230 @@ export default function SolarSystem() {
       <Head>
         <title>Solar System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* [NHIỆM VỤ 1]: CSS KEYFRAMES CHO NỀN CHUYỂN ĐỘNG TỪ TỪ */}
+        <style>{`
+          @keyframes panBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}</style>
       </Head>
       <div
         onWheel={handleWheel}
         style={{
           width: "100vw", height: "100vh",
           overflow: "hidden", position: "relative",
-          background: "#01020a",   // fallback colour (canvas covers it)
+          background: "#01020a", 
+          backgroundImage: "url(/b2.jpg)", // [NHIỆM VỤ 1] Gọi lại hình nền b2
+          backgroundSize: "150% 150%", // Zoom to ra một chút để có dư dả không gian trượt
+          animation: "panBackground 120s linear infinite", // Chuyển động cực kỳ mượt và chậm (120s/vòng)
         }}
       >
-        {/* ── [NHIỆM VỤ 1] Animated Background Canvas ── */}
-        <AnimatedBackground />
+        {/* [NHIỆM VỤ 1] BỌC MOTION.DIV ĐỂ MỞ TỪ TỪ KHUNG CẢNH 3D KHI ENTER */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: sceneVisible ? 1 : 0 }} 
+          transition={{ duration: 1 }}
+          style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
+        >
+          <AnimatedBackground />
 
-        {/* Three.js canvas must be transparent so background shows through */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
-          <Canvas
-            gl={{ antialias: true, alpha: true }}   // ← alpha:true để trong suốt
-            style={{ background: "transparent" }}
-            dpr={[1, 2]}
-          >
-            <Suspense fallback={null}>
-              <PerspectiveCamera makeDefault fov={50} far={10000} />
-              <OrbitControls
-                makeDefault
-                enablePan={false}
-                minDistance={10}
-                maxDistance={3000}
-                enableDamping
-                dampingFactor={0.06}
-                rotateSpeed={0.8}
-              />
-              <CameraController
-                currentHash={currentHash}
-                isCinematic={isCinematic}
-                anglesRef={planetAngles}
-              />
-
-              <ambientLight intensity={0.1} />
-              <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
-
-              {/* Stars (Three.js layer — adds depth on top of CSS canvas) */}
-              <Stars radius={3000} depth={150} count={10000} factor={50} saturation={1} fade speed={0.4} />
-
-              <Sun isActive={currentHash === "#overview"} />
-
-              <UFO
-                currentHash={currentHash}
-                isShaking={isShaking}
-                worldPosRef={ufoWorldPos}
-                velWorldRef={ufoVelWorld}
-                anglesRef={planetAngles}
-              />
-              <UFOErrorEffect isShaking={isShaking} ufoPos={ufoWorldPos} />
-              <RocketTrail
-                posRef={ufoWorldPos}
-                velRef={ufoVelWorld}
-                currentHash={currentHash}
-              />
-
-              <OrbitLine radius={80}   />
-              <OrbitLine radius={140}  />
-              <OrbitLine radius={210}  />
-              <OrbitLine radius={300}  />
-              <OrbitLine radius={480}  />
-              <OrbitLine radius={680}  />
-              <OrbitLine radius={880}  />
-              <OrbitLine radius={1050} />
-
-              <OrbitGroup speed={0.50 * solarSpeed} planetHash="#mercury" anglesRef={planetAngles}>
-                <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mercury")} />
-              </OrbitGroup>
-              <OrbitGroup speed={0.35 * solarSpeed} planetHash="#venus" anglesRef={planetAngles}>
-                <Venus   isActive={currentHash === "#venus"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#venus")}   />
-              </OrbitGroup>
-              <OrbitGroup speed={0.25 * solarSpeed} planetHash="#earth" anglesRef={planetAngles}>
-                <Earth   isActive={currentHash === "#earth"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#earth")}   />
-              </OrbitGroup>
-              <OrbitGroup speed={0.20 * solarSpeed} planetHash="#mars" anglesRef={planetAngles}>
-                <Mars    isActive={currentHash === "#mars"}    setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mars")}    />
-              </OrbitGroup>
-
-              <AsteroidBelt count={1200} innerRadius={360} outerRadius={420} speedFactor={0.3} />
-
-              <OrbitGroup speed={0.10 * solarSpeed} planetHash="#jupiter" anglesRef={planetAngles}>
-                <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#jupiter")} />
-              </OrbitGroup>
-              <OrbitGroup speed={0.08 * solarSpeed} planetHash="#saturn" anglesRef={planetAngles}>
-                <Saturn  isActive={currentHash === "#saturn"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#saturn")}  />
-              </OrbitGroup>
-              <OrbitGroup speed={0.05 * solarSpeed} planetHash="#uranus" anglesRef={planetAngles}>
-                <Uranus  isActive={currentHash === "#uranus"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#uranus")}  />
-              </OrbitGroup>
-              <OrbitGroup speed={0.03 * solarSpeed} planetHash="#neptune" anglesRef={planetAngles}>
-                <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#neptune")} />
-              </OrbitGroup>
-
-              <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
-
-              <EffectComposer>
-                <Bloom
-                  intensity={bloomIntensity}
-                  luminanceThreshold={0.2}
-                  mipmapBlur
-                  radius={0.5}
+          <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+            <Canvas
+              gl={{ antialias: true, alpha: true }}
+              style={{ background: "transparent" }}
+              dpr={[1, 2]}
+            >
+              <Suspense fallback={null}>
+                <PerspectiveCamera makeDefault fov={50} far={10000} />
+                <OrbitControls
+                  makeDefault
+                  enablePan={false}
+                  minDistance={10}
+                  maxDistance={3000}
+                  enableDamping
+                  dampingFactor={0.06}
+                  rotateSpeed={0.8}
                 />
-              </EffectComposer>
-              <BackgroundEffects />
-            </Suspense>
-          </Canvas>
-        </div>
+                <CameraController
+                  currentHash={currentHash}
+                  isCinematic={isCinematic}
+                  anglesRef={planetAngles}
+                />
 
-        {/* ── [NHIỆM VỤ 2] Planet arrival overlay ── */}
-        <PlanetArrivalEffect currentHash={currentHash} />
+                <ambientLight intensity={0.1} />
+                <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
 
-        {/* Wrong answer red screen flash */}
-        {isShaking && (
-          <div
-            style={{
-              position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none",
-              background: "radial-gradient(ellipse at center, rgba(255,0,0,0.35) 0%, rgba(200,0,0,0.15) 50%, transparent 80%)",
-              animation: "none",
-              boxShadow: "inset 0 0 120px rgba(255,0,0,0.6)",
-            }}
-          />
-        )}
+                <Stars radius={3000} depth={150} count={10000} factor={50} saturation={1} fade speed={0.4} />
 
-        {/* HUD and UI above the canvas */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
-          <div style={{ pointerEvents: "auto" }}>
-            <HUDControls
-              solarSpeed={solarSpeed}
-              setSolarSpeed={setSolarSpeed}
-              bloomIntensity={bloomIntensity}
-              setBloomIntensity={setBloomIntensity}
-              isCinematic={isCinematic}
-              setIsCinematic={setIsCinematic}
-            />
+                <Sun isActive={currentHash === "#overview"} />
+
+                <UFO
+                  currentHash={currentHash}
+                  isShaking={isShaking}
+                  worldPosRef={ufoWorldPos}
+                  velWorldRef={ufoVelWorld}
+                  anglesRef={planetAngles}
+                />
+                <UFOErrorEffect isShaking={isShaking} ufoPos={ufoWorldPos} />
+                <RocketTrail
+                  posRef={ufoWorldPos}
+                  velRef={ufoVelWorld}
+                  currentHash={currentHash}
+                />
+
+                <OrbitLine radius={80}   />
+                <OrbitLine radius={140}  />
+                <OrbitLine radius={210}  />
+                <OrbitLine radius={300}  />
+                <OrbitLine radius={480}  />
+                <OrbitLine radius={680}  />
+                <OrbitLine radius={880}  />
+                <OrbitLine radius={1050} />
+
+                <OrbitGroup speed={0.50 * solarSpeed} planetHash="#mercury" anglesRef={planetAngles}>
+                  <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mercury")} />
+                </OrbitGroup>
+                <OrbitGroup speed={0.35 * solarSpeed} planetHash="#venus" anglesRef={planetAngles}>
+                  <Venus   isActive={currentHash === "#venus"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#venus")}   />
+                </OrbitGroup>
+                <OrbitGroup speed={0.25 * solarSpeed} planetHash="#earth" anglesRef={planetAngles}>
+                  <Earth   isActive={currentHash === "#earth"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#earth")}   />
+                </OrbitGroup>
+                <OrbitGroup speed={0.20 * solarSpeed} planetHash="#mars" anglesRef={planetAngles}>
+                  <Mars    isActive={currentHash === "#mars"}    setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mars")}    />
+                </OrbitGroup>
+
+                <AsteroidBelt count={1200} innerRadius={360} outerRadius={420} speedFactor={0.3} />
+
+                <OrbitGroup speed={0.10 * solarSpeed} planetHash="#jupiter" anglesRef={planetAngles}>
+                  <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#jupiter")} />
+                </OrbitGroup>
+                <OrbitGroup speed={0.08 * solarSpeed} planetHash="#saturn" anglesRef={planetAngles}>
+                  <Saturn  isActive={currentHash === "#saturn"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#saturn")}  />
+                </OrbitGroup>
+                <OrbitGroup speed={0.05 * solarSpeed} planetHash="#uranus" anglesRef={planetAngles}>
+                  <Uranus  isActive={currentHash === "#uranus"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#uranus")}  />
+                </OrbitGroup>
+                <OrbitGroup speed={0.03 * solarSpeed} planetHash="#neptune" anglesRef={planetAngles}>
+                  <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#neptune")} />
+                </OrbitGroup>
+
+                <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
+
+                <EffectComposer>
+                  <Bloom
+                    intensity={bloomIntensity}
+                    luminanceThreshold={0.2}
+                    mipmapBlur
+                    radius={0.5}
+                  />
+                </EffectComposer>
+                <BackgroundEffects />
+              </Suspense>
+            </Canvas>
           </div>
 
-          {currentHash !== "#overview" && (
-            <div style={{ pointerEvents: "auto" }}>
-              <PlanetInfoPanel
-                currentHash={currentHash}
-                onCorrect={handleCorrectAnswer}
-                onWrong={handleWrongAnswer}
-              />
-            </div>
+          <PlanetArrivalEffect currentHash={currentHash} />
+
+          {isShaking && (
+            <div
+              style={{
+                position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none",
+                background: "radial-gradient(ellipse at center, rgba(255,0,0,0.35) 0%, rgba(200,0,0,0.15) 50%, transparent 80%)",
+                animation: "none",
+                boxShadow: "inset 0 0 120px rgba(255,0,0,0.6)",
+              }}
+            />
           )}
 
-          <button
-            onClick={() => (window.location.hash = "#overview")}
-            style={{
-              position: "fixed", bottom: "40px", right: "40px",
-              padding: "10px 24px",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              color: "white",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              borderRadius: "99px",
-              cursor: "pointer",
-              backdropFilter: "blur(10px)",
-              pointerEvents: "auto",
-            }}
-          >
-            BACK TO START
-          </button>
+          <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
+            <div style={{ pointerEvents: "auto" }}>
+              <HUDControls
+                solarSpeed={solarSpeed}
+                setSolarSpeed={setSolarSpeed}
+                bloomIntensity={bloomIntensity}
+                setBloomIntensity={setBloomIntensity}
+                isCinematic={isCinematic}
+                setIsCinematic={setIsCinematic}
+              />
+            </div>
 
-          <div
-            style={{
-              position: "fixed", bottom: "20px", left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex", gap: "10px",
-              padding: "10px",
-              background: "rgba(0, 0, 0, 0.5)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "50px",
-              border: "1px solid rgba(0, 243, 255, 0.2)",
-              boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)",
-              pointerEvents: "auto",
-            }}
-          >
-            {Object.keys(ORBIT_CONFIG).map((hash) => (
-              <button
-                key={hash}
-                onClick={() => (window.location.hash = hash)}
-                style={{
-                  padding: "8px 15px",
-                  backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
-                  color: currentHash === hash ? "#00f3ff" : "#fff",
-                  border: "none",
-                  borderRadius: "20px",
-                  fontSize: "12px", fontWeight: "bold",
-                  cursor: "pointer", textTransform: "uppercase",
-                  transition: "all 0.3s ease",
-                  borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)"; }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor =
-                    currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
-                }}
-              >
-                {hash.replace("#", "")}
-              </button>
-            ))}
+            {currentHash !== "#overview" && (
+              <div style={{ pointerEvents: "auto" }}>
+                <PlanetInfoPanel
+                  currentHash={currentHash}
+                  onCorrect={handleCorrectAnswer}
+                  onWrong={handleWrongAnswer}
+                />
+              </div>
+            )}
+
+            <button
+              onClick={() => (window.location.hash = "#overview")}
+              style={{
+                position: "fixed", bottom: "40px", right: "40px",
+                padding: "10px 24px",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                color: "white",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                borderRadius: "99px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
+                pointerEvents: "auto",
+              }}
+            >
+              BACK TO START
+            </button>
+
+            <div
+              style={{
+                position: "fixed", bottom: "20px", left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex", gap: "10px",
+                padding: "10px",
+                background: "rgba(0, 0, 0, 0.5)",
+                backdropFilter: "blur(10px)",
+                borderRadius: "50px",
+                border: "1px solid rgba(0, 243, 255, 0.2)",
+                boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)",
+                pointerEvents: "auto",
+              }}
+            >
+              {Object.keys(ORBIT_CONFIG).map((hash) => (
+                <button
+                  key={hash}
+                  onClick={() => (window.location.hash = hash)}
+                  style={{
+                    padding: "8px 15px",
+                    backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
+                    color: currentHash === hash ? "#00f3ff" : "#fff",
+                    border: "none",
+                    borderRadius: "20px",
+                    fontSize: "12px", fontWeight: "bold",
+                    cursor: "pointer", textTransform: "uppercase",
+                    transition: "all 0.3s ease",
+                    borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)"; }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
+                  }}
+                >
+                  {hash.replace("#", "")}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* [NHIỆM VỤ 1]: HIỆN MÀN HÌNH CHÀO MỪNG LÊN LỚP NGOÀI CÙNG NHẤT */}
+        <AnimatePresence>
+          {showIntro && <IntroScreen onEnter={handleEnterScene} />}
+        </AnimatePresence>
+
       </div>
     </>
   );
