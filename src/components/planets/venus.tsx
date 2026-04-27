@@ -17,7 +17,7 @@ const Venus: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick })
                 position={pos}
                 meshMaterialPath="/icons/2k_venus_surface.jpg"
                 spinSpeed={0.002}
-                size={3.2} 
+                size={10} 
                 onClick={onClick} 
             />
 

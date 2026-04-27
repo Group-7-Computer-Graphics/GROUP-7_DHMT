@@ -38,7 +38,7 @@ const Earth: React.FC<EarthProps> = ({
                 position={pos}
                 meshMaterialPath="/earth_map.jpeg"
                 spinSpeed={0.005}
-                size={3.5}
+                size={10}
                 onClick={onClick} 
             />
 

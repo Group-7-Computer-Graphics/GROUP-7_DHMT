@@ -21,7 +21,7 @@ const Uranus: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick }
                 position={pos}
                 meshMaterialPath="/icons/2k_uranus.jpg"
                 spinSpeed={0.003}
-                size={7} 
+                size={30} 
                 onClick={onClick} 
             />
 
@@ -30,7 +30,7 @@ const Uranus: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick }
                 {/* args: [Bán kính trong, Bán kính ngoài, Số phân đoạn] 
                    Hành tinh size 7 thì vành đai từ 10 đến 14 là đẹp 
                 */}
-                <ringGeometry args={[10, 14, 128]} /> 
+                <ringGeometry args={[35, 60, 128]} /> 
                 <meshStandardMaterial 
                     map={ringTexture}
                     transparent={true}

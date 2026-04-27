@@ -17,7 +17,7 @@ const Neptune: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick 
                 position={pos}
                 meshMaterialPath="/icons/2k_neptune.jpg"
                 spinSpeed={0.003}
-                size={7} 
+                size={20} 
                 onClick={onClick} 
             />
             
