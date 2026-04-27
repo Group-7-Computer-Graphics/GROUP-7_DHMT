@@ -10,10 +10,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import BackgroundEffects from "../src/components/BackgroundEffects";
 
-//Trang thêm
 import Head from 'next/head';
-//======
-
 
 import Sun from "../src/components/planets/Sun";
 import Earth from "../src/components/planets/Earth";
@@ -102,8 +99,6 @@ const planetData: Record<string, any> = {
 };
 
 // ─── CẤU HÌNH QUỸ ĐẠO ────────────────────────────────────────────────────────
-// ✅ BỎ ufoOffset (UFO giờ đứng thẳng trên hành tinh)
-// ✅ THÊM ufoScale cho từng hành tinh để kích thước phù hợp
 const ORBIT_CONFIG: Record<
   string,
   {
@@ -123,6 +118,555 @@ const ORBIT_CONFIG: Record<
   "#uranus":  { radius: 880,  speed: 0.05, camOffset: [0, 20, 80],  ufoHeight: 22, ufoScale: 0.42 },
   "#neptune": { radius: 1050, speed: 0.03, camOffset: [0, 20, 80],  ufoHeight: 20, ufoScale: 0.38 },
 };
+
+// ─── [NHIỆM VỤ 1] ANIMATED BACKGROUND — MẠNH HƠN ──────────────────────────
+// Nebula khổng lồ + sao băng + aurora sóng + warp streak + parallax 3 lớp
+function AnimatedBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+
+    // ── Stars: 3 lớp parallax rõ ràng ──────────────────────────────────
+    interface Star {
+      x: number; y: number; r: number; alpha: number;
+      twinkleSpeed: number; twinkleOffset: number; layer: number;
+      color: string;
+    }
+    const STAR_COLORS = [
+      "255,255,255", "200,220,255", "255,220,180", "180,200,255", "255,255,200"
+    ];
+    const stars: Star[] = [];
+    for (let i = 0; i < 900; i++) {
+      const layer = i < 400 ? 0 : i < 700 ? 1 : 2;
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: layer === 2 ? 1.2 + Math.random() * 2.2 : layer === 1 ? 0.7 + Math.random() * 1.3 : 0.3 + Math.random() * 0.7,
+        alpha: 0.35 + Math.random() * 0.65,
+        twinkleSpeed: 0.4 + Math.random() * 3,
+        twinkleOffset: Math.random() * Math.PI * 2,
+        layer,
+        color: STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
+      });
+    }
+
+    // ── Nebula blobs: to hơn, đậm hơn, nhiều lớp hơn ──────────────────
+    interface Nebula {
+      cx: number; cy: number; rx: number; ry: number;
+      hue: number; hue2: number; alpha: number; vx: number; vy: number;
+      rotSpeed: number; rot: number;
+    }
+    const nebulae: Nebula[] = [
+      { cx: W*0.12, cy: H*0.20, rx: 520, ry: 360, hue: 215, hue2: 240, alpha: 0.18, vx:  0.10, vy:  0.05, rotSpeed: 0.0002, rot: 0 },
+      { cx: W*0.78, cy: H*0.55, rx: 600, ry: 420, hue: 265, hue2: 290, alpha: 0.14, vx: -0.07, vy:  0.08, rotSpeed: 0.0003, rot: 1 },
+      { cx: W*0.50, cy: H*0.85, rx: 480, ry: 300, hue: 185, hue2: 210, alpha: 0.16, vx:  0.05, vy: -0.06, rotSpeed: 0.0002, rot: 2 },
+      { cx: W*0.88, cy: H*0.08, rx: 400, ry: 300, hue: 295, hue2: 320, alpha: 0.13, vx: -0.08, vy:  0.10, rotSpeed: 0.0004, rot: 3 },
+      { cx: W*0.30, cy: H*0.65, rx: 360, ry: 280, hue: 160, hue2: 185, alpha: 0.12, vx:  0.09, vy:  0.04, rotSpeed: 0.0003, rot: 4 },
+      // Extra accent nebula
+      { cx: W*0.62, cy: H*0.30, rx: 300, ry: 220, hue: 340, hue2: 20,  alpha: 0.10, vx: -0.06, vy: -0.05, rotSpeed: 0.0002, rot: 5 },
+    ];
+
+    // ── Sao băng (shooting stars) ───────────────────────────────────────
+    interface Meteor {
+      x: number; y: number; vx: number; vy: number;
+      len: number; alpha: number; active: boolean; timer: number; maxTimer: number;
+    }
+    const meteors: Meteor[] = Array.from({ length: 8 }, () => ({
+      x: 0, y: 0, vx: 0, vy: 0, len: 0, alpha: 0, active: false, timer: 0, maxTimer: 0
+    }));
+    function spawnMeteor(m: Meteor) {
+      m.x = Math.random() * W * 1.3 - W * 0.15;
+      m.y = Math.random() * H * 0.4;
+      const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.4;
+      const speed = 12 + Math.random() * 20;
+      m.vx = Math.cos(angle) * speed;
+      m.vy = Math.sin(angle) * speed;
+      m.len = 80 + Math.random() * 160;
+      m.alpha = 0.7 + Math.random() * 0.3;
+      m.active = true;
+      m.timer = 0;
+      m.maxTimer = 40 + Math.random() * 30;
+    }
+    // Stagger initial spawn
+    meteors.forEach((m, i) => { m.timer = -i * 80 - Math.random() * 200; });
+
+    // ── Aurora waves ────────────────────────────────────────────────────
+    interface AuroraWave {
+      baseY: number; amplitude: number; freq: number; phase: number;
+      phaseSpeed: number; hue: number; alpha: number; width: number;
+    }
+    const auroraWaves: AuroraWave[] = [
+      { baseY: H * 0.15, amplitude: 55, freq: 0.0035, phase: 0,   phaseSpeed: 0.012, hue: 160, alpha: 0.055, width: 60 },
+      { baseY: H * 0.20, amplitude: 40, freq: 0.0050, phase: 1.2, phaseSpeed: 0.009, hue: 190, alpha: 0.045, width: 40 },
+      { baseY: H * 0.10, amplitude: 70, freq: 0.0028, phase: 2.5, phaseSpeed: 0.015, hue: 260, alpha: 0.040, width: 50 },
+      { baseY: H * 0.80, amplitude: 45, freq: 0.0040, phase: 0.7, phaseSpeed: 0.011, hue: 180, alpha: 0.040, width: 45 },
+    ];
+
+    // ── Warp streaks (tia tốc độ nền) ──────────────────────────────────
+    interface WarpStreak {
+      x: number; y: number; len: number; alpha: number; speed: number; active: boolean; timer: number;
+    }
+    const warpStreaks: WarpStreak[] = Array.from({ length: 25 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      len: 20 + Math.random() * 60,
+      alpha: 0.1 + Math.random() * 0.3,
+      speed: 0.3 + Math.random() * 1.2,
+      active: Math.random() > 0.5,
+      timer: Math.random() * 200,
+    }));
+
+    let t = 0;
+
+    function drawAurora(w: AuroraWave) {
+      w.phase += w.phaseSpeed;
+      ctx!.beginPath();
+      ctx!.moveTo(0, w.baseY);
+      for (let x = 0; x <= W; x += 6) {
+        const y = w.baseY + Math.sin(x * w.freq + w.phase) * w.amplitude
+                           + Math.sin(x * w.freq * 1.7 + w.phase * 0.8) * w.amplitude * 0.4;
+        ctx!.lineTo(x, y);
+      }
+      ctx!.strokeStyle = `hsla(${w.hue}, 90%, 65%, ${w.alpha * (0.6 + 0.4 * Math.sin(t * 0.5 + w.phase))})`;
+      ctx!.lineWidth = w.width;
+      ctx!.shadowColor = `hsla(${w.hue}, 100%, 60%, 0.3)`;
+      ctx!.shadowBlur = 30;
+      ctx!.stroke();
+      ctx!.shadowBlur = 0;
+    }
+
+    function draw() {
+      t += 0.01;
+      ctx!.clearRect(0, 0, W, H);
+
+      // ── Deep space base gradient ──────────────────────────────────────
+      const bg = ctx!.createRadialGradient(W * 0.4, H * 0.3, 0, W * 0.5, H * 0.5, Math.max(W, H));
+      bg.addColorStop(0,   "rgba(6, 8, 28, 1)");
+      bg.addColorStop(0.3, "rgba(4, 5, 20, 1)");
+      bg.addColorStop(0.7, "rgba(2, 3, 14, 1)");
+      bg.addColorStop(1,   "rgba(1, 1, 8,  1)");
+      ctx!.fillStyle = bg;
+      ctx!.fillRect(0, 0, W, H);
+
+      // ── Aurora waves (bottom layer) ──────────────────────────────────
+      ctx!.globalCompositeOperation = "screen";
+      auroraWaves.forEach(drawAurora);
+      ctx!.globalCompositeOperation = "source-over";
+
+      // ── Nebulae: 2 passes each (core + outer glow) ──────────────────
+      ctx!.globalCompositeOperation = "screen";
+      nebulae.forEach((n) => {
+        n.cx += n.vx; n.cy += n.vy; n.rot += n.rotSpeed;
+        if (n.cx < -n.rx * 1.5) n.cx = W + n.rx * 1.5;
+        if (n.cx > W + n.rx * 1.5) n.cx = -n.rx * 1.5;
+        if (n.cy < -n.ry * 1.5) n.cy = H + n.ry * 1.5;
+        if (n.cy > H + n.ry * 1.5) n.cy = -n.ry * 1.5;
+
+        const pulse = 1 + 0.08 * Math.sin(t * 0.5 + n.hue * 0.05);
+        const breathe = 0.85 + 0.15 * Math.sin(t * 0.3 + n.hue * 0.02);
+
+        ctx!.save();
+        ctx!.translate(n.cx, n.cy);
+        ctx!.rotate(n.rot);
+
+        // Outer glow (large, translucent)
+        const outer = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 1.4);
+        outer.addColorStop(0,   `hsla(${n.hue}, 85%, 55%, ${n.alpha * breathe})`);
+        outer.addColorStop(0.3, `hsla(${n.hue2}, 75%, 45%, ${n.alpha * breathe * 0.7})`);
+        outer.addColorStop(0.65,`hsla(${n.hue + 10}, 70%, 35%, ${n.alpha * breathe * 0.3})`);
+        outer.addColorStop(1,   `hsla(${n.hue}, 60%, 25%, 0)`);
+        ctx!.scale(1, n.ry / n.rx);
+        ctx!.beginPath();
+        ctx!.arc(0, 0, n.rx * pulse * 1.4, 0, Math.PI * 2);
+        ctx!.fillStyle = outer;
+        ctx!.fill();
+
+        // Bright core
+        const core = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 0.5);
+        core.addColorStop(0,   `hsla(${n.hue2}, 100%, 75%, ${n.alpha * 2.2 * breathe})`);
+        core.addColorStop(0.5, `hsla(${n.hue}, 90%, 60%, ${n.alpha * 1.2 * breathe})`);
+        core.addColorStop(1,   `hsla(${n.hue}, 80%, 40%, 0)`);
+        ctx!.beginPath();
+        ctx!.arc(0, 0, n.rx * pulse * 0.5, 0, Math.PI * 2);
+        ctx!.fillStyle = core;
+        ctx!.fill();
+
+        ctx!.restore();
+      });
+      ctx!.globalCompositeOperation = "source-over";
+
+      // ── Milky Way diagonal band ──────────────────────────────────────
+      ctx!.save();
+      ctx!.translate(W * 0.5, H * 0.5);
+      ctx!.rotate(-0.35);
+      const mw = ctx!.createLinearGradient(-W, -H * 0.12, -W, H * 0.12);
+      mw.addColorStop(0,    "rgba(70,90,160,0)");
+      mw.addColorStop(0.25, "rgba(70,90,160,0.07)");
+      mw.addColorStop(0.5,  "rgba(90,110,180,0.13)");
+      mw.addColorStop(0.75, "rgba(70,90,160,0.07)");
+      mw.addColorStop(1,    "rgba(70,90,160,0)");
+      ctx!.fillStyle = mw;
+      ctx!.fillRect(-W, -H * 0.12, W * 2, H * 0.24);
+      ctx!.restore();
+
+      // ── Stars ─────────────────────────────────────────────────────────
+      stars.forEach((s) => {
+        const driftSpeeds = [0, 0.025, 0.06];
+        s.x = (s.x + driftSpeeds[s.layer] + W) % W;
+        const twinkle = s.alpha * (0.55 + 0.45 * Math.sin(t * s.twinkleSpeed + s.twinkleOffset));
+
+        // Cross-flare for bright stars
+        if (s.r > 1.8) {
+          ctx!.save();
+          ctx!.globalAlpha = twinkle * 0.25;
+          ctx!.strokeStyle = `rgba(${s.color}, 1)`;
+          ctx!.lineWidth = 0.5;
+          const fl = s.r * 5;
+          ctx!.beginPath(); ctx!.moveTo(s.x - fl, s.y); ctx!.lineTo(s.x + fl, s.y); ctx!.stroke();
+          ctx!.beginPath(); ctx!.moveTo(s.x, s.y - fl); ctx!.lineTo(s.x, s.y + fl); ctx!.stroke();
+          ctx!.restore();
+        }
+
+        // Bloom glow
+        if (s.r > 1.0) {
+          const glow = ctx!.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
+          glow.addColorStop(0, `rgba(${s.color}, ${twinkle * 0.5})`);
+          glow.addColorStop(1, "rgba(0,0,0,0)");
+          ctx!.beginPath();
+          ctx!.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+          ctx!.fillStyle = glow;
+          ctx!.fill();
+        }
+
+        // Core dot
+        ctx!.beginPath();
+        ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(${s.color}, ${twinkle})`;
+        ctx!.fill();
+      });
+
+      // ── Warp streaks ─────────────────────────────────────────────────
+      ctx!.globalCompositeOperation = "screen";
+      warpStreaks.forEach((ws) => {
+        ws.timer++;
+        if (!ws.active && ws.timer > 60 + Math.random() * 120) {
+          ws.active = true;
+          ws.x = Math.random() * W;
+          ws.y = Math.random() * H;
+          ws.len = 20 + Math.random() * 80;
+          ws.alpha = 0.08 + Math.random() * 0.22;
+          ws.timer = 0;
+        }
+        if (ws.active) {
+          const fade = Math.sin((ws.timer / 30) * Math.PI);
+          const grd = ctx!.createLinearGradient(ws.x, ws.y, ws.x + ws.len, ws.y);
+          grd.addColorStop(0, `rgba(100,180,255,0)`);
+          grd.addColorStop(0.4, `rgba(150,210,255,${ws.alpha * fade})`);
+          grd.addColorStop(1, `rgba(200,230,255,0)`);
+          ctx!.strokeStyle = grd;
+          ctx!.lineWidth = 0.8;
+          ctx!.beginPath();
+          ctx!.moveTo(ws.x, ws.y);
+          ctx!.lineTo(ws.x + ws.len, ws.y);
+          ctx!.stroke();
+          ws.x += ws.speed;
+          if (ws.timer > 30 || ws.x > W + ws.len) { ws.active = false; ws.timer = 0; }
+        }
+      });
+      ctx!.globalCompositeOperation = "source-over";
+
+      // ── Shooting stars (meteors) ─────────────────────────────────────
+      meteors.forEach((m) => {
+        m.timer++;
+        if (!m.active) {
+          if (m.timer > 0 && Math.random() < 0.004) spawnMeteor(m);
+          return;
+        }
+        const progress = m.timer / m.maxTimer;
+        const fade = progress < 0.2
+          ? progress / 0.2
+          : progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
+        m.x += m.vx; m.y += m.vy;
+
+        const tx = m.x - m.vx * (m.len / Math.hypot(m.vx, m.vy));
+        const ty = m.y - m.vy * (m.len / Math.hypot(m.vx, m.vy));
+
+        const grd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
+        grd.addColorStop(0, `rgba(200,220,255,0)`);
+        grd.addColorStop(0.6, `rgba(220,235,255,${m.alpha * fade * 0.5})`);
+        grd.addColorStop(1,   `rgba(255,255,255,${m.alpha * fade})`);
+
+        ctx!.strokeStyle = grd;
+        ctx!.lineWidth = 1.5;
+        ctx!.shadowColor = "rgba(180,210,255,0.8)";
+        ctx!.shadowBlur = 6;
+        ctx!.beginPath();
+        ctx!.moveTo(tx, ty);
+        ctx!.lineTo(m.x, m.y);
+        ctx!.stroke();
+        ctx!.shadowBlur = 0;
+
+        if (m.timer >= m.maxTimer) { m.active = false; m.timer = -Math.floor(Math.random() * 300); }
+      });
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    const onResize = () => {
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+    };
+    window.addEventListener("resize", onResize);
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", onResize); };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0, display: "block" }}
+    />
+  );
+}
+
+// ─── [NHIỆM VỤ 2] PLANET ARRIVAL EFFECT ─────────────────────────────────────
+// Mỗi khi đổi hành tinh: warp flash trắng → shockwave ring tỏa ra → tên hành tinh
+// đổ xuống giữa màn hình rồi fade out → scan-line quét ngang → accent color riêng
+
+// Màu theme riêng cho từng hành tinh
+const PLANET_THEME: Record<string, { color: string; glow: string; label: string }> = {
+  "#mercury": { color: "#c0a060", glow: "rgba(192,160,96,",  label: "MERCURY"  },
+  "#venus":   { color: "#ffcc66", glow: "rgba(255,204,102,", label: "VENUS"    },
+  "#earth":   { color: "#44aaff", glow: "rgba(68,170,255,",  label: "EARTH"    },
+  "#mars":    { color: "#ff5533", glow: "rgba(255,85,51,",   label: "MARS"     },
+  "#jupiter": { color: "#cc8844", glow: "rgba(204,136,68,",  label: "JUPITER"  },
+  "#saturn":  { color: "#ddcc88", glow: "rgba(221,204,136,", label: "SATURN"   },
+  "#uranus":  { color: "#66ddcc", glow: "rgba(102,221,204,", label: "URANUS"   },
+  "#neptune": { color: "#4466ff", glow: "rgba(68,102,255,",  label: "NEPTUNE"  },
+  "#overview":{ color: "#ffffff", glow: "rgba(255,255,255,", label: ""         },
+};
+
+function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const phaseRef  = useRef<"idle"|"flash"|"ring"|"title"|"scan"|"fadeout">("idle");
+  const timerRef  = useRef(0);
+  const animRef   = useRef<number>(0);
+  const prevHash  = useRef<string>("#overview");
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const W = canvas.width;
+    const H = canvas.height;
+
+    // Trigger khi hash thay đổi sang hành tinh mới
+    if (currentHash === prevHash.current) return;
+    prevHash.current = currentHash;
+
+    if (currentHash === "#overview") {
+      phaseRef.current = "idle";
+      ctx.clearRect(0, 0, W, H);
+      return;
+    }
+
+    const theme = PLANET_THEME[currentHash] ?? PLANET_THEME["#earth"];
+
+    // Trạng thái animation
+    let phase: "flash"|"ring"|"title"|"scan"|"fadeout" = "flash";
+    let timer = 0;
+    // Ring state
+    let ringR = 0;
+    // Title state
+    let titleAlpha = 0;
+    let titleY = H * 0.5 - 60;
+    // Scan state
+    let scanY = 0;
+    let scanAlpha = 0;
+    // Fadeout
+    let overallAlpha = 1;
+
+    cancelAnimationFrame(animRef.current);
+
+    function tick() {
+      ctx!.clearRect(0, 0, W, H);
+      timer++;
+
+      if (phase === "flash") {
+        // Warp white flash: nhanh, sáng chói
+        const a = timer < 6 ? timer / 6 : Math.max(0, 1 - (timer - 6) / 10);
+        ctx!.fillStyle = `rgba(255,255,255,${a * 0.85})`;
+        ctx!.fillRect(0, 0, W, H);
+        // Radial burst from center
+        const burst = ctx!.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H) * 0.7);
+        burst.addColorStop(0,   `${theme.glow}${a * 0.6})`);
+        burst.addColorStop(0.5, `${theme.glow}${a * 0.2})`);
+        burst.addColorStop(1,   `${theme.glow}0)`);
+        ctx!.fillStyle = burst;
+        ctx!.fillRect(0, 0, W, H);
+
+        if (timer >= 18) { phase = "ring"; timer = 0; }
+
+      } else if (phase === "ring") {
+        // Shockwave rings tỏa ra từ tâm
+        ringR += 28;
+        const maxR = Math.max(W, H) * 0.9;
+        const a = Math.max(0, 1 - ringR / maxR);
+
+        // 3 concentric rings at different offsets
+        [0, 60, 120].forEach((offset) => {
+          const r = ringR - offset;
+          if (r <= 0) return;
+          const ra = Math.max(0, 1 - r / maxR);
+          ctx!.beginPath();
+          ctx!.arc(W/2, H/2, r, 0, Math.PI * 2);
+          ctx!.strokeStyle = `${theme.glow}${ra * 0.7})`;
+          ctx!.lineWidth = 3 - offset * 0.015;
+          ctx!.shadowColor = theme.color;
+          ctx!.shadowBlur = 18;
+          ctx!.stroke();
+          ctx!.shadowBlur = 0;
+        });
+
+        // Light edge vignette tinted with planet color
+        const vig = ctx!.createRadialGradient(W/2, H/2, Math.max(W,H)*0.3, W/2, H/2, Math.max(W,H)*0.8);
+        vig.addColorStop(0, `${theme.glow}0)`);
+        vig.addColorStop(1, `${theme.glow}${a * 0.25})`);
+        ctx!.fillStyle = vig;
+        ctx!.fillRect(0, 0, W, H);
+
+        if (timer >= 1) { phase = "title"; timer = 0; }
+
+      } else if (phase === "title") {
+        // Rings still lingering
+        const lingerR = ringR + timer * 28;
+        const la = Math.max(0, 1 - lingerR / (Math.max(W,H) * 1.2));
+        if (la > 0) {
+          ctx!.beginPath();
+          ctx!.arc(W/2, H/2, lingerR, 0, Math.PI * 2);
+          ctx!.strokeStyle = `${theme.glow}${la * 0.3})`;
+          ctx!.lineWidth = 1.5;
+          ctx!.stroke();
+        }
+
+        // Title drops in from above
+        titleAlpha = Math.min(1, timer / 15);
+        titleY = H * 0.5 - 40 - Math.max(0, (20 - timer) * 3);
+
+        ctx!.save();
+        ctx!.globalAlpha = titleAlpha;
+
+        // Horizontal line above & below
+        const lineW = 340;
+        ctx!.strokeStyle = theme.color;
+        ctx!.lineWidth = 1;
+        ctx!.globalAlpha = titleAlpha * 0.6;
+        ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY - 28); ctx!.lineTo(W/2 + lineW/2, titleY - 28); ctx!.stroke();
+        ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY + 52); ctx!.lineTo(W/2 + lineW/2, titleY + 52); ctx!.stroke();
+
+        // Sub label "ENTERING ORBIT"
+        ctx!.globalAlpha = titleAlpha * 0.7;
+        ctx!.fillStyle = theme.color;
+        ctx!.font = "bold 11px 'Courier New', monospace";
+        ctx!.textAlign = "center";
+        ctx!.letterSpacing = "6px";
+        ctx!.fillText("// ENTERING ORBIT //", W/2, titleY - 10);
+
+        // Main planet name
+        ctx!.globalAlpha = titleAlpha;
+        ctx!.shadowColor = theme.color;
+        ctx!.shadowBlur = 30;
+        ctx!.fillStyle = "#ffffff";
+        ctx!.font = `900 ${Math.min(90, W / 8)}px 'Arial Black', sans-serif`;
+        ctx!.textAlign = "center";
+        ctx!.fillText(theme.label, W/2, titleY + 40);
+
+        // Double shadow for glow depth
+        ctx!.shadowColor = theme.color;
+        ctx!.shadowBlur = 60;
+        ctx!.globalAlpha = titleAlpha * 0.5;
+        ctx!.fillText(theme.label, W/2, titleY + 40);
+
+        ctx!.shadowBlur = 0;
+        ctx!.restore();
+
+        if (timer >= 35) { phase = "scan"; scanY = 0; scanAlpha = 0; timer = 0; }
+
+      } else if (phase === "scan") {
+        // Lặp lại title nhưng mờ dần
+        titleAlpha = Math.max(0, 1 - timer / 30);
+        ctx!.save();
+        ctx!.globalAlpha = titleAlpha;
+        ctx!.shadowColor = theme.color;
+        ctx!.shadowBlur = 20;
+        ctx!.fillStyle = "#ffffff";
+        ctx!.font = `900 ${Math.min(90, W / 8)}px 'Arial Black', sans-serif`;
+        ctx!.textAlign = "center";
+        ctx!.fillText(theme.label, W/2, titleY + 40);
+        ctx!.restore();
+
+        // Scan line quét từ trên xuống
+        scanY = (timer / 30) * H;
+        scanAlpha = Math.sin((timer / 30) * Math.PI) * 0.6;
+        const scanGrd = ctx!.createLinearGradient(0, scanY - 40, 0, scanY + 40);
+        scanGrd.addColorStop(0,   `${theme.glow}0)`);
+        scanGrd.addColorStop(0.4, `${theme.glow}${scanAlpha * 0.3})`);
+        scanGrd.addColorStop(0.5, `${theme.glow}${scanAlpha})`);
+        scanGrd.addColorStop(0.6, `${theme.glow}${scanAlpha * 0.3})`);
+        scanGrd.addColorStop(1,   `${theme.glow}0)`);
+        ctx!.fillStyle = scanGrd;
+        ctx!.fillRect(0, scanY - 40, W, 80);
+
+        if (timer >= 38) { phase = "fadeout"; timer = 0; }
+
+      } else if (phase === "fadeout") {
+        overallAlpha = Math.max(0, 1 - timer / 20);
+        ctx!.globalAlpha = overallAlpha;
+        // faint lingering glow
+        const fade = ctx!.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.6);
+        fade.addColorStop(0, `${theme.glow}${overallAlpha * 0.06})`);
+        fade.addColorStop(1, `${theme.glow}0)`);
+        ctx!.fillStyle = fade;
+        ctx!.fillRect(0, 0, W, H);
+        ctx!.globalAlpha = 1;
+
+        if (timer >= 20) {
+          ctx!.clearRect(0, 0, W, H);
+          return; // done — stop loop
+        }
+      }
+
+      animRef.current = requestAnimationFrame(tick);
+    }
+
+    animRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animRef.current);
+  }, [currentHash]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute", inset: 0, width: "100%", height: "100%",
+        zIndex: 5, pointerEvents: "none", display: "block",
+      }}
+    />
+  );
+}
 
 // ─── NÚT BẤM PHONG CÁCH VIỄN TƯỞNG ─────────────────────────────────────────
 function MenuButton({
@@ -424,7 +968,6 @@ function OrbitLine({ radius }: { radius: number }) {
 }
 
 // ─── TRỤC QUAY CHO HÀNH TINH ─────────────────────────────────────────────────
-// ✅ FIX: Lưu góc tích lũy vào anglesRef để UFO đọc cùng góc với hành tinh
 function OrbitGroup({
   speed,
   children,
@@ -440,7 +983,6 @@ function OrbitGroup({
   useFrame((_, delta) => {
     if (!groupRef.current) return;
     if (planetHash && anglesRef) {
-      // Tích lũy góc giống như UFO sẽ đọc
       anglesRef.current[planetHash] = (anglesRef.current[planetHash] ?? 0) + speed * delta;
       groupRef.current.rotation.y = anglesRef.current[planetHash];
     } else {
@@ -450,12 +992,15 @@ function OrbitGroup({
   return <group ref={groupRef}>{children}</group>;
 }
 
-// ─── ĐUÔI SÁNG UFO — KIỂU PHUN LỬA TÊN LỬA ──────────────────────────────────
-// ✅ THAY THẾ UFOTrail + UFOLightning bằng hiệu ứng phun lửa hình nón
-const TRAIL_RAW_MAX  = 80;   // độ sâu tối đa của ring buffer
-const TRAIL_STEPS    = 50;   // số điểm sau khi smooth bằng CatmullRom
-const TRAIL_MAX_W    = 2.8;  // bán kính tối đa của nón ở đuôi (world units)
-const TRAIL_OUTER_N  = 4;    // số đường outer (N/S/E/W)
+// ─── [NHIỆM VỤ 3] ULTRA UFO TRAIL ───────────────────────────────────────────
+// Vệt sáng: plasma core cực sáng, 8 outer cone lines, energy rings dọc trail,
+// 24 sparks hào quang, rainbow color shift theo tốc độ
+const TRAIL_RAW_MAX  = 120;
+const TRAIL_STEPS    = 80;
+const TRAIL_MAX_W    = 5.5;
+const TRAIL_OUTER_N  = 8;
+const SPARK_COUNT    = 24;
+const RING_COUNT     = 6;   // energy rings cắt ngang trail
 
 function RocketTrail({
   posRef,
@@ -466,26 +1011,22 @@ function RocketTrail({
   velRef: React.MutableRefObject<THREE.Vector3>;
   currentHash: string;
 }) {
-  // ── Ring buffer vị trí thô ──────────────────────────────────────────────
   const rawBuffer = useRef<THREE.Vector3[]>(
     Array.from({ length: TRAIL_RAW_MAX }, () => new THREE.Vector3())
   );
-  const rawCount       = useRef(0);
+  const rawCount        = useRef(0);
   const lastRecordedPos = useRef(new THREE.Vector3(Infinity, Infinity, Infinity));
-
-  // ── CatmullRom curve (tái sử dụng, không new mỗi frame) ────────────────
   const curve = useMemo(() => new THREE.CatmullRomCurve3([], false, "catmullrom", 0.5), []);
 
-  // ── Scratch vectors (tránh GC trong hot path) ───────────────────────────
   const _vel   = useRef(new THREE.Vector3());
   const _perpA = useRef(new THREE.Vector3());
   const _perpB = useRef(new THREE.Vector3());
   const _pt    = useRef(new THREE.Vector3());
+
   const outerDirs = useRef<THREE.Vector3[]>(
     Array.from({ length: TRAIL_OUTER_N }, () => new THREE.Vector3())
   );
 
-  // ── Helper tạo geometry với position + color ────────────────────────────
   const makeGeo = (n: number) => {
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
@@ -494,56 +1035,83 @@ function RocketTrail({
     return g;
   };
 
-  // ── Geometries: 1 core + TRAIL_OUTER_N outer lines ──────────────────────
+  // Geometries
   const coreGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
-  const outerGeos = useMemo(
-    () => Array.from({ length: TRAIL_OUTER_N }, () => makeGeo(TRAIL_STEPS)),
-    []
+  const core2Geo  = useMemo(() => makeGeo(TRAIL_STEPS), []); // second brighter core pass
+  const haloGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
+  const outerGeos = useMemo(() => Array.from({ length: TRAIL_OUTER_N }, () => makeGeo(TRAIL_STEPS)), []);
+  // Energy rings: each ring = small circle of 32 points
+  const RING_PTS  = 32;
+  const ringGeos  = useMemo(() => Array.from({ length: RING_COUNT }, () => makeGeo(RING_PTS + 1)), []);
+  const sparkGeo  = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(SPARK_COUNT * 3), 3));
+    g.setAttribute("color",    new THREE.BufferAttribute(new Float32Array(SPARK_COUNT * 3), 3));
+    g.setDrawRange(0, 0);
+    return g;
+  }, []);
+
+  // Materials
+  const coreMat = useMemo(() => new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 1.0,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+  const core2Mat = useMemo(() => new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 0.7,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+  const haloMat = useMemo(() => new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 0.55,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+  const outerMat = useMemo(() => new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 0.50,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+  const ringMat = useMemo(() => new THREE.LineBasicMaterial({
+    vertexColors: true, transparent: true, opacity: 0.75,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+  const sparkMat = useMemo(() => new THREE.PointsMaterial({
+    vertexColors: true, transparent: true, size: 1.4,
+    blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+  }), []);
+
+  const sparkState = useRef(
+    Array.from({ length: SPARK_COUNT }, () => ({
+      u: Math.random(),
+      offset: new THREE.Vector3((Math.random()-0.5)*4, (Math.random()-0.5)*4, (Math.random()-0.5)*4),
+      life: Math.random(),
+      speed: 0.25 + Math.random() * 0.75,
+    }))
   );
 
-  // ── Materials ────────────────────────────────────────────────────────────
-  const coreMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  }), []);
-
-  const outerMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.55,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  }), []);
-
-  // ── Reset khi đổi hành tinh ──────────────────────────────────────────────
   useEffect(() => {
     rawCount.current = 0;
     lastRecordedPos.current.set(Infinity, Infinity, Infinity);
     coreGeo.setDrawRange(0, 0);
+    core2Geo.setDrawRange(0, 0);
+    haloGeo.setDrawRange(0, 0);
     outerGeos.forEach((g) => g.setDrawRange(0, 0));
+    ringGeos.forEach((g) => g.setDrawRange(0, 0));
+    sparkGeo.setDrawRange(0, 0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentHash]);
 
-  // ── Frame loop ────────────────────────────────────────────────────────────
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     const worldPos = posRef.current;
     if (!worldPos) return;
 
     const t     = clock.getElapsedTime();
     const speed = velRef.current.length();
 
-    // Chỉ ghi điểm mới khi UFO di chuyển đủ xa (giảm jitter lúc đứng yên)
-    const MIN_DIST = 0.04;
+    const MIN_DIST = 0.03;
     if (worldPos.distanceTo(lastRecordedPos.current) > MIN_DIST) {
       if (rawCount.current < TRAIL_RAW_MAX) {
         rawBuffer.current[rawCount.current].copy(worldPos);
         rawCount.current++;
       } else {
-        for (let i = 0; i < TRAIL_RAW_MAX - 1; i++) {
-          rawBuffer.current[i].copy(rawBuffer.current[i + 1]);
-        }
+        for (let i = 0; i < TRAIL_RAW_MAX - 1; i++) rawBuffer.current[i].copy(rawBuffer.current[i + 1]);
         rawBuffer.current[TRAIL_RAW_MAX - 1].copy(worldPos);
       }
       lastRecordedPos.current.copy(worldPos);
@@ -551,109 +1119,308 @@ function RocketTrail({
 
     if (rawCount.current < 3) return;
 
-    // Chiều dài trail tỉ lệ với tốc độ
-    const speedRatio  = Math.min(speed / 0.35, 1.0);
-    const targetDepth = Math.max(6, Math.round(6 + speedRatio * (TRAIL_RAW_MAX - 6)));
+    const speedRatio  = Math.min(speed / 0.30, 1.0);
+    const targetDepth = Math.max(10, Math.round(10 + speedRatio * (TRAIL_RAW_MAX - 10)));
     const usedCount   = Math.min(rawCount.current, targetDepth);
     const offset      = rawCount.current - usedCount;
-
-    // activePts[0] = cũ nhất (đuôi), activePts[last] = UFO (mới nhất)
-    const activePts = rawBuffer.current.slice(offset, rawCount.current);
+    const activePts   = rawBuffer.current.slice(offset, rawCount.current);
     if (activePts.length < 3) return;
 
     curve.points = activePts;
     const steps = Math.min(TRAIL_STEPS, activePts.length * 4);
 
-    // ── Tính hướng vuông góc với vận tốc UFO ────────────────────────────
     _vel.current.copy(velRef.current);
     const velLen = _vel.current.length();
     if (velLen < 0.0005) return;
     _vel.current.divideScalar(velLen);
 
-    // Chọn vector "up" tham chiếu không song song với vận tốc
     const refUp = Math.abs(_vel.current.y) < 0.95
-      ? new THREE.Vector3(0, 1, 0)
-      : new THREE.Vector3(1, 0, 0);
-
+      ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
     _perpA.current.crossVectors(_vel.current, refUp).normalize();
     _perpB.current.crossVectors(_vel.current, _perpA.current).normalize();
 
-    // 4 hướng: +A, -A, +B, -B (tạo hình nón có tiết diện vuông)
-    outerDirs.current[0].copy(_perpA.current);
-    outerDirs.current[1].copy(_perpA.current).negate();
-    outerDirs.current[2].copy(_perpB.current);
-    outerDirs.current[3].copy(_perpB.current).negate();
+    for (let di = 0; di < TRAIL_OUTER_N; di++) {
+      const angle = (di / TRAIL_OUTER_N) * Math.PI * 2;
+      outerDirs.current[di]
+        .copy(_perpA.current).multiplyScalar(Math.cos(angle))
+        .addScaledVector(_perpB.current, Math.sin(angle));
+    }
 
-    // ── Ghi core line (đường trung tâm sáng) ─────────────────────────────
-    //    u = 0 → đuôi (cũ nhất), u = 1 → UFO (mới nhất)
-    const corePosAttr = coreGeo.attributes.position as THREE.BufferAttribute;
-    const coreColAttr = coreGeo.attributes.color    as THREE.BufferAttribute;
-
+    // ── PLASMA CORE 1 — white-hot centre ────────────────────────────────
+    const corePosA = coreGeo.attributes.position as THREE.BufferAttribute;
+    const coreColA = coreGeo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
-      const u  = i / (steps - 1);         // 0 = đuôi, 1 = UFO
+      const u  = i / (steps - 1);
       const pt = curve.getPoint(u, _pt.current);
-      // Độ sáng: mạnh gần UFO, tắt ở đuôi
-      const alpha = Math.pow(u, 0.9);
-
-      corePosAttr.setXYZ(i, pt.x, pt.y, pt.z);
-      // Màu: trắng-cyan sáng gần UFO → cyan tối ở đuôi
-      coreColAttr.setXYZ(i, alpha * 0.85, alpha * 0.98, alpha * 1.0);
+      corePosA.setXYZ(i, pt.x, pt.y, pt.z);
+      const a = Math.pow(u, 0.5);
+      // Rainbow hue cycle: cyan→violet→cyan based on time & position
+      const hue = (t * 0.3 + u * 0.5) % 1.0;
+      const r = a * (0.2 + 0.8 * Math.max(0, Math.sin(hue * Math.PI * 2)));
+      const g = a * (0.7 + 0.3 * Math.cos(hue * Math.PI * 2 + 1));
+      const b = a * 1.0;
+      coreColA.setXYZ(i, r, g, b);
     }
     coreGeo.setDrawRange(0, steps);
-    corePosAttr.needsUpdate = true;
-    coreColAttr.needsUpdate = true;
+    corePosA.needsUpdate = true; coreColA.needsUpdate = true;
 
-    // ── Ghi outer lines (hình nón mở rộng về phía đuôi) ──────────────────
+    // ── PLASMA CORE 2 — pure white near UFO ─────────────────────────────
+    const c2PosA = core2Geo.attributes.position as THREE.BufferAttribute;
+    const c2ColA = core2Geo.attributes.color    as THREE.BufferAttribute;
+    for (let i = 0; i < steps; i++) {
+      const u  = i / (steps - 1);
+      const pt = curve.getPoint(u, _pt.current);
+      c2PosA.setXYZ(i, pt.x, pt.y, pt.z);
+      const a = Math.pow(u, 0.3) * (1 - u * 0.6);
+      c2ColA.setXYZ(i, a, a, a); // pure white pulse near head
+    }
+    core2Geo.setDrawRange(0, steps);
+    c2PosA.needsUpdate = true; c2ColA.needsUpdate = true;
+
+    // ── HALO — wide translucent glow ────────────────────────────────────
+    const haloPosA = haloGeo.attributes.position as THREE.BufferAttribute;
+    const haloColA = haloGeo.attributes.color    as THREE.BufferAttribute;
+    for (let i = 0; i < steps; i++) {
+      const u   = i / (steps - 1);
+      const pt  = curve.getPoint(u, _pt.current);
+      const bob = Math.sin(t * 10 + u * 15) * 0.35 * (1 - u);
+      haloPosA.setXYZ(i, pt.x + _perpA.current.x * bob, pt.y + bob, pt.z + _perpA.current.z * bob);
+      const a = Math.pow(u, 0.8) * 0.9;
+      haloColA.setXYZ(i, a * 0.1, a * 0.9, a * 1.0);
+    }
+    haloGeo.setDrawRange(0, steps);
+    haloPosA.needsUpdate = true; haloColA.needsUpdate = true;
+
+    // ── OUTER CONE LINES (8 lines, twisted, color-shifting) ─────────────
     outerGeos.forEach((geo, di) => {
-      const dir     = outerDirs.current[di];
+      const dir      = outerDirs.current[di];
+      const posAttr  = geo.attributes.position as THREE.BufferAttribute;
+      const colAttr  = geo.attributes.color    as THREE.BufferAttribute;
+      const phase    = di * (Math.PI * 2 / TRAIL_OUTER_N);
+      for (let i = 0; i < steps; i++) {
+        const u      = i / (steps - 1);
+        const pt     = curve.getPoint(u, _pt.current);
+        const coneU  = 1 - u;
+        const radius = TRAIL_MAX_W * Math.pow(coneU, 0.45)
+          * (0.65 + 0.35 * Math.sin(t * 16 + u * 10 + phase));
+        const twist  = coneU * 0.5 * Math.sin(t * 4 + phase);
+        const td = new THREE.Vector3(
+          dir.x * Math.cos(twist) - dir.z * Math.sin(twist),
+          dir.y,
+          dir.x * Math.sin(twist) + dir.z * Math.cos(twist)
+        );
+        posAttr.setXYZ(i, pt.x + td.x * radius, pt.y + td.y * radius, pt.z + td.z * radius);
+        // Alternating: teal / purple / gold outer rays
+        const a = Math.pow(u, 1.1) * 0.65;
+        const colorCycle = (di % 3);
+        const r = a * (colorCycle === 2 ? 1.0 : colorCycle === 1 ? 0.5 : 0.05);
+        const g = a * (colorCycle === 2 ? 0.8 : colorCycle === 1 ? 0.1 : 0.8);
+        const b = a * (colorCycle === 2 ? 0.0 : colorCycle === 1 ? 1.0 : 1.0);
+        colAttr.setXYZ(i, r, g, b);
+      }
+      geo.setDrawRange(0, steps);
+      (geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
+    });
+
+    // ── ENERGY RINGS — circles slicing through the trail ─────────────────
+    ringGeos.forEach((geo, ri) => {
       const posAttr = geo.attributes.position as THREE.BufferAttribute;
       const colAttr = geo.attributes.color    as THREE.BufferAttribute;
-
-      for (let i = 0; i < steps; i++) {
-        const u  = i / (steps - 1);       // 0 = đuôi, 1 = UFO
-        const pt = curve.getPoint(u, _pt.current);
-
-        // Bán kính nón: lớn ở đuôi (u=0), thu về 0 ở UFO (u=1)
-        const coneU  = 1 - u;
-        const radius = TRAIL_MAX_W * Math.pow(coneU, 0.60);
-        // Shimmer nhẹ theo thời gian
-        const shimmer = 1.0 + 0.06 * Math.sin(t * 18 + i * 0.6 + di * 1.57);
-
-        const ox = dir.x * radius * shimmer;
-        const oy = dir.y * radius * shimmer;
-        const oz = dir.z * radius * shimmer;
-
-        posAttr.setXYZ(i, pt.x + ox, pt.y + oy, pt.z + oz);
-
-        // Màu outer: cyan nhạt, mờ dần về đuôi
-        const alpha = Math.pow(u, 1.1) * 0.55;
-        colAttr.setXYZ(i, alpha * 0.05, alpha * 0.72, alpha * 1.0);
+      // Each ring travels along the trail animated
+      const ringU = ((t * 0.45 + ri / RING_COUNT) % 1.0);
+      if (ringU < 0.02 || ringU > 0.98) { geo.setDrawRange(0, 0); return; }
+      const ringPt = curve.getPoint(ringU, _pt.current);
+      // Ring radius grows toward tail
+      const rRadius = TRAIL_MAX_W * (1 - ringU) * 1.2 * (0.8 + 0.2 * Math.sin(t * 8 + ri));
+      // Ring color pulses — each ring gets own hue
+      const hue = (ri / RING_COUNT + t * 0.1) % 1.0;
+      const rr = 0.3 + 0.7 * Math.sin(hue * Math.PI * 2);
+      const rg = 0.5 + 0.5 * Math.cos(hue * Math.PI * 2);
+      const rb = 1.0;
+      const alpha = (1 - ringU) * 0.9;
+      for (let pi = 0; pi <= RING_PTS; pi++) {
+        const angle = (pi / RING_PTS) * Math.PI * 2;
+        const px = ringPt.x + _perpA.current.x * Math.cos(angle) * rRadius + _perpB.current.x * Math.sin(angle) * rRadius;
+        const py = ringPt.y + _perpA.current.y * Math.cos(angle) * rRadius + _perpB.current.y * Math.sin(angle) * rRadius;
+        const pz = ringPt.z + _perpA.current.z * Math.cos(angle) * rRadius + _perpB.current.z * Math.sin(angle) * rRadius;
+        posAttr.setXYZ(pi, px, py, pz);
+        const fade = alpha * (0.7 + 0.3 * Math.sin(t * 20 + pi * 0.5));
+        colAttr.setXYZ(pi, rr * fade, rg * fade, rb * fade);
       }
-
-      geo.setDrawRange(0, steps);
-      posAttr.needsUpdate = true;
-      colAttr.needsUpdate = true;
+      geo.setDrawRange(0, RING_PTS + 1);
+      (geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
     });
+
+    // ── SPARKS — 24 glittering particles ────────────────────────────────
+    const spkPos = sparkGeo.attributes.position as THREE.BufferAttribute;
+    const spkCol = sparkGeo.attributes.color    as THREE.BufferAttribute;
+    let   spkDrawn = 0;
+    sparkState.current.forEach((sp, si) => {
+      sp.life += delta * sp.speed * 1.4;
+      if (sp.life > 1.0) {
+        sp.life = 0;
+        sp.u    = Math.random() * 0.9;
+        sp.offset.set(
+          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
+          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
+          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
+        );
+        sp.speed = 0.25 + Math.random() * 0.75;
+      }
+      if (sp.u >= 0 && sp.u <= 1 && activePts.length >= 3) {
+        const pt   = curve.getPoint(sp.u, _pt.current);
+        const fade = (1 - sp.life) * (1 - sp.u * 0.5);
+        spkPos.setXYZ(spkDrawn,
+          pt.x + sp.offset.x * sp.life * 0.6,
+          pt.y + sp.offset.y * sp.life * 0.6,
+          pt.z + sp.offset.z * sp.life * 0.6
+        );
+        const flash = fade * (0.5 + 0.5 * Math.sin(t * 40 + si * 1.7));
+        // sparks cycle: white / cyan / violet
+        const sc = si % 3;
+        spkCol.setXYZ(spkDrawn,
+          flash * (sc === 0 ? 1.0 : sc === 2 ? 0.8 : 0.1),
+          flash * (sc === 0 ? 1.0 : sc === 2 ? 0.1 : 1.0),
+          flash * 1.0
+        );
+        spkDrawn++;
+      }
+    });
+    sparkGeo.setDrawRange(0, spkDrawn);
+    spkPos.needsUpdate = true;
+    spkCol.needsUpdate = true;
   });
 
   return (
     <>
-      {/* Core: trắng-cyan sáng */}
       {/* @ts-ignore */}
-      <line geometry={coreGeo} material={coreMat} />
-      {/* Outer cone: cyan mờ tạo hiệu ứng phun lửa */}
+      <line geometry={coreGeo}   material={coreMat}  />
+      {/* @ts-ignore */}
+      <line geometry={core2Geo}  material={core2Mat} />
+      {/* @ts-ignore */}
+      <line geometry={haloGeo}   material={haloMat}  />
       {outerGeos.map((geo, i) => (
         // @ts-ignore
-        <line key={i} geometry={geo} material={outerMat} />
+        <line key={`o${i}`} geometry={geo} material={outerMat} />
+      ))}
+      {ringGeos.map((geo, i) => (
+        // @ts-ignore
+        <line key={`r${i}`} geometry={geo} material={ringMat} />
+      ))}
+      {/* @ts-ignore */}
+      <points geometry={sparkGeo} material={sparkMat} />
+    </>
+  );
+}
+
+// ─── UFO ERROR EFFECT — electric bolts + red shockwave khi trả lời sai ──────
+function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: React.MutableRefObject<THREE.Vector3> }) {
+  const BOLT_COUNT = 8;
+  const boltGeos = useMemo(() =>
+    Array.from({ length: BOLT_COUNT }, () => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(12 * 3), 3));
+      g.setDrawRange(0, 0);
+      return g;
+    }), []
+  );
+  const boltMat = useMemo(() => new THREE.LineBasicMaterial({
+    color: new THREE.Color(1, 0.05, 0.05),
+    transparent: true, opacity: 0.95,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+
+  const shockGeos = useMemo(() =>
+    Array.from({ length: 3 }, () => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(64 * 3), 3));
+      g.setDrawRange(0, 0);
+      return g;
+    }), []
+  );
+  const shockMat = useMemo(() => new THREE.LineBasicMaterial({
+    color: new THREE.Color(1, 0.08, 0.08),
+    transparent: true, opacity: 0.85,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }), []);
+
+  const errorTimer = useRef(0);
+  const wasShaking = useRef(false);
+
+  useFrame(({ clock }, delta) => {
+    if (!wasShaking.current && isShaking) errorTimer.current = 0;
+    wasShaking.current = isShaking;
+
+    if (!isShaking) {
+      boltGeos.forEach((g) => g.setDrawRange(0, 0));
+      shockGeos.forEach((g) => g.setDrawRange(0, 0));
+      return;
+    }
+    errorTimer.current += delta;
+    const t = clock.getElapsedTime();
+    const ox = ufoPos.current.x;
+    const oy = ufoPos.current.y;
+    const oz = ufoPos.current.z;
+
+    // Electric bolts — jagged lightning radiating out
+    boltGeos.forEach((geo, bi) => {
+      const posA = geo.attributes.position as THREE.BufferAttribute;
+      const baseAngle = (bi / BOLT_COUNT) * Math.PI * 2 + t * 15;
+      const segments = 11;
+      posA.setXYZ(0, ox, oy, oz);
+      for (let si = 1; si <= segments; si++) {
+        const r      = (si / segments) * (12 + 5 * Math.sin(t * 40 + bi * 1.4));
+        const jitter = si > 0 && si < segments ? (Math.random() - 0.5) * 5 : 0;
+        const a      = baseAngle + jitter * 0.5;
+        posA.setXYZ(si,
+          ox + Math.cos(a) * r + jitter,
+          oy + Math.sin(t * 25 + bi) * r * 0.3 + jitter * 0.5,
+          oz + Math.sin(a) * r + jitter
+        );
+      }
+      geo.setDrawRange(0, segments + 1);
+      posA.needsUpdate = true;
+    });
+
+    // Expanding red shockwave rings
+    shockGeos.forEach((geo, ri) => {
+      const delay = ri * 0.07;
+      const et = Math.max(0, errorTimer.current - delay);
+      const ringR = et * 50;
+      if (ringR <= 0.5) { geo.setDrawRange(0, 0); return; }
+      const posA = geo.attributes.position as THREE.BufferAttribute;
+      for (let pi = 0; pi < 64; pi++) {
+        const angle = (pi / 64) * Math.PI * 2;
+        posA.setXYZ(pi,
+          ox + Math.cos(angle) * ringR,
+          oy + Math.sin(t * 6 + ri) * 2,
+          oz + Math.sin(angle) * ringR
+        );
+      }
+      geo.setDrawRange(0, 64);
+      posA.needsUpdate = true;
+    });
+    shockMat.opacity = Math.max(0, 0.9 - errorTimer.current * 2.0);
+    boltMat.opacity  = Math.max(0, 1.0 - errorTimer.current * 1.5);
+  });
+
+  return (
+    <>
+      {boltGeos.map((geo, i) => (
+        // @ts-ignore
+        <line key={`bolt${i}`} geometry={geo} material={boltMat} />
+      ))}
+      {shockGeos.map((geo, i) => (
+        // @ts-ignore
+        <line key={`shock${i}`} geometry={geo} material={shockMat} />
       ))}
     </>
   );
 }
 
 // ─── MÔ HÌNH ĐĨA BAY (UFO) ───────────────────────────────────────────────────
-// ✅ FIX: Đọc góc tích lũy từ anglesRef → luôn đồng bộ với hành tinh
-// ✅ FIX: Đứng thẳng trên đầu hành tinh (không tự quỹ đạo riêng nữa)
-// ✅ FIX: Scale UFO khác nhau cho từng hành tinh
 function UFO({
   currentHash,
   isShaking,
@@ -711,20 +1478,16 @@ function UFO({
     if (!ufoRef.current) return;
     const time = clock.getElapsedTime();
 
-    // ── Tính vị trí mục tiêu ────────────────────────────────────────────
-    _target.current.set(0, 30, 80); // mặc định: overview
+    _target.current.set(0, 30, 80);
 
     if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
-      const cfg = ORBIT_CONFIG[currentHash];
-      // ✅ Đọc góc tích lũy từ OrbitGroup (cùng góc với hành tinh thật)
-      const angle   = anglesRef.current[currentHash] ?? 0;
+      const cfg   = ORBIT_CONFIG[currentHash];
+      const angle = anglesRef.current[currentHash] ?? 0;
       const planetX = Math.sin(angle) * cfg.radius;
       const planetZ = Math.cos(angle) * cfg.radius;
-      // UFO đứng thẳng ngay trên đỉnh hành tinh
       _target.current.set(planetX, cfg.ufoHeight, planetZ);
     }
 
-    // ── Snap ngay khi đổi hành tinh (không kéo qua khoảng trống) ────────
     if (shouldSnap.current) {
       ufoRef.current.position.copy(_target.current);
       prevPosition.current.copy(_target.current);
@@ -732,18 +1495,13 @@ function UFO({
       shouldSnap.current = false;
     }
 
-    // ── Lerp mượt về target ──────────────────────────────────────────────
     prevPosition.current.copy(ufoRef.current.position);
     ufoRef.current.position.lerp(_target.current, 0.10);
-
-    // ── Tính vận tốc để banking ──────────────────────────────────────────
     velocity.current.subVectors(ufoRef.current.position, prevPosition.current);
 
-    // ── Bob lên xuống + quay ─────────────────────────────────────────────
     ufoRef.current.position.y += Math.sin(time * 2.2) * 0.09;
     ufoRef.current.rotation.y += 0.022;
 
-    // ── Banking (nghiêng theo hướng di chuyển) ───────────────────────────
     const targetBankZ = -velocity.current.x * 0.55;
     const targetBankX = -velocity.current.z * 0.55;
     smoothedBank.current.x = THREE.MathUtils.lerp(smoothedBank.current.x, targetBankX, 0.08);
@@ -751,19 +1509,16 @@ function UFO({
     ufoRef.current.rotation.x = smoothedBank.current.x;
     ufoRef.current.rotation.z = smoothedBank.current.z;
 
-    // ── Rung lắc khi trả lời sai ─────────────────────────────────────────
     if (isShaking) {
       ufoRef.current.position.x += (Math.random() - 0.5) * 4;
       ufoRef.current.position.y += (Math.random() - 0.5) * 4;
       ufoRef.current.position.z += (Math.random() - 0.5) * 4;
     }
 
-    // ── Xuất vị trí & vận tốc để trail dùng ─────────────────────────────
     worldPosRef.current.copy(ufoRef.current.position);
     velWorldRef.current.copy(velocity.current);
   });
 
-  // Scale UFO phù hợp với từng hành tinh
   const ufoScale =
     currentHash !== "#overview" && ORBIT_CONFIG[currentHash]
       ? ORBIT_CONFIG[currentHash].ufoScale
@@ -781,8 +1536,9 @@ function UFO({
   );
 }
 
-// ─── CAMERA CONTROLLER ───────────────────────────────────────────────────────
-// ✅ FIX: Dùng anglesRef để camera cũng đồng bộ với góc hành tinh
+// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER (FIX CINEMATIC LOCK) ────────────────────
+// Thêm: khi isCinematic đổi từ true→false, reset isUserDragging để camera
+// không bị kẹt ở vị trí cinematic. Dùng ref `cinematicWasActive` để detect edge.
 function CameraController({
   currentHash,
   isCinematic,
@@ -793,17 +1549,29 @@ function CameraController({
   anglesRef: React.MutableRefObject<Record<string, number>>;
 }) {
   const { camera, controls } = useThree() as any;
-  const isUserDragging = useRef(false);
-  const orbitConfig    = useMemo(() => ORBIT_CONFIG, []);
+  const isUserDragging   = useRef(false);
+  const cinematicWasOn   = useRef(false);        // ← NEW: track previous cinematic state
+  const orbitConfig      = useMemo(() => ORBIT_CONFIG, []);
 
   useEffect(() => {
     if (!controls) return;
     const onStart = () => { isUserDragging.current = true; };
+    const onEnd   = () => { /* keep dragging true until hash changes */ };
     controls.addEventListener("start", onStart);
     return () => controls.removeEventListener("start", onStart);
   }, [controls]);
 
+  // Reset drag lock on hash change
   useEffect(() => { isUserDragging.current = false; }, [currentHash]);
+
+  // ── [FIX] Khi cinematic vừa tắt → bỏ khoá camera ───────────────────────
+  useEffect(() => {
+    if (!isCinematic && cinematicWasOn.current) {
+      // Cinematic vừa bị tắt → cho phép auto-follow lại
+      isUserDragging.current = false;
+    }
+    cinematicWasOn.current = isCinematic;
+  }, [isCinematic]);
 
   useFrame((state) => {
     if (!controls) return;
@@ -819,12 +1587,13 @@ function CameraController({
       return;
     }
 
+    // ── Khi KHÔNG cinematic: luôn cho phép OrbitControls hoạt động ──────
+    // Chỉ auto-move camera khi user chưa drag (isUserDragging = false)
     let targetCenter = new THREE.Vector3(0, 0, 0);
     let targetCamPos = new THREE.Vector3(250, 150, 500);
 
     if (currentHash !== "#overview" && orbitConfig[currentHash]) {
       const cfg   = orbitConfig[currentHash];
-      // ✅ Đọc góc tích lũy để camera follow đúng hành tinh
       const angle = anglesRef.current[currentHash] ?? 0;
       const px    = Math.sin(angle) * cfg.radius;
       const pz    = Math.cos(angle) * cfg.radius;
@@ -832,10 +1601,14 @@ function CameraController({
       targetCamPos.set(px + cfg.camOffset[0], cfg.camOffset[1], pz + cfg.camOffset[2]);
     }
 
+    // Target (orbit pivot) always follows planet so you can orbit around it
     controls.target.lerp(targetCenter, 0.06);
+
+    // Only move camera position if user hasn't manually dragged
     if (!isUserDragging.current) {
       camera.position.lerp(targetCamPos, 0.04);
     }
+
     controls.update();
   });
 
@@ -854,7 +1627,6 @@ export default function SolarSystem() {
   const ufoWorldPos = useRef(new THREE.Vector3());
   const ufoVelWorld = useRef(new THREE.Vector3());
 
-  // ✅ Bộ nhớ góc tích lũy dùng chung giữa OrbitGroup, UFO và Camera
   const planetAngles = useRef<Record<string, number>>({
     "#mercury": 0,
     "#venus":   0,
@@ -900,199 +1672,216 @@ export default function SolarSystem() {
   };
 
   return (
-    //Trang thêm
-   <>
-    <Head>
+    <>
+      <Head>
         <title>Solar System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-    <div
-      onWheel={handleWheel}
-      style={{
-        width: "100vw", height: "100vh",
-        backgroundImage: "url(/icons/b2.jpg)",
-        backgroundSize: "cover", backgroundPosition: "center",
-        backgroundRepeat: "no-repeat", overflow: "hidden", position: "relative",
-      }}
-    >
-      <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
-        <Suspense fallback={null}>
-          <PerspectiveCamera makeDefault fov={50} far={10000} />
-          <OrbitControls
-            makeDefault
-            enablePan={false}
-            minDistance={10}
-            maxDistance={3000}
-            enableDamping
-            dampingFactor={0.06}
-            rotateSpeed={0.8}
-          />
-          <CameraController
-            currentHash={currentHash}
-            isCinematic={isCinematic}
-            anglesRef={planetAngles}
-          />
-
-          {/* ── ÁNH SÁNG ── */}
-          <ambientLight intensity={0.1} />
-          <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
-
-          {/* ── SAO NỀN ── */}
-          <Stars radius={3000} depth={150} count={20000} factor={50} saturation={1} fade speed={1} />
-
-          {/* ── MẶT TRỜI ── */}
-          <Sun isActive={currentHash === "#overview"} />
-
-          {/* ── ĐĨA BAY + ĐUÔI PHUN LỬA ── */}
-          <UFO
-            currentHash={currentHash}
-            isShaking={isShaking}
-            worldPosRef={ufoWorldPos}
-            velWorldRef={ufoVelWorld}
-            anglesRef={planetAngles}
-          />
-          {/* ✅ RocketTrail thay thế UFOTrail + xóa UFOLightning */}
-          <RocketTrail
-            posRef={ufoWorldPos}
-            velRef={ufoVelWorld}
-            currentHash={currentHash}
-          />
-
-          {/* ── QUỸ ĐẠO MỜ ── */}
-          <OrbitLine radius={80}   />
-          <OrbitLine radius={140}  />
-          <OrbitLine radius={210}  />
-          <OrbitLine radius={300}  />
-          <OrbitLine radius={480}  />
-          <OrbitLine radius={680}  />
-          <OrbitLine radius={880}  />
-          <OrbitLine radius={1050} />
-
-          {/* ── HÀNH TINH — truyền planetHash + anglesRef để OrbitGroup đồng bộ góc ── */}
-          <OrbitGroup speed={0.50 * solarSpeed} planetHash="#mercury" anglesRef={planetAngles}>
-            <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mercury")} />
-          </OrbitGroup>
-          <OrbitGroup speed={0.35 * solarSpeed} planetHash="#venus" anglesRef={planetAngles}>
-            <Venus   isActive={currentHash === "#venus"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#venus")}   />
-          </OrbitGroup>
-          <OrbitGroup speed={0.25 * solarSpeed} planetHash="#earth" anglesRef={planetAngles}>
-            <Earth   isActive={currentHash === "#earth"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#earth")}   />
-          </OrbitGroup>
-          <OrbitGroup speed={0.20 * solarSpeed} planetHash="#mars" anglesRef={planetAngles}>
-            <Mars    isActive={currentHash === "#mars"}    setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mars")}    />
-          </OrbitGroup>
-
-          {/* Vành đai tiểu hành tinh */}
-          <AsteroidBelt count={1200} innerRadius={360} outerRadius={420} speedFactor={0.3} />
-
-          <OrbitGroup speed={0.10 * solarSpeed} planetHash="#jupiter" anglesRef={planetAngles}>
-            <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#jupiter")} />
-          </OrbitGroup>
-          <OrbitGroup speed={0.08 * solarSpeed} planetHash="#saturn" anglesRef={planetAngles}>
-            <Saturn  isActive={currentHash === "#saturn"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#saturn")}  />
-          </OrbitGroup>
-          <OrbitGroup speed={0.05 * solarSpeed} planetHash="#uranus" anglesRef={planetAngles}>
-            <Uranus  isActive={currentHash === "#uranus"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#uranus")}  />
-          </OrbitGroup>
-          <OrbitGroup speed={0.03 * solarSpeed} planetHash="#neptune" anglesRef={planetAngles}>
-            <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#neptune")} />
-          </OrbitGroup>
-
-          {/* Vành đai Kuiper */}
-          <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
-
-          {/* ── HIỆU ỨNG HẬU KỲ ── */}
-          <EffectComposer>
-            <Bloom
-              intensity={bloomIntensity}
-              luminanceThreshold={0.2}
-              mipmapBlur
-              radius={0.5}
-            />
-          </EffectComposer>
-          {/* DÁN HIỆU ỨNG VÀO ĐÂY */}
-          <BackgroundEffects />
-        </Suspense>
-      </Canvas>
-
-      {/* ── HUD CONTROLS ── */}
-      <HUDControls
-        solarSpeed={solarSpeed}
-        setSolarSpeed={setSolarSpeed}
-        bloomIntensity={bloomIntensity}
-        setBloomIntensity={setBloomIntensity}
-        isCinematic={isCinematic}
-        setIsCinematic={setIsCinematic}
-      />
-
-      {/* ── BẢNG THÔNG TIN ── */}
-      {currentHash !== "#overview" && (
-        <PlanetInfoPanel
-          currentHash={currentHash}
-          onCorrect={handleCorrectAnswer}
-          onWrong={handleWrongAnswer}
-        />
-      )}
-
-      {/* ── NÚT BACK TO START ── */}
-      <button
-        onClick={() => (window.location.hash = "#overview")}
-        style={{
-          position: "fixed", bottom: "40px", right: "40px", zIndex: 100,
-          padding: "10px 24px",
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          color: "white",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
-          borderRadius: "99px",
-          cursor: "pointer",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        BACK TO START
-      </button>
-
-      {/* ── THANH ĐIỀU HƯỚNG DƯỚI CÙNG ── */}
       <div
+        onWheel={handleWheel}
         style={{
-          position: "fixed", bottom: "20px", left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex", gap: "10px",
-          zIndex: 100, padding: "10px",
-          background: "rgba(0, 0, 0, 0.5)",
-          backdropFilter: "blur(10px)",
-          borderRadius: "50px",
-          border: "1px solid rgba(0, 243, 255, 0.2)",
-          boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)",
+          width: "100vw", height: "100vh",
+          overflow: "hidden", position: "relative",
+          background: "#01020a",   // fallback colour (canvas covers it)
         }}
       >
-        {Object.keys(ORBIT_CONFIG).map((hash) => (
-          <button
-            key={hash}
-            onClick={() => (window.location.hash = hash)}
+        {/* ── [NHIỆM VỤ 1] Animated Background Canvas ── */}
+        <AnimatedBackground />
+
+        {/* Three.js canvas must be transparent so background shows through */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+          <Canvas
+            gl={{ antialias: true, alpha: true }}   // ← alpha:true để trong suốt
+            style={{ background: "transparent" }}
+            dpr={[1, 2]}
+          >
+            <Suspense fallback={null}>
+              <PerspectiveCamera makeDefault fov={50} far={10000} />
+              <OrbitControls
+                makeDefault
+                enablePan={false}
+                minDistance={10}
+                maxDistance={3000}
+                enableDamping
+                dampingFactor={0.06}
+                rotateSpeed={0.8}
+              />
+              <CameraController
+                currentHash={currentHash}
+                isCinematic={isCinematic}
+                anglesRef={planetAngles}
+              />
+
+              <ambientLight intensity={0.1} />
+              <pointLight position={[0, 0, 0]} intensity={20} color="#fff8e1" distance={3000} />
+
+              {/* Stars (Three.js layer — adds depth on top of CSS canvas) */}
+              <Stars radius={3000} depth={150} count={10000} factor={50} saturation={1} fade speed={0.4} />
+
+              <Sun isActive={currentHash === "#overview"} />
+
+              <UFO
+                currentHash={currentHash}
+                isShaking={isShaking}
+                worldPosRef={ufoWorldPos}
+                velWorldRef={ufoVelWorld}
+                anglesRef={planetAngles}
+              />
+              <UFOErrorEffect isShaking={isShaking} ufoPos={ufoWorldPos} />
+              <RocketTrail
+                posRef={ufoWorldPos}
+                velRef={ufoVelWorld}
+                currentHash={currentHash}
+              />
+
+              <OrbitLine radius={80}   />
+              <OrbitLine radius={140}  />
+              <OrbitLine radius={210}  />
+              <OrbitLine radius={300}  />
+              <OrbitLine radius={480}  />
+              <OrbitLine radius={680}  />
+              <OrbitLine radius={880}  />
+              <OrbitLine radius={1050} />
+
+              <OrbitGroup speed={0.50 * solarSpeed} planetHash="#mercury" anglesRef={planetAngles}>
+                <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mercury")} />
+              </OrbitGroup>
+              <OrbitGroup speed={0.35 * solarSpeed} planetHash="#venus" anglesRef={planetAngles}>
+                <Venus   isActive={currentHash === "#venus"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#venus")}   />
+              </OrbitGroup>
+              <OrbitGroup speed={0.25 * solarSpeed} planetHash="#earth" anglesRef={planetAngles}>
+                <Earth   isActive={currentHash === "#earth"}   setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#earth")}   />
+              </OrbitGroup>
+              <OrbitGroup speed={0.20 * solarSpeed} planetHash="#mars" anglesRef={planetAngles}>
+                <Mars    isActive={currentHash === "#mars"}    setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mars")}    />
+              </OrbitGroup>
+
+              <AsteroidBelt count={1200} innerRadius={360} outerRadius={420} speedFactor={0.3} />
+
+              <OrbitGroup speed={0.10 * solarSpeed} planetHash="#jupiter" anglesRef={planetAngles}>
+                <Jupiter isActive={currentHash === "#jupiter"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#jupiter")} />
+              </OrbitGroup>
+              <OrbitGroup speed={0.08 * solarSpeed} planetHash="#saturn" anglesRef={planetAngles}>
+                <Saturn  isActive={currentHash === "#saturn"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#saturn")}  />
+              </OrbitGroup>
+              <OrbitGroup speed={0.05 * solarSpeed} planetHash="#uranus" anglesRef={planetAngles}>
+                <Uranus  isActive={currentHash === "#uranus"}  setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#uranus")}  />
+              </OrbitGroup>
+              <OrbitGroup speed={0.03 * solarSpeed} planetHash="#neptune" anglesRef={planetAngles}>
+                <Neptune isActive={currentHash === "#neptune"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#neptune")} />
+              </OrbitGroup>
+
+              <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
+
+              <EffectComposer>
+                <Bloom
+                  intensity={bloomIntensity}
+                  luminanceThreshold={0.2}
+                  mipmapBlur
+                  radius={0.5}
+                />
+              </EffectComposer>
+              <BackgroundEffects />
+            </Suspense>
+          </Canvas>
+        </div>
+
+        {/* ── [NHIỆM VỤ 2] Planet arrival overlay ── */}
+        <PlanetArrivalEffect currentHash={currentHash} />
+
+        {/* Wrong answer red screen flash */}
+        {isShaking && (
+          <div
             style={{
-              padding: "8px 15px",
-              backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
-              color: currentHash === hash ? "#00f3ff" : "#fff",
-              border: "none",
-              borderRadius: "20px",
-              fontSize: "12px", fontWeight: "bold",
-              cursor: "pointer", textTransform: "uppercase",
-              transition: "all 0.3s ease",
-              borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
+              position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none",
+              background: "radial-gradient(ellipse at center, rgba(255,0,0,0.35) 0%, rgba(200,0,0,0.15) 50%, transparent 80%)",
+              animation: "none",
+              boxShadow: "inset 0 0 120px rgba(255,0,0,0.6)",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)"; }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor =
-                currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
+          />
+        )}
+
+        {/* HUD and UI above the canvas */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
+          <div style={{ pointerEvents: "auto" }}>
+            <HUDControls
+              solarSpeed={solarSpeed}
+              setSolarSpeed={setSolarSpeed}
+              bloomIntensity={bloomIntensity}
+              setBloomIntensity={setBloomIntensity}
+              isCinematic={isCinematic}
+              setIsCinematic={setIsCinematic}
+            />
+          </div>
+
+          {currentHash !== "#overview" && (
+            <div style={{ pointerEvents: "auto" }}>
+              <PlanetInfoPanel
+                currentHash={currentHash}
+                onCorrect={handleCorrectAnswer}
+                onWrong={handleWrongAnswer}
+              />
+            </div>
+          )}
+
+          <button
+            onClick={() => (window.location.hash = "#overview")}
+            style={{
+              position: "fixed", bottom: "40px", right: "40px",
+              padding: "10px 24px",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              color: "white",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "99px",
+              cursor: "pointer",
+              backdropFilter: "blur(10px)",
+              pointerEvents: "auto",
             }}
           >
-            {hash.replace("#", "")}
+            BACK TO START
           </button>
-        ))}
+
+          <div
+            style={{
+              position: "fixed", bottom: "20px", left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex", gap: "10px",
+              padding: "10px",
+              background: "rgba(0, 0, 0, 0.5)",
+              backdropFilter: "blur(10px)",
+              borderRadius: "50px",
+              border: "1px solid rgba(0, 243, 255, 0.2)",
+              boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)",
+              pointerEvents: "auto",
+            }}
+          >
+            {Object.keys(ORBIT_CONFIG).map((hash) => (
+              <button
+                key={hash}
+                onClick={() => (window.location.hash = hash)}
+                style={{
+                  padding: "8px 15px",
+                  backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
+                  color: currentHash === hash ? "#00f3ff" : "#fff",
+                  border: "none",
+                  borderRadius: "20px",
+                  fontSize: "12px", fontWeight: "bold",
+                  cursor: "pointer", textTransform: "uppercase",
+                  transition: "all 0.3s ease",
+                  borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)"; }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
+                }}
+              >
+                {hash.replace("#", "")}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  //Trang thêm
     </>
-    //======
   );
 }
