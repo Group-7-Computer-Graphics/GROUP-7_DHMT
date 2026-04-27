@@ -16,7 +16,8 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";   
 import Venus from "../src/components/planets/venus";      
 import StarBackground from "../src/components/StarBackground"; // Giả sử đường dẫn này, ông chỉnh lại cho đúng nhé
-
+import ShootingStars from "../src/components/ShootingStars";
+import FloatingStars from "../src/components/FloatingStars";
 // --- 1. COMPONENT VẼ ĐƯỜNG QUỸ ĐẠO ---
 function OrbitLine({ radius }: { radius: number }) {
   const points = useMemo(() => {
@@ -163,7 +164,8 @@ export default function SolarSystem() {
           <StarBackground />
           
           <Stars radius={3000} depth={150} count={20000} factor={50} saturation={1} fade speed={1} />
-
+          <ShootingStars count={4} />
+          <FloatingStars count={4000} />
           <Sun isActive={currentHash === "#overview"} />
 
           {/* QUỸ ĐẠO MỜ */}
