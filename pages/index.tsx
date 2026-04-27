@@ -1631,23 +1631,26 @@ export default function SolarSystem() {
         <title>Solar System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* [NHIỆM VỤ 1]: CSS KEYFRAMES CHO NỀN CHUYỂN ĐỘNG TỪ TỪ */}
+        {/* ĐÃ SỬA: CSS KEYFRAMES CHO NỀN TRÔI NGANG LIÊN TỤC */}
         <style>{`
-          @keyframes panBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+          @keyframes panBackgroundInfinite {
+            from { background-position: 0px center; }
+            to { background-position: -5000px center; } /* Di chuyển tọa độ nền sang trái */
           }
         `}</style>
       </Head>
       <div
         onWheel={handleWheel}
         style={{
+          position: "absolute",
+          top: 0, left: 0,
           width: "100vw", height: "100vh",
-          overflow: "hidden", position: "relative",
+          overflow: "hidden",
           background: "#01020a", 
           backgroundImage: "url(/b2.jpg)", // [NHIỆM VỤ 1] Gọi lại hình nền b2
+          backgroundRepeat: "repeat-x",
           backgroundSize: "150% 150%", // Zoom to ra một chút để có dư dả không gian trượt
-          animation: "panBackground 120s linear infinite", // Chuyển động cực kỳ mượt và chậm (120s/vòng)
+          animation: "panBackground 150s linear infinite", // Chuyển động cực kỳ mượt và chậm (120s/vòng)
         }}
       >
         {/* [NHIỆM VỤ 1] BỌC MOTION.DIV ĐỂ MỞ TỪ TỪ KHUNG CẢNH 3D KHI ENTER */}
