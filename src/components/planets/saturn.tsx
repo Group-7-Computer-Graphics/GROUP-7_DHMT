@@ -20,13 +20,13 @@ const Saturn: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick }
                 position={pos}
                 meshMaterialPath="/icons/Saturn.jpg" 
                 spinSpeed={0.002}
-                size={10} 
+                size={35} 
                 onClick={onClick || (() => { window.location.hash = "#saturn"; })}
             />
             
             {/* 2. VÀNH ĐAI SAO THỔ (VẪN GIỮ NGUYÊN) */}
             <mesh position={pos} rotation={[Math.PI / 2.2, Math.PI / 6, 0]}>
-                <ringGeometry args={[14, 25, 64]} />
+                <ringGeometry args={[38, 70, 80]} />
                 <meshStandardMaterial 
                                     map={ringTexture}
                                     transparent={true}

@@ -17,7 +17,7 @@ const Mercury: React.FC<PlanetProps> = ({ setControlsEnabled, isActive, onClick 
                 position={pos}
                 meshMaterialPath="/icons/2k_mercury.jpg"
                 spinSpeed={0.004}
-                size={1.5} // Nhỏ nhất
+                size={4} // Nhỏ nhất
                 onClick={onClick} 
             />
 
