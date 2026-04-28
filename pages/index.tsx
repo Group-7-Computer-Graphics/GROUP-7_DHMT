@@ -10,8 +10,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
 import BackgroundEffects from "../src/components/BackgroundEffects";
 
-// [NHIỆM VỤ 1] Nhớ import IntroScreen nhé
-import IntroScreen from "../src/components/IntroScreen"; 
+import IntroScreen from "../src/components/IntroScreen";
 import Head from 'next/head';
 
 import Sun from "../src/components/planets/Sun";
@@ -24,77 +23,85 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";
 import Venus from "../src/components/planets/venus";
 
-// ─── DỮ LIỆU HÀNH TINH ────────────────────────────────────────────────────────
+// ─── [NHIỆM VỤ 4] DỮ LIỆU HÀNH TINH — TIẾNG VIỆT HOÀN TOÀN ─────────────────
 const planetData: Record<string, any> = {
   "#mercury": {
-    name: " MERCURY", type: "PLANET",
-    visit: "Mercury is the smallest planet in the Solar System and the closest one to the Sun. Its surface is heavily covered with ancient impact craters, making it look like a giant scorched moon. During the day, temperatures can soar to hundreds of degrees Celsius, while at night they drop extremely low due to the lack of a protective atmosphere. With such harsh conditions, no known life can survive there, making Mercury a mysterious and extreme world worth exploring.",
-    encyclopedia: "Mercury is the closest planet to the Sun and the smallest planet in the Solar System (after Pluto was reclassified as a dwarf planet). It has a diameter of about 4,880 km and a rocky, heavily cratered surface similar to the Moon. Mercury has almost no atmosphere, meaning it cannot retain heat, resulting in extreme temperature differences between day and night. It completes an orbit around the Sun in just 88 Earth days. Despite its proximity to the Sun, it is not the hottest planet due to its lack of atmosphere.",
-    structure: "Mercury has a very large metallic core that makes up about 70% of its mass, which is unusually large compared to its size. The core is mainly composed of iron and nickel and is partially molten. Surrounding the core is a relatively thin silicate mantle and a solid rocky crust. Because of its large core, Mercury has a weak but global magnetic field.",
-    question: "Which planet is closest to the Sun?",
-    options: ["A. Venus", "B. Mercury", "C. Mars", "D. Jupiter"],
+    name: "MERCURY",
+    type: "HÀNH TINH",
+    visit: "Sao Thủy là hành tinh nhỏ nhất trong Hệ Mặt Trời và là hành tinh gần Mặt Trời nhất. Bề mặt của nó bị bao phủ dày đặc bởi các miệng hố va chạm cổ đại, trông như một mặt trăng khổng lồ bị thiêu đốt. Ban ngày, nhiệt độ có thể lên tới hàng trăm độ C, trong khi ban đêm lại giảm xuống cực thấp do thiếu bầu khí quyển bảo vệ. Với những điều kiện khắc nghiệt như vậy, không có sự sống nào được biết đến có thể tồn tại ở đây, khiến Sao Thủy trở thành một thế giới bí ẩn và cực đoan đáng khám phá.",
+    encyclopedia: "Sao Thủy là hành tinh gần Mặt Trời nhất và là hành tinh nhỏ nhất trong Hệ Mặt Trời. Đường kính khoảng 4.880 km, bề mặt đá nhiều hố va chạm giống Mặt Trăng. Sao Thủy hầu như không có bầu khí quyển, khiến nó không giữ được nhiệt, dẫn đến chênh lệch nhiệt độ cực lớn giữa ngày và đêm. Nó hoàn thành một vòng quỹ đạo quanh Mặt Trời chỉ trong 88 ngày Trái Đất. Dù gần Mặt Trời nhất, nó không phải hành tinh nóng nhất vì thiếu bầu khí quyển.",
+    structure: "Sao Thủy có lõi kim loại rất lớn chiếm khoảng 70% khối lượng, bất thường so với kích thước của nó. Lõi chủ yếu gồm sắt và niken, một phần ở trạng thái nóng chảy. Bao quanh lõi là lớp phủ silicat tương đối mỏng và một lớp vỏ đá cứng. Do lõi lớn, Sao Thủy có từ trường yếu nhưng bao phủ toàn cầu.",
+    question: "Hành tinh nào gần Mặt Trời nhất?",
+    options: ["A. Sao Kim", "B. Sao Thủy", "C. Sao Hỏa", "D. Sao Mộc"],
     correctAnswer: 1,
   },
   "#venus": {
-    name: "VENUS", type: "PLANET",
-    visit: "Venus is completely wrapped in a thick atmosphere made mostly of carbon dioxide, along with clouds of sulfuric acid. A runaway greenhouse effect traps heat so efficiently that its surface becomes hot enough to melt lead. The atmospheric pressure is also extremely high, strong enough to crush a spacecraft. Despite its deadly conditions, Venus shines brightly in the night sky and is often called Earth’s “twin” due to its similar size and structure.",
-    encyclopedia: "Venus is the second planet from the Sun and is often called Earth’s “sister planet” because of its similar size and composition. However, its environment is extremely hostile. The atmosphere is composed mostly of carbon dioxide with thick clouds of sulfuric acid, creating a strong greenhouse effect. Surface temperatures average around 465°C, making Venus the hottest planet in the Solar System. It rotates very slowly and in the opposite direction of most planets, meaning a day on Venus is longer than its year.",
-    structure: "Venus has a structure similar to Earth, consisting of a central iron core, a rocky mantle, and a solid crust. However, unlike Earth, Venus does not appear to have active plate tectonics. Its interior is very hot, and volcanic activity may still occur, although most of the surface is covered by ancient lava flows and volcanic plains.",
-    question: "Which planet is the hottest in our solar system?",
-    options: ["A. Mercury", "B. Earth", "C. Venus", "D. Mars"],
+    name: "VENUS",
+    type: "HÀNH TINH",
+    visit: "Sao Kim được bao bọc hoàn toàn bởi bầu khí quyển dày đặc chủ yếu là carbon dioxide, cùng với những đám mây axit sulfuric. Hiệu ứng nhà kính mất kiểm soát giữ nhiệt hiệu quả đến mức bề mặt nóng đủ để làm chảy chì. Áp suất khí quyển cũng cực kỳ cao, đủ sức nghiền nát tàu vũ trụ. Dù có điều kiện chết chóc, Sao Kim tỏa sáng rực rỡ trên bầu trời đêm và thường được gọi là 'hành tinh song sinh' của Trái Đất do kích thước và cấu trúc tương tự.",
+    encyclopedia: "Sao Kim là hành tinh thứ hai tính từ Mặt Trời, thường được gọi là 'hành tinh chị em' của Trái Đất vì kích thước và thành phần tương tự. Tuy nhiên, môi trường của nó cực kỳ khắc nghiệt. Bầu khí quyển chủ yếu là carbon dioxide với những đám mây axit sulfuric dày đặc, tạo ra hiệu ứng nhà kính mạnh mẽ. Nhiệt độ bề mặt trung bình khoảng 465°C, là hành tinh nóng nhất trong Hệ Mặt Trời. Sao Kim quay rất chậm và ngược chiều so với hầu hết các hành tinh.",
+    structure: "Sao Kim có cấu trúc tương tự Trái Đất, gồm lõi sắt trung tâm, lớp phủ đá và lớp vỏ cứng. Tuy nhiên, không giống Trái Đất, Sao Kim dường như không có kiến tạo mảng hoạt động. Bên trong rất nóng và hoạt động núi lửa có thể vẫn đang diễn ra, dù phần lớn bề mặt được bao phủ bởi dung nham cổ đại và đồng bằng núi lửa.",
+    question: "Hành tinh nào nóng nhất trong hệ mặt trời?",
+    options: ["A. Sao Thủy", "B. Trái Đất", "C. Sao Kim", "D. Sao Hỏa"],
     correctAnswer: 2,
   },
   "#earth": {
-    name: "EARTH", type: "PLANET",
-    visit: "Earth is the only known planet that supports life. With vast oceans, a breathable atmosphere rich in oxygen, and stable temperatures, it provides the perfect conditions for living organisms. From dense tropical rainforests to frozen polar regions, Earth is filled with incredible biodiversity and dynamic ecosystems. It is truly a rare and precious world in the universe.",
-    encyclopedia: "Earth is the third planet from the Sun and the only known planet to support life. It has a diverse environment with oceans, continents, and a nitrogen-oxygen atmosphere that sustains living organisms. Earth’s surface is about 71% water, and its climate allows for a wide range of ecosystems. It has one natural satellite, the Moon, which influences tides and stabilizes Earth’s axial tilt. Earth completes one orbit around the Sun in approximately 365.25 days.",
-    structure: "Earth is composed of four main layers: a solid inner core made of iron and nickel, a liquid outer core, a viscous mantle, and a thin crust. The movement of molten iron in the outer core generates Earth’s magnetic field. The mantle is responsible for plate tectonics, which shapes continents, earthquakes, and volcanoes.",
-    question: "Which planet are we living on?",
-    options: ["A. Mars", "B. Earth", "C. Venus", "D. Jupiter"],
+    name: "EARTH",
+    type: "HÀNH TINH",
+    visit: "Trái Đất là hành tinh duy nhất được biết đến có sự sống. Với những đại dương bao la, bầu khí quyển giàu oxy có thể hít thở và nhiệt độ ổn định, nó tạo ra điều kiện hoàn hảo cho các sinh vật sống. Từ những rừng nhiệt đới dày đặc đến các vùng cực băng giá, Trái Đất chứa đựng sự đa dạng sinh học đáng kinh ngạc và các hệ sinh thái năng động. Đây thực sự là một thế giới hiếm có và quý giá trong vũ trụ.",
+    encyclopedia: "Trái Đất là hành tinh thứ ba tính từ Mặt Trời và là hành tinh duy nhất được biết đến có sự sống. Nó có môi trường đa dạng với đại dương, lục địa và bầu khí quyển nitơ-oxy duy trì sự sống. Bề mặt Trái Đất khoảng 71% là nước, khí hậu cho phép tồn tại nhiều hệ sinh thái phong phú. Trái Đất có một vệ tinh tự nhiên là Mặt Trăng, ảnh hưởng đến thủy triều và ổn định độ nghiêng trục. Trái Đất hoàn thành một vòng quỹ đạo quanh Mặt Trời trong khoảng 365,25 ngày.",
+    structure: "Trái Đất gồm bốn lớp chính: lõi trong rắn bằng sắt và niken, lõi ngoài lỏng, lớp phủ nhớt và lớp vỏ mỏng. Chuyển động của sắt nóng chảy trong lõi ngoài tạo ra từ trường Trái Đất. Lớp phủ chịu trách nhiệm về kiến tạo mảng, hình thành các lục địa, gây ra động đất và núi lửa.",
+    question: "Chúng ta đang sống trên hành tinh nào?",
+    options: ["A. Sao Hỏa", "B. Trái Đất", "C. Sao Kim", "D. Sao Mộc"],
     correctAnswer: 1,
   },
   "#mars": {
-    name: "MARS", type: "PLANET",
-    visit: "Mars is known as the Red Planet because of its iron-rich surface that gives it a reddish appearance. It features massive volcanoes like Olympus Mons and deep canyons such as Valles Marineris. Scientific evidence suggests that Mars once had liquid water on its surface, raising the possibility that it may have supported life in the distant past. Today, it remains one of the most explored planets in space research.",
-    encyclopedia: "Mars is the fourth planet from the Sun and is commonly known as the Red Planet due to iron oxide on its surface. It has the largest volcano in the Solar System, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has a thin atmosphere composed mostly of carbon dioxide and experiences cold temperatures. Evidence suggests that liquid water once existed on its surface, raising the possibility that Mars may have supported microbial life in the past. It has two small moons, Phobos and Deimos.",
-    structure: "Mars has a dense core rich in iron, nickel, and sulfur, surrounded by a silicate mantle and a crust. The planet likely had an active core in the past, but it has cooled significantly, weakening its magnetic field. This cooling contributed to the loss of its thick atmosphere and surface water.",
-    question: "Which planet is known as the \"Red Planet\"?",
-    options: ["A. Jupiter", "B. Mars", "C. Venus", "D. Mercury"],
+    name: "MARS",
+    type: "HÀNH TINH",
+    visit: "Sao Hỏa được gọi là Hành Tinh Đỏ vì bề mặt giàu sắt oxit tạo ra màu đỏ đặc trưng. Nó có những ngọn núi lửa khổng lồ như Olympus Mons và những hẻm núi sâu thẳm như Valles Marineris. Bằng chứng khoa học cho thấy Sao Hỏa từng có nước lỏng trên bề mặt, gợi lên khả năng nơi này có thể từng hỗ trợ sự sống trong quá khứ xa xưa. Ngày nay, nó vẫn là một trong những hành tinh được khám phá nhiều nhất trong nghiên cứu vũ trụ.",
+    encyclopedia: "Sao Hỏa là hành tinh thứ tư tính từ Mặt Trời, thường được gọi là Hành Tinh Đỏ do sắt oxit trên bề mặt. Nó có ngọn núi lửa lớn nhất Hệ Mặt Trời là Olympus Mons và hẻm núi sâu nhất là Valles Marineris. Sao Hỏa có bầu khí quyển mỏng chủ yếu là carbon dioxide và nhiệt độ rất lạnh. Bằng chứng cho thấy nước lỏng từng tồn tại trên bề mặt, gợi khả năng Sao Hỏa có thể đã từng hỗ trợ vi sinh vật. Nó có hai mặt trăng nhỏ là Phobos và Deimos.",
+    structure: "Sao Hỏa có lõi đặc giàu sắt, niken và lưu huỳnh, được bao quanh bởi lớp phủ silicat và lớp vỏ. Hành tinh này có thể đã có lõi hoạt động trong quá khứ nhưng đã nguội đi đáng kể, làm yếu từ trường. Sự nguội lạnh này góp phần làm mất đi bầu khí quyển dày và nước bề mặt.",
+    question: "Hành tinh nào được gọi là 'Hành Tinh Đỏ'?",
+    options: ["A. Sao Mộc", "B. Sao Hỏa", "C. Sao Kim", "D. Sao Thủy"],
     correctAnswer: 1,
   },
   "#jupiter": {
-    name: "JUPITER", type: "GAS GIANT",
-    visit: "Jupiter is the largest planet in the Solar System, composed mainly of hydrogen and helium. Its most famous feature is the Great Red Spot, a gigantic storm that has been raging for centuries. Jupiter also has a powerful magnetic field and dozens of moons, some of which may contain hidden oceans beneath their icy surfaces.",
-    encyclopedia: "Jupiter is the fifth planet from the Sun and the largest planet in the Solar System. It is a gas giant composed mainly of hydrogen and helium. One of its most famous features is the Great Red Spot, a massive storm larger than Earth that has lasted for centuries. Jupiter has a strong magnetic field and at least 90 known moons, including Ganymede, the largest moon in the Solar System. Its fast rotation causes it to have a very short day of about 10 hours.",
-    structure: "Jupiter does not have a well-defined solid surface. It is composed mainly of hydrogen and helium, transitioning from gaseous outer layers to liquid metallic hydrogen deeper inside. At its center, it may have a small rocky or metallic core, although its exact size and composition remain uncertain due to extreme pressure conditions.",
-    question: "Which planet is the largest in our solar system?",
-    options: ["A. Saturn", "B. Neptune", "C. Jupiter", "D. Uranus"],
+    name: "JUPITER",
+    type: "HÀNH TINH KHỔNG LỒ KHÍ",
+    visit: "Sao Mộc là hành tinh lớn nhất trong Hệ Mặt Trời, cấu tạo chủ yếu từ hydro và heli. Đặc điểm nổi tiếng nhất là Vết Đỏ Lớn — một cơn bão khổng lồ đã hoành hành hàng thế kỷ. Sao Mộc cũng có từ trường mạnh mẽ và hàng chục mặt trăng, một số có thể chứa đại dương ẩn dưới bề mặt băng giá.",
+    encyclopedia: "Sao Mộc là hành tinh thứ năm tính từ Mặt Trời và là hành tinh lớn nhất Hệ Mặt Trời. Đây là hành tinh khổng lồ khí cấu tạo chủ yếu từ hydro và heli. Đặc điểm nổi bật nhất là Vết Đỏ Lớn — một cơn bão khổng lồ lớn hơn Trái Đất, tồn tại hàng thế kỷ. Sao Mộc có từ trường mạnh và ít nhất 90 mặt trăng được biết đến, trong đó có Ganymede — mặt trăng lớn nhất Hệ Mặt Trời. Vòng quay nhanh tạo ra ngày chỉ khoảng 10 giờ.",
+    structure: "Sao Mộc không có bề mặt rắn được xác định rõ ràng. Nó cấu tạo chủ yếu từ hydro và heli, chuyển tiếp từ lớp ngoài khí đến hydro kim loại lỏng bên trong. Ở trung tâm có thể có lõi đá hoặc kim loại nhỏ, tuy nhiên kích thước và thành phần chính xác vẫn chưa rõ do áp suất cực lớn.",
+    question: "Hành tinh nào lớn nhất trong hệ mặt trời?",
+    options: ["A. Sao Thổ", "B. Sao Hải Vương", "C. Sao Mộc", "D. Sao Thiên Vương"],
     correctAnswer: 2,
   },
   "#saturn": {
-    name: "SATURN", type: "GAS GIANT",
-    visit: "Saturn is best known for its spectacular ring system made of ice, rock, and dust particles. These rings create one of the most beautiful sights in the Solar System. Although it appears elegant and light, Saturn is actually a massive gas giant with a complex internal structure. Its moons, especially Titan, are of great interest to scientists due to their unique atmospheres and potential for prebiotic chemistry.",
-    encyclopedia: "Saturn is the sixth planet from the Sun and is best known for its extensive ring system made of ice, rock, and dust particles. Like Jupiter, it is a gas giant composed mainly of hydrogen and helium. Saturn has a low density, so much so that it would float in water if a large enough ocean existed. It has more than 140 moons, including Titan, which has a thick atmosphere and lakes of liquid methane. Saturn’s rings make it one of the most visually striking planets.",
-    structure: "Saturn is also a gas giant with no solid surface. It consists primarily of hydrogen and helium, with layers of liquid metallic hydrogen beneath its atmosphere. It likely has a small rocky core surrounded by icy and metallic materials. Saturn’s low density makes it the least dense planet in the Solar System.",
-    question: "Which planet has the most prominent ring system?",
-    options: ["A. Jupiter", "B. Saturn", "C. Venus", "D. Mars"],
+    name: "SATURN",
+    type: "HÀNH TINH KHỔNG LỒ KHÍ",
+    visit: "Sao Thổ nổi tiếng với hệ thống vành đai ngoạn mục gồm băng, đá và bụi. Những vành đai này tạo nên một trong những cảnh quan đẹp nhất Hệ Mặt Trời. Dù trông thanh tao và nhẹ nhàng, Sao Thổ thực ra là một hành tinh khổng lồ khí với cấu trúc bên trong phức tạp. Các mặt trăng của nó, đặc biệt là Titan, rất được các nhà khoa học quan tâm do bầu khí quyển độc đáo và tiềm năng cho hóa học tiền sinh học.",
+    encyclopedia: "Sao Thổ là hành tinh thứ sáu tính từ Mặt Trời, nổi tiếng với hệ thống vành đai rộng lớn gồm băng, đá và hạt bụi. Giống Sao Mộc, đây là hành tinh khổng lồ khí cấu tạo chủ yếu từ hydro và heli. Sao Thổ có mật độ thấp đến mức nó có thể nổi trên nước nếu có đại dương đủ lớn. Nó có hơn 140 mặt trăng, trong đó Titan có bầu khí quyển dày và các hồ metan lỏng. Vành đai khiến Sao Thổ là một trong những hành tinh ấn tượng nhất về mặt thị giác.",
+    structure: "Sao Thổ cũng là hành tinh khổng lồ khí không có bề mặt rắn. Nó chủ yếu gồm hydro và heli, với các lớp hydro kim loại lỏng bên dưới khí quyển. Có thể có lõi đá nhỏ được bao quanh bởi vật liệu băng và kim loại. Sao Thổ có mật độ thấp nhất trong tất cả các hành tinh Hệ Mặt Trời.",
+    question: "Hành tinh nào có hệ thống vành đai nổi bật nhất?",
+    options: ["A. Sao Mộc", "B. Sao Thổ", "C. Sao Kim", "D. Sao Hỏa"],
     correctAnswer: 1,
   },
   "#uranus": {
-    name: "URANUS", type: "ICE GIANT",
-    visit: "Uranus is an ice giant with a very unusual feature: it rotates on its side. This extreme tilt makes it appear as if the planet is rolling around the Sun. Its bluish-green color comes from methane in its atmosphere, which absorbs red light. Uranus also has faint rings and extremely cold temperatures, making it one of the most unusual planets in the Solar System.",
-    encyclopedia: "Uranus is the seventh planet from the Sun and is classified as an ice giant. It has a blue-green appearance due to methane in its atmosphere. One of its most unusual features is its axial tilt of about 98 degrees, causing it to rotate on its side. This leads to extreme seasonal variations. Uranus has a faint ring system and at least 27 known moons. It is one of the coldest planets in the Solar System, with temperatures dropping to around -224°C.",
-    structure: "Uranus is an ice giant with a composition of water, ammonia, and methane ices, along with hydrogen and helium gas. Its interior likely consists of a small rocky core, surrounded by a thick icy mantle and a gaseous outer layer. The extreme pressure inside creates unusual states of matter, including “superionic ice.”",
-    question: "Which planet has a blue-green color due to methane gas?",
-    options: ["A. Venus", "B. Uranus", "C. Mars", "D. Mercury"],
+    name: "URANUS",
+    type: "HÀNH TINH KHỔNG LỒ BĂNG",
+    visit: "Sao Thiên Vương là hành tinh băng khổng lồ với đặc điểm rất bất thường: nó quay nghiêng về một bên. Độ nghiêng cực đoan này khiến hành tinh trông như đang lăn quanh Mặt Trời. Màu xanh lam-lục của nó đến từ khí metan trong bầu khí quyển, hấp thụ ánh sáng đỏ. Sao Thiên Vương cũng có các vành đai mờ và nhiệt độ cực lạnh, là một trong những hành tinh bất thường nhất trong Hệ Mặt Trời.",
+    encyclopedia: "Sao Thiên Vương là hành tinh thứ bảy tính từ Mặt Trời, được phân loại là hành tinh khổng lồ băng. Nó có màu xanh lam-lục do khí metan trong bầu khí quyển. Đặc điểm bất thường nhất là độ nghiêng trục khoảng 98 độ, khiến nó quay nghiêng về một bên, tạo ra sự biến đổi mùa cực đoan. Sao Thiên Vương có hệ thống vành đai mờ và ít nhất 27 mặt trăng được biết đến. Đây là một trong những hành tinh lạnh nhất với nhiệt độ xuống khoảng -224°C.",
+    structure: "Sao Thiên Vương là hành tinh khổng lồ băng với thành phần gồm nước, amoniac và băng metan cùng khí hydro và heli. Bên trong có thể có lõi đá nhỏ, bao quanh bởi lớp phủ băng dày và lớp khí bên ngoài. Áp suất cực lớn bên trong tạo ra các trạng thái vật chất bất thường, bao gồm 'băng siêu ion'.",
+    question: "Hành tinh nào có màu xanh lam-lục do khí metan?",
+    options: ["A. Sao Kim", "B. Sao Thiên Vương", "C. Sao Hỏa", "D. Sao Thủy"],
     correctAnswer: 1,
   },
   "#neptune": {
-    name: "NEPTUNE", type: "ICE GIANT",
-    visit: "Dark, cold, and whipped by supersonic winds, Neptune is the last of the major planets in our solar system.",
-    encyclopedia: "The eighth and most distant major planet orbiting our Sun. It is an ice giant with a faint ring system and 14 known moons.",
-    structure: "Its structure is similar to Uranus, consisting of a hot, dense fluid or 'icy' mantle (water, ammonia, and methane) over an Earth-sized solid core.",
-    question: "Hành tinh xa Mặt Trời nhất là gì?",
+    name: "NEPTUNE",
+    type: "HÀNH TINH KHỔNG LỒ BĂNG",
+    visit: "Tối tăm, lạnh lẽo và bị quét bởi những cơn gió siêu âm, Sao Hải Vương là hành tinh xa nhất trong số các hành tinh chính của hệ mặt trời chúng ta. Nó ẩn mình ở rìa xa xôi của hệ mặt trời, nơi ánh sáng Mặt Trời chỉ còn là một điểm sáng mờ nhạt giữa bầu trời tối tăm.",
+    encyclopedia: "Sao Hải Vương là hành tinh thứ tám và xa nhất trong hệ mặt trời. Đây là hành tinh khổng lồ băng với hệ thống vành đai mờ và 14 mặt trăng được biết đến. Nó có bầu khí quyển chứa hydro, heli và metan, tạo màu xanh đặc trưng. Những cơn gió trên Sao Hải Vương là mạnh nhất trong Hệ Mặt Trời, đạt tốc độ lên đến 2.100 km/h.",
+    structure: "Cấu trúc tương tự Sao Thiên Vương, gồm lớp phủ lỏng đặc hoặc 'băng' nóng (nước, amoniac, metan) bao quanh lõi rắn có kích thước tương đương Trái Đất. Nhiệt độ lõi ước tính khoảng 5.000°C.",
+    question: "Hành tinh nào xa Mặt Trời nhất trong hệ mặt trời?",
     options: ["A. Sao Thiên Vương", "B. Sao Hải Vương", "C. Sao Thổ", "D. Sao Mộc"],
     correctAnswer: 1,
   },
@@ -121,7 +128,7 @@ const ORBIT_CONFIG: Record<
   "#neptune": { radius: 1050, speed: 0.03, camOffset: [0, 20, 80],  ufoHeight: 20, ufoScale: 0.38 },
 };
 
-// ─── ANIMATED BACKGROUND — MẠNH HƠN ──────────────────────────
+// ─── [NHIỆM VỤ 1] ANIMATED BACKGROUND — NỀN CHUYỂN ĐỘNG MỰT MÀ ──────────────
 function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -137,7 +144,7 @@ function AnimatedBackground() {
     canvas.width  = W;
     canvas.height = H;
 
-    // ── Stars: 3 lớp parallax rõ ràng ──────────────────────────────────
+    // ── Stars: 3 lớp parallax ──────────────────────────────────────────────
     interface Star {
       x: number; y: number; r: number; alpha: number;
       twinkleSpeed: number; twinkleOffset: number; layer: number;
@@ -161,7 +168,7 @@ function AnimatedBackground() {
       });
     }
 
-    // ── Nebula blobs ──────────────────
+    // ── Nebula blobs ───────────────────────────────────────────────────────
     interface Nebula {
       cx: number; cy: number; rx: number; ry: number;
       hue: number; hue2: number; alpha: number; vx: number; vy: number;
@@ -176,30 +183,37 @@ function AnimatedBackground() {
       { cx: W*0.62, cy: H*0.30, rx: 300, ry: 220, hue: 340, hue2: 20,  alpha: 0.10, vx: -0.06, vy: -0.05, rotSpeed: 0.0002, rot: 5 },
     ];
 
-    // ── Sao băng ───────────────────────────────────────
+    // ── [NHIỆM VỤ 3] SAO BĂNG — TRẮNG THUẦN, VỆT SÁNG DÀI ĐẸP ────────────
     interface Meteor {
       x: number; y: number; vx: number; vy: number;
-      len: number; alpha: number; active: boolean; timer: number; maxTimer: number;
+      len: number; alpha: number; active: boolean;
+      timer: number; maxTimer: number;
+      tailLen: number; // chiều dài đuôi riêng biệt
     }
-    const meteors: Meteor[] = Array.from({ length: 8 }, () => ({
-      x: 0, y: 0, vx: 0, vy: 0, len: 0, alpha: 0, active: false, timer: 0, maxTimer: 0
+    const meteors: Meteor[] = Array.from({ length: 10 }, () => ({
+      x: 0, y: 0, vx: 0, vy: 0, len: 0, alpha: 0,
+      active: false, timer: 0, maxTimer: 0, tailLen: 0
     }));
-    function spawnMeteor(m: Meteor) {
-      m.x = Math.random() * W * 1.3 - W * 0.15;
-      m.y = Math.random() * H * 0.4;
-      const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.4;
-      const speed = 12 + Math.random() * 20;
-      m.vx = Math.cos(angle) * speed;
-      m.vy = Math.sin(angle) * speed;
-      m.len = 80 + Math.random() * 160;
-      m.alpha = 0.7 + Math.random() * 0.3;
-      m.active = true;
-      m.timer = 0;
-      m.maxTimer = 40 + Math.random() * 30;
-    }
-    meteors.forEach((m, i) => { m.timer = -i * 80 - Math.random() * 200; });
 
-    // ── Aurora waves ────────────────────────────────────────────────────
+    function spawnMeteor(m: Meteor) {
+      // Xuất hiện từ vùng trên-phải hoặc trên, bay chéo xuống-phải
+      m.x = Math.random() * W * 1.2 - W * 0.1;
+      m.y = Math.random() * H * 0.35;
+      const angle = Math.PI / 5 + (Math.random() - 0.5) * 0.35; // ~36° ± 10°
+      const speed = 18 + Math.random() * 28; // nhanh hơn
+      m.vx      = Math.cos(angle) * speed;
+      m.vy      = Math.sin(angle) * speed;
+      m.tailLen = 180 + Math.random() * 260; // đuôi dài hơn nhiều
+      m.len     = m.tailLen;
+      m.alpha   = 0.85 + Math.random() * 0.15;
+      m.active  = true;
+      m.timer   = 0;
+      m.maxTimer = 35 + Math.random() * 25;
+    }
+    // Stagger ban đầu để không đồng loạt
+    meteors.forEach((m, i) => { m.timer = -i * 90 - Math.random() * 250; });
+
+    // ── Aurora waves ──────────────────────────────────────────────────────
     interface AuroraWave {
       baseY: number; amplitude: number; freq: number; phase: number;
       phaseSpeed: number; hue: number; alpha: number; width: number;
@@ -211,7 +225,7 @@ function AnimatedBackground() {
       { baseY: H * 0.80, amplitude: 45, freq: 0.0040, phase: 0.7, phaseSpeed: 0.011, hue: 180, alpha: 0.040, width: 45 },
     ];
 
-    // ── Warp streaks ──────────────────────────────────
+    // ── Warp streaks ───────────────────────────────────────────────────────
     interface WarpStreak {
       x: number; y: number; len: number; alpha: number; speed: number; active: boolean; timer: number;
     }
@@ -247,7 +261,7 @@ function AnimatedBackground() {
       t += 0.01;
       ctx!.clearRect(0, 0, W, H);
 
-      // ── Deep space base gradient (Đã giảm Alpha để thấy hình nền css chuyển động) ──
+      // ── Deep space base gradient ──────────────────────────────────────
       const bg = ctx!.createRadialGradient(W * 0.4, H * 0.3, 0, W * 0.5, H * 0.5, Math.max(W, H));
       bg.addColorStop(0,   "rgba(6, 8, 28, 0.85)");
       bg.addColorStop(0.3, "rgba(4, 5, 20, 0.85)");
@@ -268,7 +282,7 @@ function AnimatedBackground() {
         if (n.cy < -n.ry * 1.5) n.cy = H + n.ry * 1.5;
         if (n.cy > H + n.ry * 1.5) n.cy = -n.ry * 1.5;
 
-        const pulse = 1 + 0.08 * Math.sin(t * 0.5 + n.hue * 0.05);
+        const pulse   = 1 + 0.08 * Math.sin(t * 0.5 + n.hue * 0.05);
         const breathe = 0.85 + 0.15 * Math.sin(t * 0.3 + n.hue * 0.02);
 
         ctx!.save();
@@ -276,10 +290,10 @@ function AnimatedBackground() {
         ctx!.rotate(n.rot);
 
         const outer = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 1.4);
-        outer.addColorStop(0,   `hsla(${n.hue}, 85%, 55%, ${n.alpha * breathe})`);
-        outer.addColorStop(0.3, `hsla(${n.hue2}, 75%, 45%, ${n.alpha * breathe * 0.7})`);
-        outer.addColorStop(0.65,`hsla(${n.hue + 10}, 70%, 35%, ${n.alpha * breathe * 0.3})`);
-        outer.addColorStop(1,   `hsla(${n.hue}, 60%, 25%, 0)`);
+        outer.addColorStop(0,    `hsla(${n.hue}, 85%, 55%, ${n.alpha * breathe})`);
+        outer.addColorStop(0.3,  `hsla(${n.hue2}, 75%, 45%, ${n.alpha * breathe * 0.7})`);
+        outer.addColorStop(0.65, `hsla(${n.hue + 10}, 70%, 35%, ${n.alpha * breathe * 0.3})`);
+        outer.addColorStop(1,    `hsla(${n.hue}, 60%, 25%, 0)`);
         ctx!.scale(1, n.ry / n.rx);
         ctx!.beginPath();
         ctx!.arc(0, 0, n.rx * pulse * 1.4, 0, Math.PI * 2);
@@ -294,11 +308,11 @@ function AnimatedBackground() {
         ctx!.arc(0, 0, n.rx * pulse * 0.5, 0, Math.PI * 2);
         ctx!.fillStyle = core;
         ctx!.fill();
-
         ctx!.restore();
       });
       ctx!.globalCompositeOperation = "source-over";
 
+      // Dải Ngân Hà mờ
       ctx!.save();
       ctx!.translate(W * 0.5, H * 0.5);
       ctx!.rotate(-0.35);
@@ -312,6 +326,7 @@ function AnimatedBackground() {
       ctx!.fillRect(-W, -H * 0.12, W * 2, H * 0.24);
       ctx!.restore();
 
+      // Vẽ ngôi sao
       stars.forEach((s) => {
         const driftSpeeds = [0, 0.025, 0.06];
         s.x = (s.x + driftSpeeds[s.layer] + W) % W;
@@ -344,6 +359,7 @@ function AnimatedBackground() {
         ctx!.fill();
       });
 
+      // Warp streaks
       ctx!.globalCompositeOperation = "screen";
       warpStreaks.forEach((ws) => {
         ws.timer++;
@@ -358,9 +374,9 @@ function AnimatedBackground() {
         if (ws.active) {
           const fade = Math.sin((ws.timer / 30) * Math.PI);
           const grd = ctx!.createLinearGradient(ws.x, ws.y, ws.x + ws.len, ws.y);
-          grd.addColorStop(0, `rgba(100,180,255,0)`);
+          grd.addColorStop(0,   `rgba(100,180,255,0)`);
           grd.addColorStop(0.4, `rgba(150,210,255,${ws.alpha * fade})`);
-          grd.addColorStop(1, `rgba(200,230,255,0)`);
+          grd.addColorStop(1,   `rgba(200,230,255,0)`);
           ctx!.strokeStyle = grd;
           ctx!.lineWidth = 0.8;
           ctx!.beginPath();
@@ -373,37 +389,85 @@ function AnimatedBackground() {
       });
       ctx!.globalCompositeOperation = "source-over";
 
+      // ── [NHIỆM VỤ 3] VẼ SAO BĂNG — TRẮNG TINH KHIẾT, VỆT DÀI ĐẸP ─────
       meteors.forEach((m) => {
         m.timer++;
         if (!m.active) {
-          if (m.timer > 0 && Math.random() < 0.004) spawnMeteor(m);
+          // Tần suất xuất hiện cao hơn một chút (0.005)
+          if (m.timer > 0 && Math.random() < 0.005) spawnMeteor(m);
           return;
         }
+
         const progress = m.timer / m.maxTimer;
-        const fade = progress < 0.2
-          ? progress / 0.2
-          : progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
-        m.x += m.vx; m.y += m.vy;
+        // Fade-in nhanh (0~15%), sáng đủ (15~75%), fade-out mượt (75~100%)
+        const fade =
+          progress < 0.15 ? progress / 0.15
+          : progress > 0.75 ? 1 - (progress - 0.75) / 0.25
+          : 1.0;
 
-        const tx = m.x - m.vx * (m.len / Math.hypot(m.vx, m.vy));
-        const ty = m.y - m.vy * (m.len / Math.hypot(m.vx, m.vy));
+        m.x += m.vx;
+        m.y += m.vy;
 
-        const grd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
-        grd.addColorStop(0, `rgba(200,220,255,0)`);
-        grd.addColorStop(0.6, `rgba(220,235,255,${m.alpha * fade * 0.5})`);
-        grd.addColorStop(1,   `rgba(255,255,255,${m.alpha * fade})`);
+        const speed = Math.hypot(m.vx, m.vy);
+        // Điểm đầu đuôi (cách đầu sao một đoạn tailLen)
+        const tx = m.x - (m.vx / speed) * m.tailLen;
+        const ty = m.y - (m.vy / speed) * m.tailLen;
 
-        ctx!.strokeStyle = grd;
-        ctx!.lineWidth = 1.5;
-        ctx!.shadowColor = "rgba(180,210,255,0.8)";
-        ctx!.shadowBlur = 6;
+        // ── Lớp 1: Hào quang rộng (glow halo) — trắng-xanh rất mờ ────────
+        const haloGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
+        haloGrd.addColorStop(0,   `rgba(200,230,255,0)`);
+        haloGrd.addColorStop(0.5, `rgba(220,240,255,${m.alpha * fade * 0.12})`);
+        haloGrd.addColorStop(1,   `rgba(255,255,255,${m.alpha * fade * 0.18})`);
+        ctx!.strokeStyle = haloGrd;
+        ctx!.lineWidth = 10;
         ctx!.beginPath();
         ctx!.moveTo(tx, ty);
         ctx!.lineTo(m.x, m.y);
         ctx!.stroke();
+
+        // ── Lớp 2: Đuôi ngoài — dày vừa, trắng ───────────────────────────
+        const outerGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
+        outerGrd.addColorStop(0,    `rgba(240,248,255,0)`);
+        outerGrd.addColorStop(0.35, `rgba(245,250,255,${m.alpha * fade * 0.30})`);
+        outerGrd.addColorStop(0.75, `rgba(255,255,255,${m.alpha * fade * 0.65})`);
+        outerGrd.addColorStop(1,    `rgba(255,255,255,${m.alpha * fade})`);
+        ctx!.strokeStyle = outerGrd;
+        ctx!.lineWidth = 3.5;
+        ctx!.shadowColor = "rgba(255,255,255,0.5)";
+        ctx!.shadowBlur  = 12;
+        ctx!.beginPath();
+        ctx!.moveTo(tx, ty);
+        ctx!.lineTo(m.x, m.y);
+        ctx!.stroke();
+
+        // ── Lớp 3: Lõi sáng trắng thuần ──────────────────────────────────
+        const coreGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
+        coreGrd.addColorStop(0,    `rgba(255,255,255,0)`);
+        coreGrd.addColorStop(0.55, `rgba(255,255,255,${m.alpha * fade * 0.70})`);
+        coreGrd.addColorStop(1,    `rgba(255,255,255,${m.alpha * fade})`);
+        ctx!.strokeStyle = coreGrd;
+        ctx!.lineWidth = 1.5;
+        ctx!.shadowColor = "rgba(255,255,255,0.9)";
+        ctx!.shadowBlur  = 8;
+        ctx!.beginPath();
+        ctx!.moveTo(tx, ty);
+        ctx!.lineTo(m.x, m.y);
+        ctx!.stroke();
+
+        // ── Lớp 4: Đầu sao — điểm sáng chói ─────────────────────────────
+        ctx!.beginPath();
+        ctx!.arc(m.x, m.y, Math.max(0.01, 2.2 * fade), 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255,255,255,${m.alpha * fade})`;
+        ctx!.shadowColor = "rgba(255,255,255,1)";
+        ctx!.shadowBlur  = 15;
+        ctx!.fill();
+
         ctx!.shadowBlur = 0;
 
-        if (m.timer >= m.maxTimer) { m.active = false; m.timer = -Math.floor(Math.random() * 300); }
+        if (m.timer >= m.maxTimer) {
+          m.active = false;
+          m.timer  = -Math.floor(Math.random() * 280);
+        }
       });
 
       animId = requestAnimationFrame(draw);
@@ -427,23 +491,21 @@ function AnimatedBackground() {
   );
 }
 
-// ─── PLANET ARRIVAL EFFECT ─────────────────────────────────────
+// ─── PLANET ARRIVAL EFFECT ────────────────────────────────────────────────────
 const PLANET_THEME: Record<string, { color: string; glow: string; label: string }> = {
-  "#mercury": { color: "#c0a060", glow: "rgba(192,160,96,",  label: "MERCURY"  },
-  "#venus":   { color: "#ffcc66", glow: "rgba(255,204,102,", label: "VENUS"    },
-  "#earth":   { color: "#44aaff", glow: "rgba(68,170,255,",  label: "EARTH"    },
-  "#mars":    { color: "#ff5533", glow: "rgba(255,85,51,",   label: "MARS"     },
-  "#jupiter": { color: "#cc8844", glow: "rgba(204,136,68,",  label: "JUPITER"  },
-  "#saturn":  { color: "#ddcc88", glow: "rgba(221,204,136,", label: "SATURN"   },
-  "#uranus":  { color: "#66ddcc", glow: "rgba(102,221,204,", label: "URANUS"   },
-  "#neptune": { color: "#4466ff", glow: "rgba(68,102,255,",  label: "NEPTUNE"  },
-  "#overview":{ color: "#ffffff", glow: "rgba(255,255,255,", label: ""         },
+  "#mercury": { color: "#c0a060", glow: "rgba(192,160,96,",  label: "MERCURY" },
+  "#venus":   { color: "#ffcc66", glow: "rgba(255,204,102,", label: "VENUS"   },
+  "#earth":   { color: "#44aaff", glow: "rgba(68,170,255,",  label: "EARTH"   },
+  "#mars":    { color: "#ff5533", glow: "rgba(255,85,51,",   label: "MARS"    },
+  "#jupiter": { color: "#cc8844", glow: "rgba(204,136,68,",  label: "JUPITER" },
+  "#saturn":  { color: "#ddcc88", glow: "rgba(221,204,136,", label: "SATURN"  },
+  "#uranus":  { color: "#66ddcc", glow: "rgba(102,221,204,", label: "URANUS"  },
+  "#neptune": { color: "#4466ff", glow: "rgba(68,102,255,",  label: "NEPTUNE" },
+  "#overview":{ color: "#ffffff", glow: "rgba(255,255,255,", label: ""        },
 };
 
 function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const phaseRef  = useRef<"idle"|"flash"|"ring"|"title"|"scan"|"fadeout">("idle");
-  const timerRef  = useRef(0);
   const animRef   = useRef<number>(0);
   const prevHash  = useRef<string>("#overview");
 
@@ -462,7 +524,7 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
     prevHash.current = currentHash;
 
     if (currentHash === "#overview") {
-      phaseRef.current = "idle";
+      cancelAnimationFrame(animRef.current);
       ctx.clearRect(0, 0, W, H);
       return;
     }
@@ -494,14 +556,12 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         burst.addColorStop(1,   `${theme.glow}0)`);
         ctx!.fillStyle = burst;
         ctx!.fillRect(0, 0, W, H);
-
         if (timer >= 18) { phase = "ring"; timer = 0; }
 
       } else if (phase === "ring") {
         ringR += 28;
         const maxR = Math.max(W, H) * 0.9;
         const a = Math.max(0, 1 - ringR / maxR);
-
         [0, 60, 120].forEach((offset) => {
           const r = ringR - offset;
           if (r <= 0) return;
@@ -515,13 +575,11 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
           ctx!.stroke();
           ctx!.shadowBlur = 0;
         });
-
         const vig = ctx!.createRadialGradient(W/2, H/2, Math.max(W,H)*0.3, W/2, H/2, Math.max(W,H)*0.8);
         vig.addColorStop(0, `${theme.glow}0)`);
         vig.addColorStop(1, `${theme.glow}${a * 0.25})`);
         ctx!.fillStyle = vig;
         ctx!.fillRect(0, 0, W, H);
-
         if (timer >= 1) { phase = "title"; timer = 0; }
 
       } else if (phase === "title") {
@@ -534,43 +592,34 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
           ctx!.lineWidth = 1.5;
           ctx!.stroke();
         }
-
         titleAlpha = Math.min(1, timer / 15);
         titleY = H * 0.5 - 40 - Math.max(0, (20 - timer) * 3);
-
         ctx!.save();
         ctx!.globalAlpha = titleAlpha;
-
         const lineW = 340;
         ctx!.strokeStyle = theme.color;
         ctx!.lineWidth = 1;
         ctx!.globalAlpha = titleAlpha * 0.6;
         ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY - 28); ctx!.lineTo(W/2 + lineW/2, titleY - 28); ctx!.stroke();
         ctx!.beginPath(); ctx!.moveTo(W/2 - lineW/2, titleY + 52); ctx!.lineTo(W/2 + lineW/2, titleY + 52); ctx!.stroke();
-
         ctx!.globalAlpha = titleAlpha * 0.7;
         ctx!.fillStyle = theme.color;
         ctx!.font = "bold 11px 'Courier New', monospace";
         ctx!.textAlign = "center";
-        ctx!.letterSpacing = "6px";
-        ctx!.fillText("// ENTERING ORBIT //", W/2, titleY - 10);
-
+        ctx!.fillText("// ĐANG VÀO QUỸ ĐẠO //", W/2, titleY - 10);
         ctx!.globalAlpha = titleAlpha;
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 30;
         ctx!.fillStyle = "#ffffff";
-        ctx!.font = `900 ${Math.min(90, W / 8)}px 'Arial Black', sans-serif`;
+        ctx!.font = `900 ${Math.min(78, W / 9)}px 'Arial Black', sans-serif`;
         ctx!.textAlign = "center";
         ctx!.fillText(theme.label, W/2, titleY + 40);
-
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 60;
         ctx!.globalAlpha = titleAlpha * 0.5;
         ctx!.fillText(theme.label, W/2, titleY + 40);
-
         ctx!.shadowBlur = 0;
         ctx!.restore();
-
         if (timer >= 35) { phase = "scan"; scanY = 0; scanAlpha = 0; timer = 0; }
 
       } else if (phase === "scan") {
@@ -580,11 +629,10 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 20;
         ctx!.fillStyle = "#ffffff";
-        ctx!.font = `900 ${Math.min(90, W / 8)}px 'Arial Black', sans-serif`;
+        ctx!.font = `900 ${Math.min(78, W / 9)}px 'Arial Black', sans-serif`;
         ctx!.textAlign = "center";
         ctx!.fillText(theme.label, W/2, titleY + 40);
         ctx!.restore();
-
         scanY = (timer / 30) * H;
         scanAlpha = Math.sin((timer / 30) * Math.PI) * 0.6;
         const scanGrd = ctx!.createLinearGradient(0, scanY - 40, 0, scanY + 40);
@@ -595,7 +643,6 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         scanGrd.addColorStop(1,   `${theme.glow}0)`);
         ctx!.fillStyle = scanGrd;
         ctx!.fillRect(0, scanY - 40, W, 80);
-
         if (timer >= 38) { phase = "fadeout"; timer = 0; }
 
       } else if (phase === "fadeout") {
@@ -607,11 +654,7 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.fillStyle = fade;
         ctx!.fillRect(0, 0, W, H);
         ctx!.globalAlpha = 1;
-
-        if (timer >= 20) {
-          ctx!.clearRect(0, 0, W, H);
-          return;
-        }
+        if (timer >= 20) { ctx!.clearRect(0, 0, W, H); return; }
       }
 
       animRef.current = requestAnimationFrame(tick);
@@ -632,15 +675,11 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
   );
 }
 
-// ─── NÚT BẤM PHONG CÁCH VIỄN TƯỞNG ─────────────────────────────────────────
+// ─── NÚT BẤM PHONG CÁCH VIỄN TƯỞNG ──────────────────────────────────────────
 function MenuButton({
-  text,
-  onClick,
-  highlight = false,
+  text, onClick, highlight = false,
 }: {
-  text: string;
-  onClick?: () => void;
-  highlight?: boolean;
+  text: string; onClick?: () => void; highlight?: boolean;
 }) {
   return (
     <button
@@ -652,12 +691,8 @@ function MenuButton({
         borderLeft: `3px solid ${highlight ? "#00f3ff" : "rgba(0, 243, 255, 0.3)"}`,
         borderRight: "1px solid rgba(0, 243, 255, 0.1)",
         color: highlight ? "#fff" : "#b3e5fc",
-        fontSize: "14px",
-        fontWeight: "bold",
-        letterSpacing: "3px",
-        cursor: "pointer",
-        textAlign: "left",
-        textTransform: "uppercase",
+        fontSize: "14px", fontWeight: "bold", letterSpacing: "3px",
+        cursor: "pointer", textAlign: "left", textTransform: "uppercase",
         clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%)",
         transition: "all 0.3s ease",
         boxShadow: highlight ? "inset 0 0 15px rgba(0, 243, 255, 0.2)" : "none",
@@ -669,16 +704,10 @@ function MenuButton({
         e.currentTarget.style.boxShadow = "inset 0 0 15px rgba(0, 243, 255, 0.3)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = highlight
-          ? "rgba(0, 243, 255, 0.15)"
-          : "rgba(0, 0, 0, 0.4)";
+        e.currentTarget.style.backgroundColor = highlight ? "rgba(0, 243, 255, 0.15)" : "rgba(0, 0, 0, 0.4)";
         e.currentTarget.style.color = highlight ? "#fff" : "#b3e5fc";
-        e.currentTarget.style.borderLeft = `3px solid ${
-          highlight ? "#00f3ff" : "rgba(0, 243, 255, 0.3)"
-        }`;
-        e.currentTarget.style.boxShadow = highlight
-          ? "inset 0 0 15px rgba(0, 243, 255, 0.2)"
-          : "none";
+        e.currentTarget.style.borderLeft = `3px solid ${highlight ? "#00f3ff" : "rgba(0, 243, 255, 0.3)"}`;
+        e.currentTarget.style.boxShadow = highlight ? "inset 0 0 15px rgba(0, 243, 255, 0.2)" : "none";
       }}
     >
       {text}
@@ -686,15 +715,11 @@ function MenuButton({
   );
 }
 
-// ─── BẢNG THÔNG TIN (ĐÃ FIX HIỆU ỨNG TRẢ LỜI SAI) ─────────────────────────────
+// ─── [NHIỆM VỤ 4] BẢNG THÔNG TIN — TIẾNG VIỆT ───────────────────────────────
 function PlanetInfoPanel({
-  currentHash,
-  onCorrect,
-  onWrong,
+  currentHash, onCorrect, onWrong,
 }: {
-  currentHash: string;
-  onCorrect: () => void;
-  onWrong: () => void;
+  currentHash: string; onCorrect: () => void; onWrong: () => void;
 }) {
   const [activeView, setActiveView] = useState<string>("menu");
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -718,6 +743,14 @@ function PlanetInfoPanel({
     }
   };
 
+  // Tên hiển thị cho các tab — tiếng Việt
+  const VIEW_LABELS: Record<string, string> = {
+    visit:        "THAM QUAN",
+    encyclopedia: "BÁCH KHOA",
+    structure:    "CẤU TRÚC",
+    quiz:         "CÂU HỎI (QUIZ)",
+  };
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -727,88 +760,42 @@ function PlanetInfoPanel({
         exit={{ x: -300, opacity: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         style={{
-          position: "absolute",
-          top: "8%",
-          left: "60px",
-          width: "380px",
-          zIndex: 10,
-          color: "white",
-          fontFamily: "sans-serif",
+          position: "absolute", top: "8%", left: "60px", width: "380px", zIndex: 10,
+          color: "white", fontFamily: "sans-serif",
           background: `repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px),
             linear-gradient(135deg, rgba(2,11,26,0.85) 0%, rgba(0,34,68,0.6) 100%)`,
           border: "1px solid rgba(0, 243, 255, 0.3)",
-          borderTop: "3px solid #00f3ff",
-          borderBottom: "3px solid #00f3ff",
-          boxShadow:
-            "0 0 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1)",
-          borderRadius: "4px",
-          padding: "30px",
-          backdropFilter: "blur(15px)",
+          borderTop: "3px solid #00f3ff", borderBottom: "3px solid #00f3ff",
+          boxShadow: "0 0 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1)",
+          borderRadius: "4px", padding: "30px", backdropFilter: "blur(15px)",
           clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%)",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: "10px",
-            color: "#00f3ff",
-            marginBottom: "15px",
-            opacity: 0.8,
-            letterSpacing: "2px",
-            textTransform: "uppercase",
-          }}
-        >
-          <span>SYS.DAT // {currentHash.replace("#", "")}</span>
-          <span>[ UFO LINKED ]</span>
+        <div style={{
+          display: "flex", justifyContent: "space-between", fontSize: "10px",
+          color: "#00f3ff", marginBottom: "15px", opacity: 0.8,
+          letterSpacing: "2px", textTransform: "uppercase",
+        }}>
+          <span>DỮ.LIỆU // {currentHash.replace("#", "")}</span>
+          <span>[ ĐĨA BAY ĐÃ KẾT NỐI ]</span>
         </div>
 
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "30px",
-            borderBottom: "1px dashed rgba(0, 243, 255, 0.4)",
-            paddingBottom: "15px",
-            position: "relative",
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "44px",
-              fontWeight: "900",
-              letterSpacing: "6px",
-              color: "#e0f7fa",
-              textShadow: "0 0 20px #00f3ff, 0 0 40px #00f3ff",
-            }}
-          >
+        <div style={{
+          textAlign: "center", marginBottom: "30px",
+          borderBottom: "1px dashed rgba(0, 243, 255, 0.4)", paddingBottom: "15px",
+          position: "relative",
+        }}>
+          <h1 style={{
+            margin: 0, fontSize: "36px", fontWeight: "900", letterSpacing: "4px",
+            color: "#e0f7fa", textShadow: "0 0 20px #00f3ff, 0 0 40px #00f3ff",
+          }}>
             {data.name}
           </h1>
-          <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#00f3ff", letterSpacing: "8px" }}>
+          <p style={{ margin: "5px 0 0 0", fontSize: "12px", color: "#00f3ff", letterSpacing: "6px" }}>
             {data.type}
           </p>
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-3px",
-              left: "0",
-              width: "5px",
-              height: "5px",
-              backgroundColor: "#00f3ff",
-              boxShadow: "0 0 10px #00f3ff",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-3px",
-              right: "0",
-              width: "5px",
-              height: "5px",
-              backgroundColor: "#00f3ff",
-              boxShadow: "0 0 10px #00f3ff",
-            }}
-          />
+          <div style={{ position: "absolute", bottom: "-3px", left: "0", width: "5px", height: "5px", backgroundColor: "#00f3ff", boxShadow: "0 0 10px #00f3ff" }} />
+          <div style={{ position: "absolute", bottom: "-3px", right: "0", width: "5px", height: "5px", backgroundColor: "#00f3ff", boxShadow: "0 0 10px #00f3ff" }} />
         </div>
 
         {activeView === "menu" && (
@@ -817,73 +804,51 @@ function PlanetInfoPanel({
             animate={{ opacity: 1 }}
             style={{ display: "flex", flexDirection: "column", gap: "12px" }}
           >
-            <MenuButton text="VISIT"           onClick={() => setActiveView("visit")} />
-            <MenuButton text="ENCYCLOPEDIA"    onClick={() => setActiveView("encyclopedia")} />
-            <MenuButton text="STRUCTURE"       onClick={() => setActiveView("structure")} />
-            <MenuButton text="QUESTION (QUIZ)" highlight onClick={() => setActiveView("quiz")} />
+            <MenuButton text="THAM QUAN"          onClick={() => setActiveView("visit")} />
+            <MenuButton text="BÁCH KHOA"          onClick={() => setActiveView("encyclopedia")} />
+            <MenuButton text="CẤU TRÚC"           onClick={() => setActiveView("structure")} />
+            <MenuButton text="CÂU HỎI (QUIZ)" highlight onClick={() => setActiveView("quiz")} />
           </motion.div>
         )}
 
         {["visit", "encyclopedia", "structure"].includes(activeView) && (
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <h3
-              style={{
-                marginTop: 0,
-                color: "#00f3ff",
-                fontSize: "16px",
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}
-            >
-              {activeView}
+            <h3 style={{
+              marginTop: 0, color: "#00f3ff", fontSize: "16px",
+              textTransform: "uppercase", letterSpacing: "2px",
+            }}>
+              {VIEW_LABELS[activeView] ?? activeView}
             </h3>
-            <p
-              style={{
-                fontSize: "15px",
-                lineHeight: "1.6",
-                color: "#d0e8f2",
-                marginBottom: "25px",
-                fontWeight: "300",
-              }}
-            >
+            <p style={{
+              fontSize: "14px", lineHeight: "1.7", color: "#d0e8f2",
+              marginBottom: "25px", fontWeight: "300",
+            }}>
               {data[activeView]}
             </p>
-            <MenuButton text="BACK TO MENU" onClick={() => setActiveView("menu")} highlight />
+            <MenuButton text="QUAY LẠI MENU" onClick={() => setActiveView("menu")} highlight />
           </motion.div>
         )}
 
         {activeView === "quiz" && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-            <h3
-              style={{
-                marginTop: 0,
-                color: "#00f3ff",
-                fontSize: "16px",
-                textTransform: "uppercase",
-              }}
-            >
-              Quiz / System Test
+            <h3 style={{ marginTop: 0, color: "#00f3ff", fontSize: "16px", textTransform: "uppercase" }}>
+              Câu Hỏi Kiểm Tra
             </h3>
             <p style={{ fontSize: "16px", lineHeight: "1.5", marginBottom: "20px", color: "#e0f7fa" }}>
               {data.question}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
               {data.options.map((option: string, index: number) => {
-                let bgColor = "rgba(0,0,0,0.4)";
+                let bgColor    = "rgba(0,0,0,0.4)";
                 let borderColor = "rgba(0, 243, 255, 0.2)";
-                let textColor = "white";
+                let textColor  = "white";
 
-                // [NHIỆM VỤ 4] CHỈ ĐỔI MÀU Ô MÀ NGƯỜI DÙNG BẤM, GIẤU ĐÁP ÁN ĐÚNG KHI SAI
                 if (selectedAnswer !== null) {
                   if (index === selectedAnswer) {
                     if (index === data.correctAnswer) {
-                      bgColor = "rgba(0,255,0,0.2)";
-                      borderColor = "#00ff00";
-                      textColor = "#00ff00";
+                      bgColor = "rgba(0,255,0,0.2)"; borderColor = "#00ff00"; textColor = "#00ff00";
                     } else {
-                      bgColor = "rgba(255,0,0,0.4)";
-                      borderColor = "#ff0000";
-                      textColor = "#ff0000";
+                      bgColor = "rgba(255,0,0,0.4)"; borderColor = "#ff0000"; textColor = "#ff0000";
                     }
                   }
                 }
@@ -893,15 +858,12 @@ function PlanetInfoPanel({
                     key={index}
                     onClick={() => handleAnswerClick(index)}
                     style={{
-                      padding: "12px",
-                      textAlign: "left",
-                      backgroundColor: bgColor,
-                      border: `1px solid ${borderColor}`,
-                      color: textColor,
-                      cursor: selectedAnswer === null ? "pointer" : "default",
-                      borderRadius: "4px",
-                      transition: "all 0.3s",
+                      padding: "12px", textAlign: "left",
+                      backgroundColor: bgColor, border: `1px solid ${borderColor}`,
+                      color: textColor, cursor: selectedAnswer === null ? "pointer" : "default",
+                      borderRadius: "4px", transition: "all 0.3s",
                       clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%)",
+                      fontSize: "14px",
                     }}
                   >
                     {option}
@@ -911,7 +873,7 @@ function PlanetInfoPanel({
             </div>
             {selectedAnswer !== null && (
               <MenuButton
-                text="BACK TO MENU"
+                text="QUAY LẠI MENU"
                 onClick={() => { setActiveView("menu"); setSelectedAnswer(null); }}
                 highlight
               />
@@ -936,55 +898,57 @@ function OrbitLine({ radius }: { radius: number }) {
   return <Line points={points} color="white" lineWidth={1} transparent opacity={0.25} />;
 }
 
-// ─── TRỤC QUAY CHO HÀNH TINH (ĐÃ FIX CHỐNG KHỰNG) ────────────────────────────
+// ─── [NHIỆM VỤ 2] TRỤC QUAY HÀNH TINH — DELTA CAP + SMOOTH ──────────────────
 function OrbitGroup({
-  speed,
-  children,
-  planetHash,
-  anglesRef,
+  speed, children, planetHash, anglesRef,
 }: {
-  speed: number;
-  children: React.ReactNode;
-  planetHash?: string;
-  anglesRef?: React.MutableRefObject<Record<string, number>>;
+  speed: number; children: React.ReactNode;
+  planetHash?: string; anglesRef?: React.MutableRefObject<Record<string, number>>;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef    = useRef<THREE.Group>(null);
+  // Tích lũy góc riêng để tránh nhảy khi fps thấp
+  const localAngle  = useRef<number>(0);
+  const didInit     = useRef(false);
+
+  useEffect(() => {
+    // Đồng bộ góc local với anglesRef khi mount
+    if (planetHash && anglesRef) {
+      localAngle.current = anglesRef.current[planetHash] ?? 0;
+    }
+    didInit.current = false;
+  }, [planetHash]);
+
   useFrame((_, delta) => {
     if (!groupRef.current) return;
-    
-    // [NHIỆM VỤ 3] KHỐNG CHẾ DELTA ĐỂ TRÁNH NHẢY QUÃNG (KHỰNG) KHI CHUYỂN TAB HOẶC LAG
+    // Cap delta tối đa 1/20s (50 fps tối thiểu tương đương) để tránh giật khi lag/tab switch
     const safeDelta = Math.min(delta, 0.05);
+    localAngle.current += speed * safeDelta;
 
     if (planetHash && anglesRef) {
-      anglesRef.current[planetHash] = (anglesRef.current[planetHash] ?? 0) + speed * safeDelta;
-      groupRef.current.rotation.y = anglesRef.current[planetHash];
-    } else {
-      groupRef.current.rotation.y += speed * safeDelta;
+      anglesRef.current[planetHash] = localAngle.current;
     }
+    groupRef.current.rotation.y = localAngle.current;
   });
+
   return <group ref={groupRef}>{children}</group>;
 }
 
-// ─── ĐUÔI SÁNG UFO — KIỂU PHUN LỬA TÊN LỬA ──────────────────────────────────
+// ─── ĐUÔI SÁNG UFO ───────────────────────────────────────────────────────────
 const TRAIL_RAW_MAX  = 120;
 const TRAIL_STEPS    = 80;
 const TRAIL_MAX_W    = 5.5;
 const TRAIL_OUTER_N  = 8;
 const SPARK_COUNT    = 24;
-const RING_COUNT     = 6;   
+const RING_COUNT     = 6;
 
 function RocketTrail({
-  posRef,
-  velRef,
-  currentHash,
+  posRef, velRef, currentHash,
 }: {
   posRef: React.MutableRefObject<THREE.Vector3>;
   velRef: React.MutableRefObject<THREE.Vector3>;
   currentHash: string;
 }) {
-  const rawBuffer = useRef<THREE.Vector3[]>(
-    Array.from({ length: TRAIL_RAW_MAX }, () => new THREE.Vector3())
-  );
+  const rawBuffer       = useRef<THREE.Vector3[]>(Array.from({ length: TRAIL_RAW_MAX }, () => new THREE.Vector3()));
   const rawCount        = useRef(0);
   const lastRecordedPos = useRef(new THREE.Vector3(Infinity, Infinity, Infinity));
   const curve = useMemo(() => new THREE.CatmullRomCurve3([], false, "catmullrom", 0.5), []);
@@ -994,9 +958,7 @@ function RocketTrail({
   const _perpB = useRef(new THREE.Vector3());
   const _pt    = useRef(new THREE.Vector3());
 
-  const outerDirs = useRef<THREE.Vector3[]>(
-    Array.from({ length: TRAIL_OUTER_N }, () => new THREE.Vector3())
-  );
+  const outerDirs = useRef<THREE.Vector3[]>(Array.from({ length: TRAIL_OUTER_N }, () => new THREE.Vector3()));
 
   const makeGeo = (n: number) => {
     const g = new THREE.BufferGeometry();
@@ -1007,7 +969,7 @@ function RocketTrail({
   };
 
   const coreGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
-  const core2Geo  = useMemo(() => makeGeo(TRAIL_STEPS), []); 
+  const core2Geo  = useMemo(() => makeGeo(TRAIL_STEPS), []);
   const haloGeo   = useMemo(() => makeGeo(TRAIL_STEPS), []);
   const outerGeos = useMemo(() => Array.from({ length: TRAIL_OUTER_N }, () => makeGeo(TRAIL_STEPS)), []);
   const RING_PTS  = 32;
@@ -1020,46 +982,22 @@ function RocketTrail({
     return g;
   }, []);
 
-  const coreMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 1.0,
-    blending: THREE.AdditiveBlending, depthWrite: false,
-  }), []);
-  const core2Mat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.7,
-    blending: THREE.AdditiveBlending, depthWrite: false,
-  }), []);
-  const haloMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.55,
-    blending: THREE.AdditiveBlending, depthWrite: false,
-  }), []);
-  const outerMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.50,
-    blending: THREE.AdditiveBlending, depthWrite: false,
-  }), []);
-  const ringMat = useMemo(() => new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.75,
-    blending: THREE.AdditiveBlending, depthWrite: false,
-  }), []);
-  const sparkMat = useMemo(() => new THREE.PointsMaterial({
-    vertexColors: true, transparent: true, size: 1.4,
-    blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
-  }), []);
+  const coreMat  = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 1.0, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const core2Mat = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const haloMat  = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const outerMat = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.50, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const ringMat  = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.75, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const sparkMat = useMemo(() => new THREE.PointsMaterial({ vertexColors: true, transparent: true, size: 1.4, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }), []);
 
-  const sparkState = useRef(
-    Array.from({ length: SPARK_COUNT }, () => ({
-      u: Math.random(),
-      offset: new THREE.Vector3((Math.random()-0.5)*4, (Math.random()-0.5)*4, (Math.random()-0.5)*4),
-      life: Math.random(),
-      speed: 0.25 + Math.random() * 0.75,
-    }))
-  );
+  const sparkState = useRef(Array.from({ length: SPARK_COUNT }, () => ({
+    u: Math.random(), offset: new THREE.Vector3((Math.random()-0.5)*4, (Math.random()-0.5)*4, (Math.random()-0.5)*4),
+    life: Math.random(), speed: 0.25 + Math.random() * 0.75,
+  })));
 
   useEffect(() => {
     rawCount.current = 0;
     lastRecordedPos.current.set(Infinity, Infinity, Infinity);
-    coreGeo.setDrawRange(0, 0);
-    core2Geo.setDrawRange(0, 0);
-    haloGeo.setDrawRange(0, 0);
+    coreGeo.setDrawRange(0, 0); core2Geo.setDrawRange(0, 0); haloGeo.setDrawRange(0, 0);
     outerGeos.forEach((g) => g.setDrawRange(0, 0));
     ringGeos.forEach((g) => g.setDrawRange(0, 0));
     sparkGeo.setDrawRange(0, 0);
@@ -1069,10 +1007,8 @@ function RocketTrail({
   useFrame(({ clock }, delta) => {
     const worldPos = posRef.current;
     if (!worldPos) return;
-
-    const t     = clock.getElapsedTime();
+    const t = clock.getElapsedTime();
     const speed = velRef.current.length();
-
     const MIN_DIST = 0.03;
     if (worldPos.distanceTo(lastRecordedPos.current) > MIN_DIST) {
       if (rawCount.current < TRAIL_RAW_MAX) {
@@ -1084,125 +1020,81 @@ function RocketTrail({
       }
       lastRecordedPos.current.copy(worldPos);
     }
-
     if (rawCount.current < 3) return;
-
     const speedRatio  = Math.min(speed / 0.30, 1.0);
     const targetDepth = Math.max(10, Math.round(10 + speedRatio * (TRAIL_RAW_MAX - 10)));
     const usedCount   = Math.min(rawCount.current, targetDepth);
     const offset      = rawCount.current - usedCount;
     const activePts   = rawBuffer.current.slice(offset, rawCount.current);
     if (activePts.length < 3) return;
-
     curve.points = activePts;
     const steps = Math.min(TRAIL_STEPS, activePts.length * 4);
-
     _vel.current.copy(velRef.current);
     const velLen = _vel.current.length();
     if (velLen < 0.0005) return;
     _vel.current.divideScalar(velLen);
-
-    const refUp = Math.abs(_vel.current.y) < 0.95
-      ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
+    const refUp = Math.abs(_vel.current.y) < 0.95 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
     _perpA.current.crossVectors(_vel.current, refUp).normalize();
     _perpB.current.crossVectors(_vel.current, _perpA.current).normalize();
-
     for (let di = 0; di < TRAIL_OUTER_N; di++) {
       const angle = (di / TRAIL_OUTER_N) * Math.PI * 2;
-      outerDirs.current[di]
-        .copy(_perpA.current).multiplyScalar(Math.cos(angle))
-        .addScaledVector(_perpB.current, Math.sin(angle));
+      outerDirs.current[di].copy(_perpA.current).multiplyScalar(Math.cos(angle)).addScaledVector(_perpB.current, Math.sin(angle));
     }
-
     const corePosA = coreGeo.attributes.position as THREE.BufferAttribute;
     const coreColA = coreGeo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
-      const u  = i / (steps - 1);
-      const pt = curve.getPoint(u, _pt.current);
+      const u = i / (steps - 1); const pt = curve.getPoint(u, _pt.current);
       corePosA.setXYZ(i, pt.x, pt.y, pt.z);
-      const a = Math.pow(u, 0.5);
-      const hue = (t * 0.3 + u * 0.5) % 1.0;
-      const r = a * (0.2 + 0.8 * Math.max(0, Math.sin(hue * Math.PI * 2)));
-      const g = a * (0.7 + 0.3 * Math.cos(hue * Math.PI * 2 + 1));
-      const b = a * 1.0;
-      coreColA.setXYZ(i, r, g, b);
+      const a = Math.pow(u, 0.5); const hue = (t * 0.3 + u * 0.5) % 1.0;
+      coreColA.setXYZ(i, a * (0.2 + 0.8 * Math.max(0, Math.sin(hue * Math.PI * 2))), a * (0.7 + 0.3 * Math.cos(hue * Math.PI * 2 + 1)), a * 1.0);
     }
-    coreGeo.setDrawRange(0, steps);
-    corePosA.needsUpdate = true; coreColA.needsUpdate = true;
-
+    coreGeo.setDrawRange(0, steps); corePosA.needsUpdate = true; coreColA.needsUpdate = true;
     const c2PosA = core2Geo.attributes.position as THREE.BufferAttribute;
     const c2ColA = core2Geo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
-      const u  = i / (steps - 1);
-      const pt = curve.getPoint(u, _pt.current);
+      const u = i / (steps - 1); const pt = curve.getPoint(u, _pt.current);
       c2PosA.setXYZ(i, pt.x, pt.y, pt.z);
-      const a = Math.pow(u, 0.3) * (1 - u * 0.6);
-      c2ColA.setXYZ(i, a, a, a); 
+      const a = Math.pow(u, 0.3) * (1 - u * 0.6); c2ColA.setXYZ(i, a, a, a);
     }
-    core2Geo.setDrawRange(0, steps);
-    c2PosA.needsUpdate = true; c2ColA.needsUpdate = true;
-
+    core2Geo.setDrawRange(0, steps); c2PosA.needsUpdate = true; c2ColA.needsUpdate = true;
     const haloPosA = haloGeo.attributes.position as THREE.BufferAttribute;
     const haloColA = haloGeo.attributes.color    as THREE.BufferAttribute;
     for (let i = 0; i < steps; i++) {
-      const u   = i / (steps - 1);
-      const pt  = curve.getPoint(u, _pt.current);
+      const u = i / (steps - 1); const pt = curve.getPoint(u, _pt.current);
       const bob = Math.sin(t * 10 + u * 15) * 0.35 * (1 - u);
       haloPosA.setXYZ(i, pt.x + _perpA.current.x * bob, pt.y + bob, pt.z + _perpA.current.z * bob);
-      const a = Math.pow(u, 0.8) * 0.9;
-      haloColA.setXYZ(i, a * 0.1, a * 0.9, a * 1.0);
+      const a = Math.pow(u, 0.8) * 0.9; haloColA.setXYZ(i, a * 0.1, a * 0.9, a * 1.0);
     }
-    haloGeo.setDrawRange(0, steps);
-    haloPosA.needsUpdate = true; haloColA.needsUpdate = true;
-
+    haloGeo.setDrawRange(0, steps); haloPosA.needsUpdate = true; haloColA.needsUpdate = true;
     outerGeos.forEach((geo, di) => {
-      const dir      = outerDirs.current[di];
-      const posAttr  = geo.attributes.position as THREE.BufferAttribute;
-      const colAttr  = geo.attributes.color    as THREE.BufferAttribute;
-      const phase    = di * (Math.PI * 2 / TRAIL_OUTER_N);
+      const dir = outerDirs.current[di]; const posAttr = geo.attributes.position as THREE.BufferAttribute; const colAttr = geo.attributes.color as THREE.BufferAttribute;
+      const phase = di * (Math.PI * 2 / TRAIL_OUTER_N);
       for (let i = 0; i < steps; i++) {
-        const u      = i / (steps - 1);
-        const pt     = curve.getPoint(u, _pt.current);
-        const coneU  = 1 - u;
-        const radius = TRAIL_MAX_W * Math.pow(coneU, 0.45)
-          * (0.65 + 0.35 * Math.sin(t * 16 + u * 10 + phase));
-        const twist  = coneU * 0.5 * Math.sin(t * 4 + phase);
-        const td = new THREE.Vector3(
-          dir.x * Math.cos(twist) - dir.z * Math.sin(twist),
-          dir.y,
-          dir.x * Math.sin(twist) + dir.z * Math.cos(twist)
-        );
+        const u = i / (steps - 1); const pt = curve.getPoint(u, _pt.current);
+        const coneU = 1 - u;
+        const radius = TRAIL_MAX_W * Math.pow(coneU, 0.45) * (0.65 + 0.35 * Math.sin(t * 16 + u * 10 + phase));
+        const twist = coneU * 0.5 * Math.sin(t * 4 + phase);
+        const td = new THREE.Vector3(dir.x * Math.cos(twist) - dir.z * Math.sin(twist), dir.y, dir.x * Math.sin(twist) + dir.z * Math.cos(twist));
         posAttr.setXYZ(i, pt.x + td.x * radius, pt.y + td.y * radius, pt.z + td.z * radius);
-        const a = Math.pow(u, 1.1) * 0.65;
-        const colorCycle = (di % 3);
-        const r = a * (colorCycle === 2 ? 1.0 : colorCycle === 1 ? 0.5 : 0.05);
-        const g = a * (colorCycle === 2 ? 0.8 : colorCycle === 1 ? 0.1 : 0.8);
-        const b = a * (colorCycle === 2 ? 0.0 : colorCycle === 1 ? 1.0 : 1.0);
-        colAttr.setXYZ(i, r, g, b);
+        const a = Math.pow(u, 1.1) * 0.65; const colorCycle = (di % 3);
+        colAttr.setXYZ(i, a * (colorCycle === 2 ? 1.0 : colorCycle === 1 ? 0.5 : 0.05), a * (colorCycle === 2 ? 0.8 : colorCycle === 1 ? 0.1 : 0.8), a * (colorCycle === 2 ? 0.0 : colorCycle === 1 ? 1.0 : 1.0));
       }
       geo.setDrawRange(0, steps);
       (geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
     });
-
     ringGeos.forEach((geo, ri) => {
-      const posAttr = geo.attributes.position as THREE.BufferAttribute;
-      const colAttr = geo.attributes.color    as THREE.BufferAttribute;
+      const posAttr = geo.attributes.position as THREE.BufferAttribute; const colAttr = geo.attributes.color as THREE.BufferAttribute;
       const ringU = ((t * 0.45 + ri / RING_COUNT) % 1.0);
       if (ringU < 0.02 || ringU > 0.98) { geo.setDrawRange(0, 0); return; }
       const ringPt = curve.getPoint(ringU, _pt.current);
       const rRadius = TRAIL_MAX_W * (1 - ringU) * 1.2 * (0.8 + 0.2 * Math.sin(t * 8 + ri));
       const hue = (ri / RING_COUNT + t * 0.1) % 1.0;
-      const rr = 0.3 + 0.7 * Math.sin(hue * Math.PI * 2);
-      const rg = 0.5 + 0.5 * Math.cos(hue * Math.PI * 2);
-      const rb = 1.0;
+      const rr = 0.3 + 0.7 * Math.sin(hue * Math.PI * 2); const rg = 0.5 + 0.5 * Math.cos(hue * Math.PI * 2); const rb = 1.0;
       const alpha = (1 - ringU) * 0.9;
       for (let pi = 0; pi <= RING_PTS; pi++) {
         const angle = (pi / RING_PTS) * Math.PI * 2;
-        const px = ringPt.x + _perpA.current.x * Math.cos(angle) * rRadius + _perpB.current.x * Math.sin(angle) * rRadius;
-        const py = ringPt.y + _perpA.current.y * Math.cos(angle) * rRadius + _perpB.current.y * Math.sin(angle) * rRadius;
-        const pz = ringPt.z + _perpA.current.z * Math.cos(angle) * rRadius + _perpB.current.z * Math.sin(angle) * rRadius;
-        posAttr.setXYZ(pi, px, py, pz);
+        posAttr.setXYZ(pi, ringPt.x + _perpA.current.x * Math.cos(angle) * rRadius + _perpB.current.x * Math.sin(angle) * rRadius, ringPt.y + _perpA.current.y * Math.cos(angle) * rRadius + _perpB.current.y * Math.sin(angle) * rRadius, ringPt.z + _perpA.current.z * Math.cos(angle) * rRadius + _perpB.current.z * Math.sin(angle) * rRadius);
         const fade = alpha * (0.7 + 0.3 * Math.sin(t * 20 + pi * 0.5));
         colAttr.setXYZ(pi, rr * fade, rg * fade, rb * fade);
       }
@@ -1210,151 +1102,92 @@ function RocketTrail({
       (geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (geo.attributes.color    as THREE.BufferAttribute).needsUpdate = true;
     });
-
     const spkPos = sparkGeo.attributes.position as THREE.BufferAttribute;
     const spkCol = sparkGeo.attributes.color    as THREE.BufferAttribute;
-    let   spkDrawn = 0;
+    let spkDrawn = 0;
     sparkState.current.forEach((sp, si) => {
       sp.life += delta * sp.speed * 1.4;
-      if (sp.life > 1.0) {
-        sp.life = 0;
-        sp.u    = Math.random() * 0.9;
-        sp.offset.set(
-          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
-          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
-          (Math.random()-0.5) * TRAIL_MAX_W * 2.2,
-        );
-        sp.speed = 0.25 + Math.random() * 0.75;
-      }
+      if (sp.life > 1.0) { sp.life = 0; sp.u = Math.random() * 0.9; sp.offset.set((Math.random()-0.5)*TRAIL_MAX_W*2.2,(Math.random()-0.5)*TRAIL_MAX_W*2.2,(Math.random()-0.5)*TRAIL_MAX_W*2.2); sp.speed = 0.25 + Math.random() * 0.75; }
       if (sp.u >= 0 && sp.u <= 1 && activePts.length >= 3) {
-        const pt   = curve.getPoint(sp.u, _pt.current);
-        const fade = (1 - sp.life) * (1 - sp.u * 0.5);
-        spkPos.setXYZ(spkDrawn,
-          pt.x + sp.offset.x * sp.life * 0.6,
-          pt.y + sp.offset.y * sp.life * 0.6,
-          pt.z + sp.offset.z * sp.life * 0.6
-        );
-        const flash = fade * (0.5 + 0.5 * Math.sin(t * 40 + si * 1.7));
-        const sc = si % 3;
-        spkCol.setXYZ(spkDrawn,
-          flash * (sc === 0 ? 1.0 : sc === 2 ? 0.8 : 0.1),
-          flash * (sc === 0 ? 1.0 : sc === 2 ? 0.1 : 1.0),
-          flash * 1.0
-        );
+        const pt = curve.getPoint(sp.u, _pt.current); const fade = (1 - sp.life) * (1 - sp.u * 0.5);
+        spkPos.setXYZ(spkDrawn, pt.x + sp.offset.x * sp.life * 0.6, pt.y + sp.offset.y * sp.life * 0.6, pt.z + sp.offset.z * sp.life * 0.6);
+        const flash = fade * (0.5 + 0.5 * Math.sin(t * 40 + si * 1.7)); const sc = si % 3;
+        spkCol.setXYZ(spkDrawn, flash * (sc === 0 ? 1.0 : sc === 2 ? 0.8 : 0.1), flash * (sc === 0 ? 1.0 : sc === 2 ? 0.1 : 1.0), flash * 1.0);
         spkDrawn++;
       }
     });
-    sparkGeo.setDrawRange(0, spkDrawn);
-    spkPos.needsUpdate = true;
-    spkCol.needsUpdate = true;
+    sparkGeo.setDrawRange(0, spkDrawn); spkPos.needsUpdate = true; spkCol.needsUpdate = true;
   });
+  
+
+  // Tạo vỏ bọc đánh lừa TypeScript
+  const R3FLine = (props: any) => <line {...props} />;
+  const R3FPoints = (props: any) => <points {...props} />;
 
   return (
     <>
-      {/* @ts-ignore */}
-      <line geometry={coreGeo}   material={coreMat}  />
-      {/* @ts-ignore */}
-      <line geometry={core2Geo}  material={core2Mat} />
-      {/* @ts-ignore */}
-      <line geometry={haloGeo}   material={haloMat}  />
+      <R3FLine geometry={coreGeo}  material={coreMat}  />
+      <R3FLine geometry={core2Geo} material={core2Mat} />
+      <R3FLine geometry={haloGeo}  material={haloMat}  />
+      
       {outerGeos.map((geo, i) => (
-        // @ts-ignore
-        <line key={`o${i}`} geometry={geo} material={outerMat} />
+        <R3FLine key={`o${i}`} geometry={geo} material={outerMat} />
       ))}
+      
       {ringGeos.map((geo, i) => (
-        // @ts-ignore
-        <line key={`r${i}`} geometry={geo} material={ringMat} />
+        <R3FLine key={`r${i}`} geometry={geo} material={ringMat} />
       ))}
-      {/* @ts-ignore */}
-      <points geometry={sparkGeo} material={sparkMat} />
+      
+      <R3FPoints geometry={sparkGeo} material={sparkMat} />
     </>
   );
 }
 
-// ─── UFO ERROR EFFECT ───────────────────────────────────────────────────────
+// ─── UFO ERROR EFFECT ─────────────────────────────────────────────────────────
 function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: React.MutableRefObject<THREE.Vector3> }) {
   const BOLT_COUNT = 8;
-  const boltGeos = useMemo(() =>
-    Array.from({ length: BOLT_COUNT }, () => {
-      const g = new THREE.BufferGeometry();
-      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(12 * 3), 3));
-      g.setDrawRange(0, 0);
-      return g;
-    }), []
-  );
-  const boltMat = useMemo(() => new THREE.LineBasicMaterial({
-    color: new THREE.Color(1, 0.05, 0.05),
-    transparent: true, opacity: 0.95,
-    blending: THREE.AdditiveBlending, depthWrite: false,
+  const boltGeos = useMemo(() => Array.from({ length: BOLT_COUNT }, () => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(12 * 3), 3));
+    g.setDrawRange(0, 0); return g;
   }), []);
-
-  const shockGeos = useMemo(() =>
-    Array.from({ length: 3 }, () => {
-      const g = new THREE.BufferGeometry();
-      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(64 * 3), 3));
-      g.setDrawRange(0, 0);
-      return g;
-    }), []
-  );
-  const shockMat = useMemo(() => new THREE.LineBasicMaterial({
-    color: new THREE.Color(1, 0.08, 0.08),
-    transparent: true, opacity: 0.85,
-    blending: THREE.AdditiveBlending, depthWrite: false,
+  const boltMat = useMemo(() => new THREE.LineBasicMaterial({ color: new THREE.Color(1, 0.05, 0.05), transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false }), []);
+  const shockGeos = useMemo(() => Array.from({ length: 3 }, () => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(64 * 3), 3));
+    g.setDrawRange(0, 0); return g;
   }), []);
-
+  const shockMat = useMemo(() => new THREE.LineBasicMaterial({ color: new THREE.Color(1, 0.08, 0.08), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }), []);
   const errorTimer = useRef(0);
   const wasShaking = useRef(false);
 
   useFrame(({ clock }, delta) => {
     if (!wasShaking.current && isShaking) errorTimer.current = 0;
     wasShaking.current = isShaking;
-
-    if (!isShaking) {
-      boltGeos.forEach((g) => g.setDrawRange(0, 0));
-      shockGeos.forEach((g) => g.setDrawRange(0, 0));
-      return;
-    }
+    if (!isShaking) { boltGeos.forEach((g) => g.setDrawRange(0, 0)); shockGeos.forEach((g) => g.setDrawRange(0, 0)); return; }
     errorTimer.current += delta;
-    const t = clock.getElapsedTime();
-    const ox = ufoPos.current.x;
-    const oy = ufoPos.current.y;
-    const oz = ufoPos.current.z;
-
+    const t = clock.getElapsedTime(); const ox = ufoPos.current.x; const oy = ufoPos.current.y; const oz = ufoPos.current.z;
     boltGeos.forEach((geo, bi) => {
       const posA = geo.attributes.position as THREE.BufferAttribute;
-      const baseAngle = (bi / BOLT_COUNT) * Math.PI * 2 + t * 15;
-      const segments = 11;
+      const baseAngle = (bi / BOLT_COUNT) * Math.PI * 2 + t * 15; const segments = 11;
       posA.setXYZ(0, ox, oy, oz);
       for (let si = 1; si <= segments; si++) {
-        const r      = (si / segments) * (12 + 5 * Math.sin(t * 40 + bi * 1.4));
+        const r = (si / segments) * (12 + 5 * Math.sin(t * 40 + bi * 1.4));
         const jitter = si > 0 && si < segments ? (Math.random() - 0.5) * 5 : 0;
-        const a      = baseAngle + jitter * 0.5;
-        posA.setXYZ(si,
-          ox + Math.cos(a) * r + jitter,
-          oy + Math.sin(t * 25 + bi) * r * 0.3 + jitter * 0.5,
-          oz + Math.sin(a) * r + jitter
-        );
+        const a = baseAngle + jitter * 0.5;
+        posA.setXYZ(si, ox + Math.cos(a) * r + jitter, oy + Math.sin(t * 25 + bi) * r * 0.3 + jitter * 0.5, oz + Math.sin(a) * r + jitter);
       }
-      geo.setDrawRange(0, segments + 1);
-      posA.needsUpdate = true;
+      geo.setDrawRange(0, segments + 1); posA.needsUpdate = true;
     });
-
     shockGeos.forEach((geo, ri) => {
-      const delay = ri * 0.07;
-      const et = Math.max(0, errorTimer.current - delay);
-      const ringR = et * 50;
+      const delay = ri * 0.07; const et = Math.max(0, errorTimer.current - delay); const ringR = et * 50;
       if (ringR <= 0.5) { geo.setDrawRange(0, 0); return; }
       const posA = geo.attributes.position as THREE.BufferAttribute;
       for (let pi = 0; pi < 64; pi++) {
         const angle = (pi / 64) * Math.PI * 2;
-        posA.setXYZ(pi,
-          ox + Math.cos(angle) * ringR,
-          oy + Math.sin(t * 6 + ri) * 2,
-          oz + Math.sin(angle) * ringR
-        );
+        posA.setXYZ(pi, ox + Math.cos(angle) * ringR, oy + Math.sin(t * 6 + ri) * 2, oz + Math.sin(angle) * ringR);
       }
-      geo.setDrawRange(0, 64);
-      posA.needsUpdate = true;
+      geo.setDrawRange(0, 64); posA.needsUpdate = true;
     });
     shockMat.opacity = Math.max(0, 0.9 - errorTimer.current * 2.0);
     boltMat.opacity  = Math.max(0, 1.0 - errorTimer.current * 1.5);
@@ -1362,60 +1195,106 @@ function UFOErrorEffect({ isShaking, ufoPos }: { isShaking: boolean; ufoPos: Rea
 
   return (
     <>
-      {boltGeos.map((geo, i) => (
-        // @ts-ignore
+      {boltGeos.map((geo, i) => (// @ts-ignore
         <line key={`bolt${i}`} geometry={geo} material={boltMat} />
       ))}
-      {shockGeos.map((geo, i) => (
-        // @ts-ignore
+      {shockGeos.map((geo, i) => (// @ts-ignore
         <line key={`shock${i}`} geometry={geo} material={shockMat} />
       ))}
     </>
   );
 }
 
-// ─── MÔ HÌNH ĐĨA BAY (UFO) ───────────────────────────────────────────────────
+// ─── UFO GLOW RING — VÀNH SÁNG BÊN DƯỚI ─────────────────────────────────────
+function UFOGlowRing({ scale, color, pulseSpeed }: { scale: number; color: string; pulseSpeed: number }) {
+  const ringRef = useRef<THREE.Mesh>(null);
+  const matRef  = useRef<THREE.MeshBasicMaterial>(null);
+  const geo = useMemo(() => new THREE.TorusGeometry(3.2 * scale, 0.18 * scale, 16, 80), [scale]);
+  useFrame(({ clock }) => {
+    if (!ringRef.current || !matRef.current) return;
+    const t = clock.getElapsedTime();
+    const pulse = 0.55 + 0.45 * Math.sin(t * pulseSpeed);
+    matRef.current.opacity = pulse * 0.85;
+    ringRef.current.rotation.z += 0.008;
+  });
+  return (
+    <mesh ref={ringRef} geometry={geo} rotation={[Math.PI / 2, 0, 0]} position={[0, -0.3 * scale, 0]}>
+      <meshBasicMaterial ref={matRef} color={color} transparent opacity={0.7} blending={THREE.AdditiveBlending} depthWrite={false} />
+    </mesh>
+  );
+}
+
+// ─── UFO ENGINE THRUSTER — LUỒNG ĐẶC BIỆT ───────────────────────────────────
+function UFOThruster({ scale, active }: { scale: number; active: boolean }) {
+  const coneRef = useRef<THREE.Mesh>(null);
+  const matRef  = useRef<THREE.MeshBasicMaterial>(null);
+  const geo = useMemo(() => new THREE.ConeGeometry(1.1 * scale, 3.5 * scale, 24, 1, true), [scale]);
+  useFrame(({ clock }) => {
+    if (!coneRef.current || !matRef.current) return;
+    const t = clock.getElapsedTime();
+    const flicker = 0.4 + 0.6 * Math.abs(Math.sin(t * 12 + Math.random() * 0.3));
+    matRef.current.opacity = active ? flicker * 0.7 : 0.0;
+    if (coneRef.current) coneRef.current.scale.y = 0.85 + 0.3 * Math.sin(t * 9);
+  });
+  return (
+    <mesh ref={coneRef} geometry={geo} position={[0, -2.2 * scale, 0]}>
+      <meshBasicMaterial ref={matRef} color="#00eeff" transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
+
+// ─── UFO SCAN BEAM — TIA QUÉT XUỐNG MẶT HÀNH TINH ───────────────────────────
+function UFOScanBeam({ scale, active }: { scale: number; active: boolean }) {
+  const beamRef = useRef<THREE.Mesh>(null);
+  const matRef  = useRef<THREE.MeshBasicMaterial>(null);
+  const geo = useMemo(() => new THREE.CylinderGeometry(0.01, 2.8 * scale, 14 * scale, 32, 1, true), [scale]);
+  useFrame(({ clock }) => {
+    if (!matRef.current) return;
+    const t = clock.getElapsedTime();
+    matRef.current.opacity = active ? (0.12 + 0.08 * Math.sin(t * 3)) : 0;
+  });
+  return (
+    <mesh ref={beamRef} geometry={geo} position={[0, -8 * scale, 0]}>
+      <meshBasicMaterial ref={matRef} color="#00ffff" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
+
+// ─── MÔ HÌNH ĐĨA BAY — NÂNG CẤP ─────────────────────────────────────────────
 function UFO({
-  currentHash,
-  isShaking,
-  worldPosRef,
-  velWorldRef,
-  anglesRef,
+  currentHash, isShaking, worldPosRef, velWorldRef, anglesRef,
 }: {
-  currentHash: string;
-  isShaking: boolean;
+  currentHash: string; isShaking: boolean;
   worldPosRef: React.MutableRefObject<THREE.Vector3>;
   velWorldRef: React.MutableRefObject<THREE.Vector3>;
   anglesRef: React.MutableRefObject<Record<string, number>>;
 }) {
-  const ufoRef = useRef<THREE.Group>(null);
-
+  const ufoRef        = useRef<THREE.Group>(null);
   const prevPosition  = useRef(new THREE.Vector3());
   const velocity      = useRef(new THREE.Vector3());
   const smoothedBank  = useRef(new THREE.Euler());
   const shouldSnap    = useRef(true);
   const prevHash      = useRef(currentHash);
   const _target       = useRef(new THREE.Vector3());
+  // lerp factor riêng cho từng hành tinh xa
+  const lerpFactor    = useRef(0.06);
 
   const obj = useLoader(OBJLoader, "/models/ufo.obj");
   const [, normalMap, , glowMap] = useLoader(THREE.TextureLoader, [
-    "/models/ufo_diffuse.png",
-    "/models/ufo_normal.png",
-    "/models/ufo_spec.png",
-    "/models/ufo_diffuse_glow.png",
+    "/models/ufo_diffuse.png", "/models/ufo_normal.png",
+    "/models/ufo_spec.png",    "/models/ufo_diffuse_glow.png",
   ]);
 
   useMemo(() => {
     obj.traverse((child: any) => {
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
-          normalMap,
-          emissiveMap:       glowMap,
-          color:             new THREE.Color("#ffffff"),
-          emissive:          new THREE.Color("#ffffff"),
-          emissiveIntensity: 1.2,
-          metalness: 0.1,
-          roughness: 0.6,
+          normalMap, emissiveMap: glowMap,
+          color: new THREE.Color("#c8eeff"),
+          emissive: new THREE.Color("#00aaff"),
+          emissiveIntensity: 2.2,
+          metalness: 0.85,
+          roughness: 0.18,
         });
       }
     });
@@ -1424,7 +1303,9 @@ function UFO({
   useEffect(() => {
     if (prevHash.current !== currentHash) {
       shouldSnap.current = true;
-      prevHash.current   = currentHash;
+      prevHash.current = currentHash;
+      // Uranus rất xa — dùng lerp chậm hơn để không bị giật/va vào hành tinh
+      lerpFactor.current = currentHash === "#uranus" || currentHash === "#neptune" ? 0.028 : 0.055;
     }
   }, [currentHash]);
 
@@ -1432,14 +1313,19 @@ function UFO({
     if (!ufoRef.current) return;
     const time = clock.getElapsedTime();
 
+    // ── Tính target — Uranus offset xa hơn để không va vào hành tinh ──────
     _target.current.set(0, 30, 80);
-
     if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
       const cfg   = ORBIT_CONFIG[currentHash];
       const angle = anglesRef.current[currentHash] ?? 0;
-      const planetX = Math.sin(angle) * cfg.radius;
-      const planetZ = Math.cos(angle) * cfg.radius;
-      _target.current.set(planetX, cfg.ufoHeight, planetZ);
+      // Uranus: đẩy UFO ra xa hành tinh thêm 12 đơn vị, lên cao hơn 8
+      const extraR = currentHash === "#uranus" ? 12 : 0;
+      const extraY = currentHash === "#uranus" ? 8  : 0;
+      _target.current.set(
+        Math.sin(angle) * (cfg.radius + extraR),
+        cfg.ufoHeight + extraY,
+        Math.cos(angle) * (cfg.radius + extraR),
+      );
     }
 
     if (shouldSnap.current) {
@@ -1450,60 +1336,84 @@ function UFO({
     }
 
     prevPosition.current.copy(ufoRef.current.position);
-    ufoRef.current.position.lerp(_target.current, 0.10);
+    ufoRef.current.position.lerp(_target.current, lerpFactor.current);
     velocity.current.subVectors(ufoRef.current.position, prevPosition.current);
 
-    ufoRef.current.position.y += Math.sin(time * 2.2) * 0.09;
-    ufoRef.current.rotation.y += 0.022;
+    // Nhẹ nhàng hơn — bobbing mượt
+    ufoRef.current.position.y += Math.sin(time * 1.1) * 0.035;
+    // Xoay từ từ, hiện đại hơn
+    ufoRef.current.rotation.y += 0.012;
 
-    const targetBankZ = -velocity.current.x * 0.55;
-    const targetBankX = -velocity.current.z * 0.55;
-    smoothedBank.current.x = THREE.MathUtils.lerp(smoothedBank.current.x, targetBankX, 0.08);
-    smoothedBank.current.z = THREE.MathUtils.lerp(smoothedBank.current.z, targetBankZ, 0.08);
+    // Banking mượt — phản ứng với vận tốc
+    const speedMag = velocity.current.length();
+    const bankScale = Math.min(speedMag * 120, 1.0); // scale theo tốc độ thực
+    const targetBankZ = -velocity.current.x * 0.28 * bankScale;
+    const targetBankX = -velocity.current.z * 0.28 * bankScale;
+    smoothedBank.current.x = THREE.MathUtils.lerp(smoothedBank.current.x, targetBankX, 0.035);
+    smoothedBank.current.z = THREE.MathUtils.lerp(smoothedBank.current.z, targetBankZ, 0.035);
     ufoRef.current.rotation.x = smoothedBank.current.x;
     ufoRef.current.rotation.z = smoothedBank.current.z;
 
     if (isShaking) {
-      ufoRef.current.position.x += (Math.random() - 0.5) * 4;
-      ufoRef.current.position.y += (Math.random() - 0.5) * 4;
-      ufoRef.current.position.z += (Math.random() - 0.5) * 4;
+      ufoRef.current.position.x += (Math.random() - 0.5) * 3;
+      ufoRef.current.position.y += (Math.random() - 0.5) * 3;
+      ufoRef.current.position.z += (Math.random() - 0.5) * 3;
     }
-
     worldPosRef.current.copy(ufoRef.current.position);
     velWorldRef.current.copy(velocity.current);
   });
 
-  const ufoScale =
-    currentHash !== "#overview" && ORBIT_CONFIG[currentHash]
-      ? ORBIT_CONFIG[currentHash].ufoScale
-      : 0.38;
+  const ufoScale   = currentHash !== "#overview" && ORBIT_CONFIG[currentHash] ? ORBIT_CONFIG[currentHash].ufoScale : 0.38;
+  const isAtPlanet = currentHash !== "#overview";
+  // màu nhẫn thay đổi theo hành tinh
+  const ringColor  = currentHash === "#uranus"  ? "#00ffcc"
+                   : currentHash === "#neptune" ? "#4488ff"
+                   : currentHash === "#saturn"  ? "#ffcc44"
+                   : "#00eeff";
 
   return (
     <group ref={ufoRef}>
       <primitive object={obj} scale={ufoScale} position={[0, 0, 0]} />
-      <pointLight position={[0, 10, 0]}   intensity={100} color="#ffffff" distance={30} />
-      <pointLight position={[10, -5, 10]} intensity={50}  color="#ffffff" distance={30} />
-      {isShaking && (
-        <pointLight position={[0, 0, 0]} color="#ff0000" intensity={200} distance={80} />
-      )}
+
+      {/* Vành sáng xoay — 2 lớp */}
+      <UFOGlowRing scale={ufoScale} color={ringColor}  pulseSpeed={2.8} />
+      <UFOGlowRing scale={ufoScale * 0.72} color="#ffffff" pulseSpeed={4.2} />
+
+      {/* Engine thruster dưới đáy */}
+      <UFOThruster scale={ufoScale} active={isAtPlanet} />
+
+      {/* Tia quét xuống hành tinh khi đang orbit */}
+      <UFOScanBeam scale={ufoScale} active={isAtPlanet} />
+
+      {/* Đèn chính + accent */}
+      <pointLight position={[0, 6 * ufoScale, 0]}   intensity={180} color="#aaddff" distance={60} />
+      <pointLight position={[0, -4 * ufoScale, 0]}  intensity={120} color={ringColor} distance={45} />
+      <pointLight position={[8 * ufoScale, 2 * ufoScale, 0]}  intensity={40} color="#ffffff" distance={25} />
+      <pointLight position={[-8 * ufoScale, 2 * ufoScale, 0]} intensity={40} color="#ffffff" distance={25} />
+
+      {/* Đèn đỏ báo động khi rung */}
+      {isShaking && <pointLight position={[0, 0, 0]} color="#ff2200" intensity={300} distance={100} />}
     </group>
   );
 }
 
-// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER (FIX CINEMATIC LOCK) ────────────────────
+// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER — MỰT MÀ ───────────────────────────────
 function CameraController({
-  currentHash,
-  isCinematic,
-  anglesRef,
+  currentHash, isCinematic, anglesRef, isBackingToStart,
 }: {
-  currentHash: string;
-  isCinematic: boolean;
+  currentHash: string; isCinematic: boolean;
   anglesRef: React.MutableRefObject<Record<string, number>>;
+  isBackingToStart: boolean;
 }) {
   const { camera, controls } = useThree() as any;
   const isUserDragging   = useRef(false);
   const cinematicWasOn   = useRef(false);
-  const orbitConfig      = useMemo(() => ORBIT_CONFIG, []);
+  const backStartTimer   = useRef(0);
+
+  // Vị trí & target mượt (lerp riêng tốc độ)
+  const smoothCamPos    = useRef(new THREE.Vector3(250, 150, 500));
+  const smoothTarget    = useRef(new THREE.Vector3(0, 0, 0));
+  const prevHash        = useRef(currentHash);
 
   useEffect(() => {
     if (!controls) return;
@@ -1512,9 +1422,11 @@ function CameraController({
     return () => controls.removeEventListener("start", onStart);
   }, [controls]);
 
-  useEffect(() => { isUserDragging.current = false; }, [currentHash]);
+  useEffect(() => {
+    // Reset drag khi đổi hành tinh
+    isUserDragging.current = false;
+  }, [currentHash]);
 
-  // [NHIỆM VỤ 2]: Fix mở khóa Camera khi tắt auto-rotate Cinematic
   useEffect(() => {
     if (!isCinematic && cinematicWasOn.current) {
       isUserDragging.current = false;
@@ -1522,8 +1434,33 @@ function CameraController({
     cinematicWasOn.current = isCinematic;
   }, [isCinematic]);
 
-  useFrame((state) => {
+  useEffect(() => {
+    if (isBackingToStart) {
+      backStartTimer.current = 0;
+    }
+  }, [isBackingToStart]);
+
+  useFrame((state, delta) => {
     if (!controls) return;
+    const safeDelta = Math.min(delta, 0.05);
+
+    // ── BACK TO START: camera quét vòng quanh mặt trời, zoom ra xa ──────────
+    if (isBackingToStart) {
+      backStartTimer.current += safeDelta;
+      const t = backStartTimer.current;
+      // Bắt đầu từ vị trí hiện tại, bay vòng cung ra xa dần
+      const sweepAngle = t * 0.55; // tốc độ quay vừa phải
+      const startDist  = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+      const dist = Math.min(startDist + t * 180, 2200); // zoom out nhanh ra xa
+      const height = 80 + t * 35 + Math.sin(t * 0.4) * 40;
+      camera.position.x = Math.sin(sweepAngle) * dist;
+      camera.position.z = Math.cos(sweepAngle) * dist;
+      camera.position.y = height;
+      camera.lookAt(0, 0, 0);
+      controls.target.set(0, 0, 0);
+      controls.update();
+      return;
+    }
 
     if (isCinematic) {
       const t = state.clock.getElapsedTime() * 0.08;
@@ -1536,22 +1473,41 @@ function CameraController({
       return;
     }
 
+    // Tính target lý tưởng cho camera
     let targetCenter = new THREE.Vector3(0, 0, 0);
     let targetCamPos = new THREE.Vector3(250, 150, 500);
 
-    if (currentHash !== "#overview" && orbitConfig[currentHash]) {
-      const cfg   = orbitConfig[currentHash];
+    if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
+      const cfg   = ORBIT_CONFIG[currentHash];
       const angle = anglesRef.current[currentHash] ?? 0;
-      const px    = Math.sin(angle) * cfg.radius;
-      const pz    = Math.cos(angle) * cfg.radius;
+      const px = Math.sin(angle) * cfg.radius;
+      const pz = Math.cos(angle) * cfg.radius;
       targetCenter.set(px, 0, pz);
       targetCamPos.set(px + cfg.camOffset[0], cfg.camOffset[1], pz + cfg.camOffset[2]);
     }
 
-    controls.target.lerp(targetCenter, 0.06);
-    if (!isUserDragging.current) {
-      camera.position.lerp(targetCamPos, 0.04);
+    // Nếu vừa đổi hành tinh thì snap smooth pos về vị trí hiện tại của camera
+    if (prevHash.current !== currentHash) {
+      smoothCamPos.current.copy(camera.position);
+      smoothTarget.current.copy(controls.target);
+      prevHash.current = currentHash;
     }
+
+    // Lerp mượt với delta-aware factor (tốc độ không phụ thuộc fps)
+    // factor = 1 - exp(-k * dt), k ~ 3 → ~95% sau 1s, k ~ 2 → ~87%
+    const camK    = 2.5;
+    const targK   = 3.0;
+    const camF    = 1 - Math.exp(-camK * safeDelta);
+    const targF   = 1 - Math.exp(-targK * safeDelta);
+
+    smoothTarget.current.lerp(targetCenter, targF);
+    controls.target.copy(smoothTarget.current);
+
+    if (!isUserDragging.current) {
+      smoothCamPos.current.lerp(targetCamPos, camF);
+      camera.position.copy(smoothCamPos.current);
+    }
+
     controls.update();
   });
 
@@ -1566,23 +1522,16 @@ export default function SolarSystem() {
   const [solarSpeed,      setSolarSpeed]      = useState(1);
   const [bloomIntensity,  setBloomIntensity]  = useState(1.5);
   const [isCinematic,     setIsCinematic]     = useState(false);
+  const [showIntro,       setShowIntro]       = useState(true);
+  const [sceneVisible,    setSceneVisible]    = useState(false);
+  const [bgPanning,       setBgPanning]       = useState(false);
 
-  // [NHIỆM VỤ 1]: THÊM STATE CHO INTRO SCREEN
-  const [showIntro, setShowIntro] = useState(true);
-  const [sceneVisible, setSceneVisible] = useState(false);
-
-  const ufoWorldPos = useRef(new THREE.Vector3());
-  const ufoVelWorld = useRef(new THREE.Vector3());
+  const ufoWorldPos  = useRef(new THREE.Vector3());
+  const ufoVelWorld  = useRef(new THREE.Vector3());
 
   const planetAngles = useRef<Record<string, number>>({
-    "#mercury": 0,
-    "#venus":   0,
-    "#earth":   0,
-    "#mars":    0,
-    "#jupiter": 0,
-    "#saturn":  0,
-    "#uranus":  0,
-    "#neptune": 0,
+    "#mercury": 0, "#venus": 0, "#earth": 0, "#mars": 0,
+    "#jupiter": 0, "#saturn": 0, "#uranus": 0, "#neptune": 0,
   });
 
   const planetHashes = [
@@ -1591,6 +1540,18 @@ export default function SolarSystem() {
     "#jupiter", "#saturn", "#uranus", "#neptune",
   ];
 
+  // Nhãn tiếng Anh cho nav bar
+  const PLANET_VI: Record<string, string> = {
+    "#mercury": "MERCURY",
+    "#venus":   "VENUS",
+    "#earth":   "EARTH",
+    "#mars":    "MARS",
+    "#jupiter": "JUPITER",
+    "#saturn":  "SATURN",
+    "#uranus":  "URANUS",
+    "#neptune": "NEPTUNE",
+  };
+
   useEffect(() => {
     const handleHashChange = () => setCurrentHash(window.location.hash || "#overview");
     window.addEventListener("hashchange", handleHashChange);
@@ -1598,13 +1559,12 @@ export default function SolarSystem() {
   }, []);
 
   const handleWheel = (e: React.WheelEvent) => {
-    if (showIntro) return; // [NHIỆM VỤ 1] Không cho phép cuộn đổi hành tinh khi đang ở màn Intro
+    if (showIntro) return;
     const idx = planetHashes.indexOf(currentHash);
     if (e.deltaY > 50  && idx < planetHashes.length - 1) window.location.hash = planetHashes[idx + 1];
     else if (e.deltaY < -50 && idx > 0)                  window.location.hash = planetHashes[idx - 1];
   };
 
-  // [NHIỆM VỤ 1] Ẩn Intro và từ từ hiện Scene 3D
   const handleEnterScene = () => {
     setShowIntro(false);
     setTimeout(() => { setSceneVisible(true); }, 500);
@@ -1628,35 +1588,37 @@ export default function SolarSystem() {
   return (
     <>
       <Head>
-        <title>Solar System</title>
+        <title>Hệ Mặt Trời</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* [NHIỆM VỤ 1]: CSS KEYFRAMES CHO NỀN CHUYỂN ĐỘNG TỪ TỪ */}
-        {/* ĐÃ SỬA: CSS KEYFRAMES CHO NỀN TRÔI NGANG LIÊN TỤC */}
         <style>{`
-          @keyframes panBackgroundInfinite {
-            from { background-position: 0px center; }
-            to { background-position: -5000px center; } /* Di chuyển tọa độ nền sang trái */
+          @keyframes panBackground {
+            0%   { background-position: 0%   50%; }
+            25%  { background-position: 50%  0%;  }
+            50%  { background-position: 100% 50%; }
+            75%  { background-position: 50%  100%;}
+            100% { background-position: 0%   50%; }
+          }
+          @keyframes solarSystemPan {
+            0%   { background-position: 0%   50%; }
+            100% { background-position: 100% 50%; }
           }
         `}</style>
       </Head>
       <div
         onWheel={handleWheel}
         style={{
-          position: "absolute",
-          top: 0, left: 0,
-          width: "100vw", height: "100vh",
-          overflow: "hidden",
-          background: "#01020a", 
-          backgroundImage: "url(/b2.jpg)", // [NHIỆM VỤ 1] Gọi lại hình nền b2
-          backgroundRepeat: "repeat-x",
-          backgroundSize: "150% 150%", // Zoom to ra một chút để có dư dả không gian trượt
-          animation: "panBackground 150s linear infinite", // Chuyển động cực kỳ mượt và chậm (120s/vòng)
+          width: "100vw", height: "100vh", overflow: "hidden", position: "relative",
+          background: "#01020a",
+          backgroundImage: "url(/b2.jpg)",
+          backgroundSize: "300% 200%",
+          animation: bgPanning
+            ? "solarSystemPan 8s cubic-bezier(0.45, 0, 0.55, 1) forwards"
+            : "panBackground 160s ease-in-out infinite",
         }}
       >
-        {/* [NHIỆM VỤ 1] BỌC MOTION.DIV ĐỂ MỞ TỪ TỪ KHUNG CẢNH 3D KHI ENTER */}
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: sceneVisible ? 1 : 0 }} 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: sceneVisible ? 1 : 0 }}
           transition={{ duration: 1 }}
           style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
         >
@@ -1683,6 +1645,7 @@ export default function SolarSystem() {
                   currentHash={currentHash}
                   isCinematic={isCinematic}
                   anglesRef={planetAngles}
+                  isBackingToStart={bgPanning}
                 />
 
                 <ambientLight intensity={0.1} />
@@ -1692,28 +1655,14 @@ export default function SolarSystem() {
 
                 <Sun isActive={currentHash === "#overview"} />
 
-                <UFO
-                  currentHash={currentHash}
-                  isShaking={isShaking}
-                  worldPosRef={ufoWorldPos}
-                  velWorldRef={ufoVelWorld}
-                  anglesRef={planetAngles}
-                />
+                <UFO currentHash={currentHash} isShaking={isShaking} worldPosRef={ufoWorldPos} velWorldRef={ufoVelWorld} anglesRef={planetAngles} />
                 <UFOErrorEffect isShaking={isShaking} ufoPos={ufoWorldPos} />
-                <RocketTrail
-                  posRef={ufoWorldPos}
-                  velRef={ufoVelWorld}
-                  currentHash={currentHash}
-                />
+                <RocketTrail posRef={ufoWorldPos} velRef={ufoVelWorld} currentHash={currentHash} />
 
-                <OrbitLine radius={80}   />
-                <OrbitLine radius={140}  />
-                <OrbitLine radius={210}  />
-                <OrbitLine radius={300}  />
-                <OrbitLine radius={480}  />
-                <OrbitLine radius={680}  />
-                <OrbitLine radius={880}  />
-                <OrbitLine radius={1050} />
+
+                <OrbitLine radius={80}   /><OrbitLine radius={140}  /><OrbitLine radius={210}  />
+                <OrbitLine radius={300}  /><OrbitLine radius={480}  /><OrbitLine radius={680}  />
+                <OrbitLine radius={880}  /><OrbitLine radius={1050} />
 
                 <OrbitGroup speed={0.50 * solarSpeed} planetHash="#mercury" anglesRef={planetAngles}>
                   <Mercury isActive={currentHash === "#mercury"} setControlsEnabled={setControlsEnabled} onClick={() => (window.location.hash = "#mercury")} />
@@ -1746,12 +1695,7 @@ export default function SolarSystem() {
                 <AsteroidBelt count={4000} innerRadius={1300} outerRadius={1500} speedFactor={0.07} />
 
                 <EffectComposer>
-                  <Bloom
-                    intensity={bloomIntensity}
-                    luminanceThreshold={0.2}
-                    mipmapBlur
-                    radius={0.5}
-                  />
+                  <Bloom intensity={bloomIntensity} luminanceThreshold={0.2} mipmapBlur radius={0.5} />
                 </EffectComposer>
                 <BackgroundEffects />
               </Suspense>
@@ -1761,25 +1705,19 @@ export default function SolarSystem() {
           <PlanetArrivalEffect currentHash={currentHash} />
 
           {isShaking && (
-            <div
-              style={{
-                position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none",
-                background: "radial-gradient(ellipse at center, rgba(255,0,0,0.35) 0%, rgba(200,0,0,0.15) 50%, transparent 80%)",
-                animation: "none",
-                boxShadow: "inset 0 0 120px rgba(255,0,0,0.6)",
-              }}
-            />
+            <div style={{
+              position: "absolute", inset: 0, zIndex: 7, pointerEvents: "none",
+              background: "radial-gradient(ellipse at center, rgba(255,0,0,0.35) 0%, rgba(200,0,0,0.15) 50%, transparent 80%)",
+              boxShadow: "inset 0 0 120px rgba(255,0,0,0.6)",
+            }} />
           )}
 
           <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
             <div style={{ pointerEvents: "auto" }}>
               <HUDControls
-                solarSpeed={solarSpeed}
-                setSolarSpeed={setSolarSpeed}
-                bloomIntensity={bloomIntensity}
-                setBloomIntensity={setBloomIntensity}
-                isCinematic={isCinematic}
-                setIsCinematic={setIsCinematic}
+                solarSpeed={solarSpeed} setSolarSpeed={setSolarSpeed}
+                bloomIntensity={bloomIntensity} setBloomIntensity={setBloomIntensity}
+                isCinematic={isCinematic} setIsCinematic={setIsCinematic}
               />
             </div>
 
@@ -1794,69 +1732,68 @@ export default function SolarSystem() {
             )}
 
             <button
-              onClick={() => (window.location.hash = "#overview")}
+              onClick={() => {
+                if (bgPanning) return; // ngăn bấm 2 lần
+                setBgPanning(true);
+                // Navigate về overview sau 7s (camera đã sweep xong)
+                setTimeout(() => {
+                  window.location.hash = "#overview";
+                  setTimeout(() => setBgPanning(false), 1000);
+                }, 7000);
+              }}
               style={{
                 position: "fixed", bottom: "40px", right: "40px",
                 padding: "10px 24px",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                color: "white",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                borderRadius: "99px",
-                cursor: "pointer",
+                backgroundColor: bgPanning ? "rgba(0,243,255,0.15)" : "rgba(255,255,255,0.1)",
+                color: bgPanning ? "#00f3ff" : "white",
+                border: bgPanning ? "1px solid #00f3ff" : "1px solid rgba(255,255,255,0.3)",
+                borderRadius: "99px", cursor: bgPanning ? "default" : "pointer",
                 backdropFilter: "blur(10px)",
-                pointerEvents: "auto",
+                pointerEvents: "auto", fontSize: "13px", letterSpacing: "2px",
+                transition: "all 0.5s ease",
+                boxShadow: bgPanning ? "0 0 20px rgba(0,243,255,0.4)" : "none",
               }}
+              onMouseEnter={(e) => { if (!bgPanning) { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(255,255,255,0.2)"; }}}
+              onMouseLeave={(e) => { if (!bgPanning) { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.boxShadow = "none"; }}}
             >
-              BACK TO START
+              {bgPanning ? "RETURNING..." : "BACK TO START"}
             </button>
 
-            <div
-              style={{
-                position: "fixed", bottom: "20px", left: "50%",
-                transform: "translateX(-50%)",
-                display: "flex", gap: "10px",
-                padding: "10px",
-                background: "rgba(0, 0, 0, 0.5)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "50px",
-                border: "1px solid rgba(0, 243, 255, 0.2)",
-                boxShadow: "0 0 20px rgba(0, 0, 0, 0.5)",
-                pointerEvents: "auto",
-              }}
-            >
+            {/* Nav bar hành tinh — tiếng Việt */}
+            <div style={{
+              position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)",
+              display: "flex", gap: "8px", padding: "10px",
+              background: "rgba(0,0,0,0.5)", backdropFilter: "blur(10px)",
+              borderRadius: "50px", border: "1px solid rgba(0,243,255,0.2)",
+              boxShadow: "0 0 20px rgba(0,0,0,0.5)", pointerEvents: "auto",
+            }}>
               {Object.keys(ORBIT_CONFIG).map((hash) => (
                 <button
                   key={hash}
                   onClick={() => (window.location.hash = hash)}
                   style={{
-                    padding: "8px 15px",
-                    backgroundColor: currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent",
+                    padding: "8px 12px",
+                    backgroundColor: currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent",
                     color: currentHash === hash ? "#00f3ff" : "#fff",
-                    border: "none",
-                    borderRadius: "20px",
-                    fontSize: "12px", fontWeight: "bold",
-                    cursor: "pointer", textTransform: "uppercase",
-                    transition: "all 0.3s ease",
+                    border: "none", borderRadius: "20px",
+                    fontSize: "11px", fontWeight: "bold",
+                    cursor: "pointer", textTransform: "uppercase", transition: "all 0.3s ease",
                     borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
+                    whiteSpace: "nowrap",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.2)"; }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      currentHash === hash ? "rgba(0, 243, 255, 0.3)" : "transparent";
-                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,243,255,0.2)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent"; }}
                 >
-                  {hash.replace("#", "")}
+                  {PLANET_VI[hash] ?? hash.replace("#", "")}
                 </button>
               ))}
             </div>
           </div>
         </motion.div>
 
-        {/* [NHIỆM VỤ 1]: HIỆN MÀN HÌNH CHÀO MỪNG LÊN LỚP NGOÀI CÙNG NHẤT */}
         <AnimatePresence>
           {showIntro && <IntroScreen onEnter={handleEnterScene} />}
         </AnimatePresence>
-
       </div>
     </>
   );
