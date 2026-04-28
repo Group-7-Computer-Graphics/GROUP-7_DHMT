@@ -1598,23 +1598,45 @@ export default function SolarSystem() {
           background: "#01020a" // Xóa bỏ cấu hình ảnh nền tĩnh ở đây
         }}
       >
-     <style jsx global>{`
-  @keyframes bgPan {
-    0% { transform: translateX(0vw); }
-    100% { transform: translateX(-100vw); }
-  }
-  .bg-pan {
-    animation: bgPan 45s linear infinite;
-  }
-`}</style>
-
-<div className="bg-pan" style={{
-  position: "absolute", top: 0, left: 0, width: "200vw", height: "100vh",
-  display: "flex", backgroundImage: "url(/b2.jpg)", backgroundSize: "cover"
+     {/* ─── NỀN B2.JPG TRÔI TỪ PHẢI SANG TRÁI LIÊN TỤC VÀ MƯỢT MÀ ─── */}
+<div style={{ 
+  position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh", 
+  overflow: "hidden", zIndex: 0 
 }}>
-  <div style={{width: "100vw", height: "100vh", flexShrink: 0}} />
-  <div style={{width: "100vw", height: "100vh", flexShrink: 0}} />
+  <motion.div
+    // ⭐ XÓA bgPanning - LUÔN CHUYỂN ĐỘNG
+    animate={{ x: ["0vw", "-100vw"] }}
+    transition={{
+      // ⭐ CHỈ CẦN 1 transition - lặp vô tận
+      repeat: Infinity,
+      repeatType: "loop",
+      ease: "linear",
+      duration: 30 // 45s/vòng - tốc độ vừa phải ⭐
+    }}
+    style={{
+      position: "absolute", top: 0, left: 0,
+      width: "200vw", height: "100vh", display: "flex",
+      zIndex: -1, pointerEvents: "none",
+      willChange: "transform"
+    }}
+  >
+    <div style={{ 
+      width: "100vw", height: "100vh", flexShrink: 0, 
+      backgroundImage: "url(/b2.jpg)", 
+      backgroundSize: "cover", 
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat"
+    }} />
+    <div style={{ 
+      width: "100vw", height: "100vh", flexShrink: 0, 
+      backgroundImage: "url(/b2.jpg)", 
+      backgroundSize: "cover", 
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat"
+    }} />
+  </motion.div>
 </div>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: sceneVisible ? 1 : 0 }}
