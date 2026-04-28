@@ -23,86 +23,86 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";
 import Venus from "../src/components/planets/venus";
 
-// ─── [NHIỆM VỤ 4] DỮ LIỆU HÀNH TINH — TIẾNG VIỆT HOÀN TOÀN ─────────────────
+// ─── [NHIỆM VỤ 4] DỮ LIỆU HÀNH TINH — BẢN TIẾNG ANH ─────────────────────────
 const planetData: Record<string, any> = {
   "#mercury": {
     name: "MERCURY",
-    type: "HÀNH TINH",
-    visit: "Sao Thủy là hành tinh nhỏ nhất trong Hệ Mặt Trời và là hành tinh gần Mặt Trời nhất. Bề mặt của nó bị bao phủ dày đặc bởi các miệng hố va chạm cổ đại, trông như một mặt trăng khổng lồ bị thiêu đốt. Ban ngày, nhiệt độ có thể lên tới hàng trăm độ C, trong khi ban đêm lại giảm xuống cực thấp do thiếu bầu khí quyển bảo vệ. Với những điều kiện khắc nghiệt như vậy, không có sự sống nào được biết đến có thể tồn tại ở đây, khiến Sao Thủy trở thành một thế giới bí ẩn và cực đoan đáng khám phá.",
-    encyclopedia: "Sao Thủy là hành tinh gần Mặt Trời nhất và là hành tinh nhỏ nhất trong Hệ Mặt Trời. Đường kính khoảng 4.880 km, bề mặt đá nhiều hố va chạm giống Mặt Trăng. Sao Thủy hầu như không có bầu khí quyển, khiến nó không giữ được nhiệt, dẫn đến chênh lệch nhiệt độ cực lớn giữa ngày và đêm. Nó hoàn thành một vòng quỹ đạo quanh Mặt Trời chỉ trong 88 ngày Trái Đất. Dù gần Mặt Trời nhất, nó không phải hành tinh nóng nhất vì thiếu bầu khí quyển.",
-    structure: "Sao Thủy có lõi kim loại rất lớn chiếm khoảng 70% khối lượng, bất thường so với kích thước của nó. Lõi chủ yếu gồm sắt và niken, một phần ở trạng thái nóng chảy. Bao quanh lõi là lớp phủ silicat tương đối mỏng và một lớp vỏ đá cứng. Do lõi lớn, Sao Thủy có từ trường yếu nhưng bao phủ toàn cầu.",
-    question: "Hành tinh nào gần Mặt Trời nhất?",
-    options: ["A. Sao Kim", "B. Sao Thủy", "C. Sao Hỏa", "D. Sao Mộc"],
+    type: "PLANET",
+    visit: "Mercury is the smallest planet in the Solar System and the closest to the Sun. Its surface is heavily cratered from ancient impacts, looking like a giant, scorched moon. During the day, temperatures can reach hundreds of degrees Celsius, while at night they drop extremely low due to the lack of a protective atmosphere. With such harsh conditions, no known life can exist here, making Mercury a mysterious and extreme world worth exploring.",
+    encyclopedia: "Mercury is the closest planet to the Sun and the smallest planet in the Solar System. It has a diameter of about 4,880 km and a rocky, cratered surface similar to the Moon. Mercury has almost no atmosphere to retain heat, leading to extreme temperature variations between day and night. It completes an orbit around the Sun in just 88 Earth days. Despite being closest to the Sun, it is not the hottest planet due to its lack of an atmosphere.",
+    structure: "Mercury has a very large metallic core accounting for about 70% of its mass, which is unusual for its size. The core consists mainly of iron and nickel, partly in a molten state. Surrounding the core is a relatively thin silicate mantle and a hard rocky crust. Because of its large core, Mercury has a weak but global magnetic field.",
+    question: "Which planet is closest to the Sun?",
+    options: ["A. Venus", "B. Mercury", "C. Mars", "D. Jupiter"],
     correctAnswer: 1,
   },
   "#venus": {
     name: "VENUS",
-    type: "HÀNH TINH",
-    visit: "Sao Kim được bao bọc hoàn toàn bởi bầu khí quyển dày đặc chủ yếu là carbon dioxide, cùng với những đám mây axit sulfuric. Hiệu ứng nhà kính mất kiểm soát giữ nhiệt hiệu quả đến mức bề mặt nóng đủ để làm chảy chì. Áp suất khí quyển cũng cực kỳ cao, đủ sức nghiền nát tàu vũ trụ. Dù có điều kiện chết chóc, Sao Kim tỏa sáng rực rỡ trên bầu trời đêm và thường được gọi là 'hành tinh song sinh' của Trái Đất do kích thước và cấu trúc tương tự.",
-    encyclopedia: "Sao Kim là hành tinh thứ hai tính từ Mặt Trời, thường được gọi là 'hành tinh chị em' của Trái Đất vì kích thước và thành phần tương tự. Tuy nhiên, môi trường của nó cực kỳ khắc nghiệt. Bầu khí quyển chủ yếu là carbon dioxide với những đám mây axit sulfuric dày đặc, tạo ra hiệu ứng nhà kính mạnh mẽ. Nhiệt độ bề mặt trung bình khoảng 465°C, là hành tinh nóng nhất trong Hệ Mặt Trời. Sao Kim quay rất chậm và ngược chiều so với hầu hết các hành tinh.",
-    structure: "Sao Kim có cấu trúc tương tự Trái Đất, gồm lõi sắt trung tâm, lớp phủ đá và lớp vỏ cứng. Tuy nhiên, không giống Trái Đất, Sao Kim dường như không có kiến tạo mảng hoạt động. Bên trong rất nóng và hoạt động núi lửa có thể vẫn đang diễn ra, dù phần lớn bề mặt được bao phủ bởi dung nham cổ đại và đồng bằng núi lửa.",
-    question: "Hành tinh nào nóng nhất trong hệ mặt trời?",
-    options: ["A. Sao Thủy", "B. Trái Đất", "C. Sao Kim", "D. Sao Hỏa"],
+    type: "PLANET",
+    visit: "Venus is completely shrouded by a thick atmosphere composed primarily of carbon dioxide, along with clouds of sulfuric acid. A runaway greenhouse effect traps heat so effectively that the surface is hot enough to melt lead. The atmospheric pressure is also extremely high, enough to crush spacecraft. Despite its deadly conditions, Venus shines brightly in the night sky and is often called Earth's 'twin planet' due to their similar size and structure.",
+    encyclopedia: "Venus is the second planet from the Sun, often referred to as Earth's 'sister planet' because of their similar size and composition. However, its environment is extremely harsh. The atmosphere is mostly carbon dioxide with thick clouds of sulfuric acid, creating a strong greenhouse effect. The average surface temperature is about 465°C, making it the hottest planet in the Solar System. Venus rotates very slowly and in the opposite direction to most planets.",
+    structure: "Venus has a structure similar to Earth, consisting of a central iron core, a rocky mantle, and a solid crust. However, unlike Earth, Venus does not appear to have active plate tectonics. Its interior is very hot and volcanic activity may still be ongoing, although most of its surface is covered by ancient lava and volcanic plains.",
+    question: "Which planet is the hottest in the solar system?",
+    options: ["A. Mercury", "B. Earth", "C. Venus", "D. Mars"],
     correctAnswer: 2,
   },
   "#earth": {
     name: "EARTH",
-    type: "HÀNH TINH",
-    visit: "Trái Đất là hành tinh duy nhất được biết đến có sự sống. Với những đại dương bao la, bầu khí quyển giàu oxy có thể hít thở và nhiệt độ ổn định, nó tạo ra điều kiện hoàn hảo cho các sinh vật sống. Từ những rừng nhiệt đới dày đặc đến các vùng cực băng giá, Trái Đất chứa đựng sự đa dạng sinh học đáng kinh ngạc và các hệ sinh thái năng động. Đây thực sự là một thế giới hiếm có và quý giá trong vũ trụ.",
-    encyclopedia: "Trái Đất là hành tinh thứ ba tính từ Mặt Trời và là hành tinh duy nhất được biết đến có sự sống. Nó có môi trường đa dạng với đại dương, lục địa và bầu khí quyển nitơ-oxy duy trì sự sống. Bề mặt Trái Đất khoảng 71% là nước, khí hậu cho phép tồn tại nhiều hệ sinh thái phong phú. Trái Đất có một vệ tinh tự nhiên là Mặt Trăng, ảnh hưởng đến thủy triều và ổn định độ nghiêng trục. Trái Đất hoàn thành một vòng quỹ đạo quanh Mặt Trời trong khoảng 365,25 ngày.",
-    structure: "Trái Đất gồm bốn lớp chính: lõi trong rắn bằng sắt và niken, lõi ngoài lỏng, lớp phủ nhớt và lớp vỏ mỏng. Chuyển động của sắt nóng chảy trong lõi ngoài tạo ra từ trường Trái Đất. Lớp phủ chịu trách nhiệm về kiến tạo mảng, hình thành các lục địa, gây ra động đất và núi lửa.",
-    question: "Chúng ta đang sống trên hành tinh nào?",
-    options: ["A. Sao Hỏa", "B. Trái Đất", "C. Sao Kim", "D. Sao Mộc"],
+    type: "PLANET",
+    visit: "Earth is the only planet known to harbor life. With its vast oceans, breathable oxygen-rich atmosphere, and stable temperatures, it provides the perfect conditions for living organisms. From dense tropical rainforests to freezing polar regions, Earth contains an incredible diversity of life and dynamic ecosystems. It is truly a rare and precious world in the universe.",
+    encyclopedia: "Earth is the third planet from the Sun and the only known planet to support life. It has a diverse environment with oceans, continents, and a nitrogen-oxygen atmosphere that sustains life. About 71% of Earth's surface is water, and its climate allows for a rich variety of ecosystems. Earth has one natural satellite, the Moon, which affects tides and stabilizes its axial tilt. Earth completes an orbit around the Sun in about 365.25 days.",
+    structure: "Earth consists of four main layers: a solid inner core of iron and nickel, a liquid outer core, a viscous mantle, and a thin crust. The movement of molten iron in the outer core generates Earth's magnetic field. The mantle is responsible for plate tectonics, which shape continents and cause earthquakes and volcanoes.",
+    question: "Which planet do we live on?",
+    options: ["A. Mars", "B. Earth", "C. Venus", "D. Jupiter"],
     correctAnswer: 1,
   },
   "#mars": {
     name: "MARS",
-    type: "HÀNH TINH",
-    visit: "Sao Hỏa được gọi là Hành Tinh Đỏ vì bề mặt giàu sắt oxit tạo ra màu đỏ đặc trưng. Nó có những ngọn núi lửa khổng lồ như Olympus Mons và những hẻm núi sâu thẳm như Valles Marineris. Bằng chứng khoa học cho thấy Sao Hỏa từng có nước lỏng trên bề mặt, gợi lên khả năng nơi này có thể từng hỗ trợ sự sống trong quá khứ xa xưa. Ngày nay, nó vẫn là một trong những hành tinh được khám phá nhiều nhất trong nghiên cứu vũ trụ.",
-    encyclopedia: "Sao Hỏa là hành tinh thứ tư tính từ Mặt Trời, thường được gọi là Hành Tinh Đỏ do sắt oxit trên bề mặt. Nó có ngọn núi lửa lớn nhất Hệ Mặt Trời là Olympus Mons và hẻm núi sâu nhất là Valles Marineris. Sao Hỏa có bầu khí quyển mỏng chủ yếu là carbon dioxide và nhiệt độ rất lạnh. Bằng chứng cho thấy nước lỏng từng tồn tại trên bề mặt, gợi khả năng Sao Hỏa có thể đã từng hỗ trợ vi sinh vật. Nó có hai mặt trăng nhỏ là Phobos và Deimos.",
-    structure: "Sao Hỏa có lõi đặc giàu sắt, niken và lưu huỳnh, được bao quanh bởi lớp phủ silicat và lớp vỏ. Hành tinh này có thể đã có lõi hoạt động trong quá khứ nhưng đã nguội đi đáng kể, làm yếu từ trường. Sự nguội lạnh này góp phần làm mất đi bầu khí quyển dày và nước bề mặt.",
-    question: "Hành tinh nào được gọi là 'Hành Tinh Đỏ'?",
-    options: ["A. Sao Mộc", "B. Sao Hỏa", "C. Sao Kim", "D. Sao Thủy"],
+    type: "PLANET",
+    visit: "Mars is known as the Red Planet because its iron oxide-rich surface gives it a distinctive red color. It features giant volcanoes like Olympus Mons and deep canyons like Valles Marineris. Scientific evidence suggests that Mars once had liquid water on its surface, raising the possibility that it may have supported life in the distant past. Today, it remains one of the most explored planets in space research.",
+    encyclopedia: "Mars is the fourth planet from the Sun, often called the Red Planet due to iron oxide on its surface. It hosts the largest volcano in the Solar System, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has a thin atmosphere mainly composed of carbon dioxide and is very cold. Evidence suggests liquid water once existed on its surface, hinting at the possibility that Mars may have once supported microbial life. It has two small moons, Phobos and Deimos.",
+    structure: "Mars has a dense core rich in iron, nickel, and sulfur, surrounded by a silicate mantle and a crust. The planet may have had an active core in the past but has cooled significantly, weakening its magnetic field. This cooling contributed to the loss of its thick atmosphere and surface water.",
+    question: "Which planet is known as the 'Red Planet'?",
+    options: ["A. Jupiter", "B. Mars", "C. Venus", "D. Mercury"],
     correctAnswer: 1,
   },
   "#jupiter": {
     name: "JUPITER",
-    type: "HÀNH TINH KHỔNG LỒ KHÍ",
-    visit: "Sao Mộc là hành tinh lớn nhất trong Hệ Mặt Trời, cấu tạo chủ yếu từ hydro và heli. Đặc điểm nổi tiếng nhất là Vết Đỏ Lớn — một cơn bão khổng lồ đã hoành hành hàng thế kỷ. Sao Mộc cũng có từ trường mạnh mẽ và hàng chục mặt trăng, một số có thể chứa đại dương ẩn dưới bề mặt băng giá.",
-    encyclopedia: "Sao Mộc là hành tinh thứ năm tính từ Mặt Trời và là hành tinh lớn nhất Hệ Mặt Trời. Đây là hành tinh khổng lồ khí cấu tạo chủ yếu từ hydro và heli. Đặc điểm nổi bật nhất là Vết Đỏ Lớn — một cơn bão khổng lồ lớn hơn Trái Đất, tồn tại hàng thế kỷ. Sao Mộc có từ trường mạnh và ít nhất 90 mặt trăng được biết đến, trong đó có Ganymede — mặt trăng lớn nhất Hệ Mặt Trời. Vòng quay nhanh tạo ra ngày chỉ khoảng 10 giờ.",
-    structure: "Sao Mộc không có bề mặt rắn được xác định rõ ràng. Nó cấu tạo chủ yếu từ hydro và heli, chuyển tiếp từ lớp ngoài khí đến hydro kim loại lỏng bên trong. Ở trung tâm có thể có lõi đá hoặc kim loại nhỏ, tuy nhiên kích thước và thành phần chính xác vẫn chưa rõ do áp suất cực lớn.",
-    question: "Hành tinh nào lớn nhất trong hệ mặt trời?",
-    options: ["A. Sao Thổ", "B. Sao Hải Vương", "C. Sao Mộc", "D. Sao Thiên Vương"],
+    type: "GAS GIANT",
+    visit: "Jupiter is the largest planet in the Solar System, composed primarily of hydrogen and helium. Its most famous feature is the Great Red Spot—a massive storm that has raged for centuries. Jupiter also has a powerful magnetic field and dozens of moons, some of which may harbor hidden oceans beneath their icy surfaces.",
+    encyclopedia: "Jupiter is the fifth planet from the Sun and the largest planet in the Solar System. It is a gas giant composed mostly of hydrogen and helium. Its most prominent feature is the Great Red Spot, a giant storm larger than Earth that has existed for centuries. Jupiter has a strong magnetic field and at least 90 known moons, including Ganymede, the largest moon in the Solar System. Its rapid rotation creates a day lasting only about 10 hours.",
+    structure: "Jupiter lacks a well-defined solid surface. It consists mostly of hydrogen and helium, transitioning from a gaseous outer layer to liquid metallic hydrogen inside. At its center, there may be a small rocky or metallic core, but its exact size and composition remain unknown due to extreme pressures.",
+    question: "Which planet is the largest in the solar system?",
+    options: ["A. Saturn", "B. Neptune", "C. Jupiter", "D. Uranus"],
     correctAnswer: 2,
   },
   "#saturn": {
     name: "SATURN",
-    type: "HÀNH TINH KHỔNG LỒ KHÍ",
-    visit: "Sao Thổ nổi tiếng với hệ thống vành đai ngoạn mục gồm băng, đá và bụi. Những vành đai này tạo nên một trong những cảnh quan đẹp nhất Hệ Mặt Trời. Dù trông thanh tao và nhẹ nhàng, Sao Thổ thực ra là một hành tinh khổng lồ khí với cấu trúc bên trong phức tạp. Các mặt trăng của nó, đặc biệt là Titan, rất được các nhà khoa học quan tâm do bầu khí quyển độc đáo và tiềm năng cho hóa học tiền sinh học.",
-    encyclopedia: "Sao Thổ là hành tinh thứ sáu tính từ Mặt Trời, nổi tiếng với hệ thống vành đai rộng lớn gồm băng, đá và hạt bụi. Giống Sao Mộc, đây là hành tinh khổng lồ khí cấu tạo chủ yếu từ hydro và heli. Sao Thổ có mật độ thấp đến mức nó có thể nổi trên nước nếu có đại dương đủ lớn. Nó có hơn 140 mặt trăng, trong đó Titan có bầu khí quyển dày và các hồ metan lỏng. Vành đai khiến Sao Thổ là một trong những hành tinh ấn tượng nhất về mặt thị giác.",
-    structure: "Sao Thổ cũng là hành tinh khổng lồ khí không có bề mặt rắn. Nó chủ yếu gồm hydro và heli, với các lớp hydro kim loại lỏng bên dưới khí quyển. Có thể có lõi đá nhỏ được bao quanh bởi vật liệu băng và kim loại. Sao Thổ có mật độ thấp nhất trong tất cả các hành tinh Hệ Mặt Trời.",
-    question: "Hành tinh nào có hệ thống vành đai nổi bật nhất?",
-    options: ["A. Sao Mộc", "B. Sao Thổ", "C. Sao Kim", "D. Sao Hỏa"],
+    type: "GAS GIANT",
+    visit: "Saturn is famous for its spectacular ring system made of ice, rock, and dust. These rings create one of the most beautiful sights in the Solar System. Though it appears ethereal and light, Saturn is actually a massive gas giant with a complex internal structure. Its moons, particularly Titan, are of great interest to scientists due to its unique atmosphere and potential for prebiotic chemistry.",
+    encyclopedia: "Saturn is the sixth planet from the Sun, best known for its extensive ring system composed of ice, rock, and dust particles. Like Jupiter, it is a gas giant made primarily of hydrogen and helium. Saturn has such a low density that it could float in water if there were a large enough ocean. It has over 140 moons, including Titan, which has a thick atmosphere and lakes of liquid methane. Its rings make Saturn one of the most visually stunning planets.",
+    structure: "Saturn is also a gas giant with no solid surface. It mainly consists of hydrogen and helium, with layers of liquid metallic hydrogen beneath its atmosphere. There may be a small rocky core surrounded by icy and metallic materials. Saturn has the lowest density of all the planets in the Solar System.",
+    question: "Which planet has the most prominent ring system?",
+    options: ["A. Jupiter", "B. Saturn", "C. Venus", "D. Mars"],
     correctAnswer: 1,
   },
   "#uranus": {
     name: "URANUS",
-    type: "HÀNH TINH KHỔNG LỒ BĂNG",
-    visit: "Sao Thiên Vương là hành tinh băng khổng lồ với đặc điểm rất bất thường: nó quay nghiêng về một bên. Độ nghiêng cực đoan này khiến hành tinh trông như đang lăn quanh Mặt Trời. Màu xanh lam-lục của nó đến từ khí metan trong bầu khí quyển, hấp thụ ánh sáng đỏ. Sao Thiên Vương cũng có các vành đai mờ và nhiệt độ cực lạnh, là một trong những hành tinh bất thường nhất trong Hệ Mặt Trời.",
-    encyclopedia: "Sao Thiên Vương là hành tinh thứ bảy tính từ Mặt Trời, được phân loại là hành tinh khổng lồ băng. Nó có màu xanh lam-lục do khí metan trong bầu khí quyển. Đặc điểm bất thường nhất là độ nghiêng trục khoảng 98 độ, khiến nó quay nghiêng về một bên, tạo ra sự biến đổi mùa cực đoan. Sao Thiên Vương có hệ thống vành đai mờ và ít nhất 27 mặt trăng được biết đến. Đây là một trong những hành tinh lạnh nhất với nhiệt độ xuống khoảng -224°C.",
-    structure: "Sao Thiên Vương là hành tinh khổng lồ băng với thành phần gồm nước, amoniac và băng metan cùng khí hydro và heli. Bên trong có thể có lõi đá nhỏ, bao quanh bởi lớp phủ băng dày và lớp khí bên ngoài. Áp suất cực lớn bên trong tạo ra các trạng thái vật chất bất thường, bao gồm 'băng siêu ion'.",
-    question: "Hành tinh nào có màu xanh lam-lục do khí metan?",
-    options: ["A. Sao Kim", "B. Sao Thiên Vương", "C. Sao Hỏa", "D. Sao Thủy"],
+    type: "ICE GIANT",
+    visit: "Uranus is an ice giant with a very unusual characteristic: it rotates on its side. This extreme tilt makes the planet look as if it's rolling around the Sun. Its blue-green color comes from methane gas in its atmosphere, which absorbs red light. Uranus also has faint rings and extremely cold temperatures, making it one of the most unusual planets in the Solar System.",
+    encyclopedia: "Uranus is the seventh planet from the Sun, classified as an ice giant. It has a blue-green hue due to methane gas in its atmosphere. Its most unusual feature is its axial tilt of about 98 degrees, causing it to spin on its side and creating extreme seasonal variations. Uranus has a faint ring system and at least 27 known moons. It is one of the coldest planets, with temperatures dropping to about -224°C.",
+    structure: "Uranus is an ice giant composed of water, ammonia, and methane ices, along with hydrogen and helium gas. Inside, there may be a small rocky core surrounded by a thick icy mantle and an outer gaseous envelope. Extreme internal pressures create unusual states of matter, including 'superionic ice'.",
+    question: "Which planet has a blue-green color due to methane gas?",
+    options: ["A. Venus", "B. Uranus", "C. Mars", "D. Mercury"],
     correctAnswer: 1,
   },
   "#neptune": {
     name: "NEPTUNE",
-    type: "HÀNH TINH KHỔNG LỒ BĂNG",
-    visit: "Tối tăm, lạnh lẽo và bị quét bởi những cơn gió siêu âm, Sao Hải Vương là hành tinh xa nhất trong số các hành tinh chính của hệ mặt trời chúng ta. Nó ẩn mình ở rìa xa xôi của hệ mặt trời, nơi ánh sáng Mặt Trời chỉ còn là một điểm sáng mờ nhạt giữa bầu trời tối tăm.",
-    encyclopedia: "Sao Hải Vương là hành tinh thứ tám và xa nhất trong hệ mặt trời. Đây là hành tinh khổng lồ băng với hệ thống vành đai mờ và 14 mặt trăng được biết đến. Nó có bầu khí quyển chứa hydro, heli và metan, tạo màu xanh đặc trưng. Những cơn gió trên Sao Hải Vương là mạnh nhất trong Hệ Mặt Trời, đạt tốc độ lên đến 2.100 km/h.",
-    structure: "Cấu trúc tương tự Sao Thiên Vương, gồm lớp phủ lỏng đặc hoặc 'băng' nóng (nước, amoniac, metan) bao quanh lõi rắn có kích thước tương đương Trái Đất. Nhiệt độ lõi ước tính khoảng 5.000°C.",
-    question: "Hành tinh nào xa Mặt Trời nhất trong hệ mặt trời?",
-    options: ["A. Sao Thiên Vương", "B. Sao Hải Vương", "C. Sao Thổ", "D. Sao Mộc"],
+    type: "ICE GIANT",
+    visit: "Dark, cold, and whipped by supersonic winds, Neptune is the farthest of the major planets in our solar system. It hides at the distant edge of the solar system, where the Sun's light is nothing more than a faint point of light in the dark sky.",
+    encyclopedia: "Neptune is the eighth and farthest planet in the solar system. It is an ice giant with a faint ring system and 14 known moons. Its atmosphere contains hydrogen, helium, and methane, which gives it its characteristic blue color. The winds on Neptune are the strongest in the Solar System, reaching speeds of up to 2,100 km/h.",
+    structure: "Its structure is similar to Uranus, consisting of a dense liquid or hot 'ice' mantle (water, ammonia, methane) surrounding a solid core about the size of Earth. The core temperature is estimated to be around 5,000°C.",
+    question: "Which planet is the farthest from the Sun in the solar system?",
+    options: ["A. Uranus", "B. Neptune", "C. Saturn", "D. Jupiter"],
     correctAnswer: 1,
   },
 };
@@ -118,8 +118,8 @@ const ORBIT_CONFIG: Record<
     ufoScale: number;
   }
 > = {
-  "#mercury": { radius: 80,   speed: 0.50, camOffset: [0, 10, 30],  ufoHeight: 7,  ufoScale: 0.22 },
-  "#venus":   { radius: 140,  speed: 0.35, camOffset: [0, 10, 35],  ufoHeight: 9,  ufoScale: 0.26 },
+  "#mercury": { radius: 80,   speed: 0.50, camOffset: [0, 10, 20],  ufoHeight: 7,  ufoScale: 0.22 },
+  "#venus":   { radius: 140,  speed: 0.35, camOffset: [0, 10, 25],  ufoHeight: 9,  ufoScale: 0.26 },
   "#earth":   { radius: 210,  speed: 0.25, camOffset: [0, 10, 35],  ufoHeight: 10, ufoScale: 0.26 },
   "#mars":    { radius: 300,  speed: 0.20, camOffset: [0, 10, 35],  ufoHeight: 8,  ufoScale: 0.22 },
   "#jupiter": { radius: 480,  speed: 0.10, camOffset: [0, 30, 100], ufoHeight: 32, ufoScale: 0.75 },
@@ -743,12 +743,12 @@ function PlanetInfoPanel({
     }
   };
 
-  // Tên hiển thị cho các tab — tiếng Việt
+  // Tên hiển thị cho các tab — tiếng anh
   const VIEW_LABELS: Record<string, string> = {
-    visit:        "THAM QUAN",
-    encyclopedia: "BÁCH KHOA",
-    structure:    "CẤU TRÚC",
-    quiz:         "CÂU HỎI (QUIZ)",
+    visit:        "VISIT",
+    encyclopedia: "ENCYCLOPEDIA",
+    structure:    "STRUCTURE",
+    quiz:         "QUIZ",
   };
 
   return (
@@ -776,8 +776,8 @@ function PlanetInfoPanel({
           color: "#00f3ff", marginBottom: "15px", opacity: 0.8,
           letterSpacing: "2px", textTransform: "uppercase",
         }}>
-          <span>DỮ.LIỆU // {currentHash.replace("#", "")}</span>
-          <span>[ ĐĨA BAY ĐÃ KẾT NỐI ]</span>
+          <span>DATA // {currentHash.replace("#", "")}</span>
+          <span>[ UFO CONNECTED ]</span>
         </div>
 
         <div style={{
@@ -804,10 +804,10 @@ function PlanetInfoPanel({
             animate={{ opacity: 1 }}
             style={{ display: "flex", flexDirection: "column", gap: "12px" }}
           >
-            <MenuButton text="THAM QUAN"          onClick={() => setActiveView("visit")} />
-            <MenuButton text="BÁCH KHOA"          onClick={() => setActiveView("encyclopedia")} />
-            <MenuButton text="CẤU TRÚC"           onClick={() => setActiveView("structure")} />
-            <MenuButton text="CÂU HỎI (QUIZ)" highlight onClick={() => setActiveView("quiz")} />
+            <MenuButton text="VISIT"          onClick={() => setActiveView("visit")} />
+            <MenuButton text="ENCYCLOPEDIA"          onClick={() => setActiveView("encyclopedia")} />
+            <MenuButton text="STRUCTURE"           onClick={() => setActiveView("structure")} />
+            <MenuButton text="QUIZ" highlight onClick={() => setActiveView("quiz")} />
           </motion.div>
         )}
 
@@ -825,14 +825,14 @@ function PlanetInfoPanel({
             }}>
               {data[activeView]}
             </p>
-            <MenuButton text="QUAY LẠI MENU" onClick={() => setActiveView("menu")} highlight />
+            <MenuButton text="BACK TO MENU" onClick={() => setActiveView("menu")} highlight />
           </motion.div>
         )}
 
         {activeView === "quiz" && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
             <h3 style={{ marginTop: 0, color: "#00f3ff", fontSize: "16px", textTransform: "uppercase" }}>
-              Câu Hỏi Kiểm Tra
+              Quiz Questions
             </h3>
             <p style={{ fontSize: "16px", lineHeight: "1.5", marginBottom: "20px", color: "#e0f7fa" }}>
               {data.question}
@@ -873,7 +873,7 @@ function PlanetInfoPanel({
             </div>
             {selectedAnswer !== null && (
               <MenuButton
-                text="QUAY LẠI MENU"
+                text="BACK TO MENU"
                 onClick={() => { setActiveView("menu"); setSelectedAnswer(null); }}
                 highlight
               />
@@ -1397,115 +1397,113 @@ function UFO({
   );
 }
 
-// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER — MỰT MÀ ───────────────────────────────
+// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER — TOÀN CẢNH VÀ CHUYỂN ĐỘNG VŨ TRỤ ───
 function CameraController({
-  currentHash, isCinematic, anglesRef, isBackingToStart,
+  currentHash, isCinematic, anglesRef, isBackingToStart, isDraggingRef, hasInteractedRef
 }: {
   currentHash: string; isCinematic: boolean;
   anglesRef: React.MutableRefObject<Record<string, number>>;
   isBackingToStart: boolean;
+  isDraggingRef: React.MutableRefObject<boolean>;
+  hasInteractedRef: React.MutableRefObject<boolean>;
 }) {
-  const { camera, controls } = useThree() as any;
-  const isUserDragging   = useRef(false);
-  const cinematicWasOn   = useRef(false);
-  const backStartTimer   = useRef(0);
-
-  // Vị trí & target mượt (lerp riêng tốc độ)
-  const smoothCamPos    = useRef(new THREE.Vector3(250, 150, 500));
-  const smoothTarget    = useRef(new THREE.Vector3(0, 0, 0));
-  const prevHash        = useRef(currentHash);
+  const { camera, controls, size } = useThree() as any;
+  const backStartTimer = useRef(0);
+  const prevPlanetPos  = useRef(new THREE.Vector3(0, 0, 0));
 
   useEffect(() => {
-    if (!controls) return;
-    const onStart = () => { isUserDragging.current = true; };
-    controls.addEventListener("start", onStart);
-    return () => controls.removeEventListener("start", onStart);
-  }, [controls]);
+    if (hasInteractedRef) hasInteractedRef.current = false;
+  }, [currentHash, isCinematic, hasInteractedRef]);
 
+  // TẠO BỐ CỤC CHIA ĐÔI MÀN HÌNH KHI BẤM VÀO HÀNH TINH
   useEffect(() => {
-    // Reset drag khi đổi hành tinh
-    isUserDragging.current = false;
-  }, [currentHash]);
-
-  useEffect(() => {
-    if (!isCinematic && cinematicWasOn.current) {
-      isUserDragging.current = false;
+    if (currentHash !== "#overview") {
+      camera.setViewOffset(size.width, size.height, -size.width * 0.2, 0, size.width, size.height);
+    } else {
+      camera.clearViewOffset();
     }
-    cinematicWasOn.current = isCinematic;
-  }, [isCinematic]);
-
-  useEffect(() => {
-    if (isBackingToStart) {
-      backStartTimer.current = 0;
-    }
-  }, [isBackingToStart]);
+    camera.updateProjectionMatrix();
+  }, [currentHash, size, camera]);
 
   useFrame((state, delta) => {
     if (!controls) return;
     const safeDelta = Math.min(delta, 0.05);
 
-    // ── BACK TO START: camera quét vòng quanh mặt trời, zoom ra xa ──────────
+    // ── CHẾ ĐỘ QUÉT VỀ TỔNG QUAN ──
     if (isBackingToStart) {
       backStartTimer.current += safeDelta;
       const t = backStartTimer.current;
-      // Bắt đầu từ vị trí hiện tại, bay vòng cung ra xa dần
-      const sweepAngle = t * 0.55; // tốc độ quay vừa phải
+      const sweepAngle = t * 0.55; 
       const startDist  = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
-      const dist = Math.min(startDist + t * 180, 2200); // zoom out nhanh ra xa
+      const dist = Math.min(startDist + t * 180, 2200); 
       const height = 80 + t * 35 + Math.sin(t * 0.4) * 40;
-      camera.position.x = Math.sin(sweepAngle) * dist;
-      camera.position.z = Math.cos(sweepAngle) * dist;
-      camera.position.y = height;
+      
+      camera.position.set(Math.sin(sweepAngle) * dist, height, Math.cos(sweepAngle) * dist);
       camera.lookAt(0, 0, 0);
       controls.target.set(0, 0, 0);
       controls.update();
       return;
     }
 
+    if (isDraggingRef?.current) {
+      if (hasInteractedRef) hasInteractedRef.current = true;
+      controls.update();
+      return;
+    }
+
+    // ── CHẾ ĐỘ CINEMATIC ──
     if (isCinematic) {
-      const t = state.clock.getElapsedTime() * 0.08;
-      camera.position.x = Math.sin(t) * 1200;
-      camera.position.z = Math.cos(t) * 1200;
-      camera.position.y = 80 + Math.sin(t * 0.5) * 60;
-      camera.lookAt(0, 0, 0);
-      controls.target.set(0, 0, 0);
+      if (!hasInteractedRef?.current) {
+        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.05);
+        const t = state.clock.getElapsedTime() * 0.08;
+        const targetPos = new THREE.Vector3(Math.sin(t) * 1200, 80 + Math.sin(t * 0.5) * 60, Math.cos(t) * 1200);
+        camera.position.lerp(targetPos, 0.02);
+      }
       controls.update();
-      return;
+      return; 
     }
 
-    // Tính target lý tưởng cho camera
-    let targetCenter = new THREE.Vector3(0, 0, 0);
-    let targetCamPos = new THREE.Vector3(250, 150, 500);
+    // ── CHẾ ĐỘ BÁM HÀNH TINH / TOÀN CẢNH VŨ TRỤ ──
+    let planetPos = new THREE.Vector3(0, 0, 0);
+    // Mặc định góc nhìn toàn cảnh xa và rộng
+    let idealCamPos = new THREE.Vector3(0, 800, 2200); 
 
     if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
-      const cfg   = ORBIT_CONFIG[currentHash];
+      const cfg = ORBIT_CONFIG[currentHash];
       const angle = anglesRef.current[currentHash] ?? 0;
-      const px = Math.sin(angle) * cfg.radius;
-      const pz = Math.cos(angle) * cfg.radius;
-      targetCenter.set(px, 0, pz);
-      targetCamPos.set(px + cfg.camOffset[0], cfg.camOffset[1], pz + cfg.camOffset[2]);
+      planetPos.set(Math.sin(angle) * cfg.radius, 0, Math.cos(angle) * cfg.radius);
+
+      // ZOOM VỪA PHẢI, KHÔNG BỊ CHUI VÀO LÕI
+      const zoomF = 0.28;
+      idealCamPos.set(
+        planetPos.x + cfg.camOffset[0] * zoomF,
+        planetPos.y + cfg.camOffset[1] * zoomF + 2,
+        planetPos.z + cfg.camOffset[2] * zoomF
+      );
+    } else {
+      // 🌟 KHI Ở MÀN HÌNH CHÍNH: Tự động cho camera trôi quanh Hệ mặt trời
+      const t = state.clock.getElapsedTime() * 0.03;
+      idealCamPos.set(
+        Math.sin(t) * 2200, 
+        800, 
+        Math.cos(t) * 2200
+      );
     }
 
-    // Nếu vừa đổi hành tinh thì snap smooth pos về vị trí hiện tại của camera
-    if (prevHash.current !== currentHash) {
-      smoothCamPos.current.copy(camera.position);
-      smoothTarget.current.copy(controls.target);
-      prevHash.current = currentHash;
-    }
+    const deltaMove = planetPos.clone().sub(prevPlanetPos.current);
+    prevPlanetPos.current.copy(planetPos);
 
-    // Lerp mượt với delta-aware factor (tốc độ không phụ thuộc fps)
-    // factor = 1 - exp(-k * dt), k ~ 3 → ~95% sau 1s, k ~ 2 → ~87%
-    const camK    = 2.5;
-    const targK   = 3.0;
-    const camF    = 1 - Math.exp(-camK * safeDelta);
-    const targF   = 1 - Math.exp(-targK * safeDelta);
-
-    smoothTarget.current.lerp(targetCenter, targF);
-    controls.target.copy(smoothTarget.current);
-
-    if (!isUserDragging.current) {
-      smoothCamPos.current.lerp(targetCamPos, camF);
-      camera.position.copy(smoothCamPos.current);
+    if (!hasInteractedRef?.current) {
+      const camF  = 1 - Math.exp(-2.5 * safeDelta);
+      const targF = 1 - Math.exp(-3.0 * safeDelta);
+      camera.position.lerp(idealCamPos, camF);
+      controls.target.lerp(planetPos, targF);
+    } 
+    else {
+      if (currentHash !== "#overview") {
+         controls.target.add(deltaMove);
+         camera.position.add(deltaMove);
+      }
     }
 
     controls.update();
@@ -1513,7 +1511,6 @@ function CameraController({
 
   return null;
 }
-
 // ─── COMPONENT CHÍNH ─────────────────────────────────────────────────────────
 export default function SolarSystem() {
   const [currentHash,     setCurrentHash]     = useState("#overview");
@@ -1525,6 +1522,9 @@ export default function SolarSystem() {
   const [showIntro,       setShowIntro]       = useState(true);
   const [sceneVisible,    setSceneVisible]    = useState(false);
   const [bgPanning,       setBgPanning]       = useState(false);
+  const [showSettings,    setShowSettings]    = useState(false);
+  const isDraggingRef = useRef(false);
+  const hasInteractedRef = useRef(false);
 
   const ufoWorldPos  = useRef(new THREE.Vector3());
   const ufoVelWorld  = useRef(new THREE.Vector3());
@@ -1590,40 +1590,38 @@ export default function SolarSystem() {
       <Head>
         <title>Hệ Mặt Trời</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>{`
-          @keyframes panBackground {
-            0%   { background-position: 0%   50%; }
-            25%  { background-position: 50%  0%;  }
-            50%  { background-position: 100% 50%; }
-            75%  { background-position: 50%  100%;}
-            100% { background-position: 0%   50%; }
-          }
-          @keyframes solarSystemPan {
-            0%   { background-position: 0%   50%; }
-            100% { background-position: 100% 50%; }
-          }
-        `}</style>
       </Head>
-      <div
+     <div
         onWheel={handleWheel}
         style={{
           width: "100vw", height: "100vh", overflow: "hidden", position: "relative",
-          background: "#01020a",
-          backgroundImage: "url(/b2.jpg)",
-          backgroundSize: "300% 200%",
-          animation: bgPanning
-            ? "solarSystemPan 8s cubic-bezier(0.45, 0, 0.55, 1) forwards"
-            : "panBackground 160s ease-in-out infinite",
+          background: "#01020a" // Xóa bỏ cấu hình ảnh nền tĩnh ở đây
         }}
       >
+     <style jsx global>{`
+  @keyframes bgPan {
+    0% { transform: translateX(0vw); }
+    100% { transform: translateX(-100vw); }
+  }
+  .bg-pan {
+    animation: bgPan 45s linear infinite;
+  }
+`}</style>
+
+<div className="bg-pan" style={{
+  position: "absolute", top: 0, left: 0, width: "200vw", height: "100vh",
+  display: "flex", backgroundImage: "url(/b2.jpg)", backgroundSize: "cover"
+}}>
+  <div style={{width: "100vw", height: "100vh", flexShrink: 0}} />
+  <div style={{width: "100vw", height: "100vh", flexShrink: 0}} />
+</div>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: sceneVisible ? 1 : 0 }}
           transition={{ duration: 1 }}
-          style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
+          style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: 1 }}
         >
           <AnimatedBackground />
-
           <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
             <Canvas
               gl={{ antialias: true, alpha: true }}
@@ -1631,7 +1629,10 @@ export default function SolarSystem() {
               dpr={[1, 2]}
             >
               <Suspense fallback={null}>
-                <PerspectiveCamera makeDefault fov={50} far={10000} />
+                <PerspectiveCamera makeDefault 
+                  position={[0, 800, 2200]} 
+                  fov={50} 
+                  far={10000} />
                 <OrbitControls
                   makeDefault
                   enablePan={false}
@@ -1640,12 +1641,19 @@ export default function SolarSystem() {
                   enableDamping
                   dampingFactor={0.06}
                   rotateSpeed={0.8}
+                  // Cập nhật giá trị cho các Ref ở đây
+                 onChange={() => { if (hasInteractedRef) hasInteractedRef.current = true; }}
+                 onStart={() => { if (isDraggingRef) isDraggingRef.current = true; }}
+                 onEnd={() => { if (isDraggingRef) isDraggingRef.current = false; }}
                 />
                 <CameraController
                   currentHash={currentHash}
                   isCinematic={isCinematic}
                   anglesRef={planetAngles}
                   isBackingToStart={bgPanning}
+                  // Truyền biến xuống Camera
+                  isDraggingRef={isDraggingRef}
+                  hasInteractedRef={hasInteractedRef}
                 />
 
                 <ambientLight intensity={0.1} />
@@ -1658,7 +1666,6 @@ export default function SolarSystem() {
                 <UFO currentHash={currentHash} isShaking={isShaking} worldPosRef={ufoWorldPos} velWorldRef={ufoVelWorld} anglesRef={planetAngles} />
                 <UFOErrorEffect isShaking={isShaking} ufoPos={ufoWorldPos} />
                 <RocketTrail posRef={ufoWorldPos} velRef={ufoVelWorld} currentHash={currentHash} />
-
 
                 <OrbitLine radius={80}   /><OrbitLine radius={140}  /><OrbitLine radius={210}  />
                 <OrbitLine radius={300}  /><OrbitLine radius={480}  /><OrbitLine radius={680}  />
@@ -1713,12 +1720,51 @@ export default function SolarSystem() {
           )}
 
           <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
-            <div style={{ pointerEvents: "auto" }}>
-              <HUDControls
-                solarSpeed={solarSpeed} setSolarSpeed={setSolarSpeed}
-                bloomIntensity={bloomIntensity} setBloomIntensity={setBloomIntensity}
-                isCinematic={isCinematic} setIsCinematic={setIsCinematic}
-              />
+            {/* ── NÚT BẤM ĐÓNG/MỞ HUD CONTROLS ── */}
+            <div style={{ position: "absolute", top: "20px", right: "20px", pointerEvents: "auto", display: "flex", flexDirection: "column", alignItems: "flex-end", zIndex: 50 }}>
+              
+              <button
+                onClick={() => setShowSettings(!showSettings)}
+                style={{
+                  padding: "10px 18px",
+                  backgroundColor: showSettings ? "rgba(0, 243, 255, 0.2)" : "rgba(0, 0, 0, 0.5)",
+                  color: showSettings ? "#ffffff" : "#00f3ff",
+                  border: "1px solid rgba(0, 243, 255, 0.3)",
+                  borderRight: "3px solid #00f3ff",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontSize: "12px",
+                  letterSpacing: "2px",
+                  backdropFilter: "blur(10px)",
+                  boxShadow: showSettings ? "0 0 20px rgba(0, 243, 255, 0.4)" : "0 0 10px rgba(0,0,0,0.5)",
+                  transition: "all 0.3s ease",
+                  marginBottom: "10px",
+                }}
+              >
+                {showSettings ? "CLOSE SETTINGS" : "⚙️ SETTINGS"}
+              </button>
+
+              <AnimatePresence>
+                {showSettings && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -15, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -15, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ position: "relative" }}
+                  >
+                    <div style={{ position: "relative", transform: "translate(20px, -20px)" }}>
+                      <HUDControls
+                        solarSpeed={solarSpeed} setSolarSpeed={setSolarSpeed}
+                        bloomIntensity={bloomIntensity} setBloomIntensity={setBloomIntensity}
+                        isCinematic={isCinematic} setIsCinematic={setIsCinematic}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
             </div>
 
             {currentHash !== "#overview" && (
@@ -1733,8 +1779,6 @@ export default function SolarSystem() {
 
             <button
               onClick={() => {
-                if (bgPanning) return; // ngăn bấm 2 lần
-                setBgPanning(true);
                 // Navigate về overview sau 7s (camera đã sweep xong)
                 setTimeout(() => {
                   window.location.hash = "#overview";
