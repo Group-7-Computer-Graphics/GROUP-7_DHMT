@@ -1598,44 +1598,26 @@ export default function SolarSystem() {
           background: "#01020a" // Xóa bỏ cấu hình ảnh nền tĩnh ở đây
         }}
       >
-     {/* ─── NỀN B2.JPG TRÔI TỪ PHẢI SANG TRÁI LIÊN TỤC VÀ MƯỢT MÀ ─── */}
-<div style={{ 
-  position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh", 
-  overflow: "hidden", zIndex: 0 
-}}>
-  <motion.div
-    // ⭐ XÓA bgPanning - LUÔN CHUYỂN ĐỘNG
-    animate={{ x: ["0vw", "-100vw"] }}
-    transition={{
-      // ⭐ CHỈ CẦN 1 transition - lặp vô tận
-      repeat: Infinity,
-      repeatType: "loop",
-      ease: "linear",
-      duration: 30 // 45s/vòng - tốc độ vừa phải ⭐
-    }}
-    style={{
-      position: "absolute", top: 0, left: 0,
-      width: "200vw", height: "100vh", display: "flex",
-      zIndex: -1, pointerEvents: "none",
-      willChange: "transform"
-    }}
-  >
-    <div style={{ 
-      width: "100vw", height: "100vh", flexShrink: 0, 
-      backgroundImage: "url(/b2.jpg)", 
-      backgroundSize: "cover", 
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat"
-    }} />
-    <div style={{ 
-      width: "100vw", height: "100vh", flexShrink: 0, 
-      backgroundImage: "url(/b2.jpg)", 
-      backgroundSize: "cover", 
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat"
-    }} />
-  </motion.div>
-</div>
+    {/* ─── NỀN VŨ TRỤ TRÔI TỪ PHẢI SANG TRÁI (HOẠT ĐỘNG 100%) ─── */}
+        <div style={{ position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh", overflow: "hidden", zIndex: 0 }}>
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }} // Trượt chính xác 1 nửa chiều dài của khung 200vw
+            transition={{
+              repeat: Infinity,
+              ease: "linear",
+              duration: 60 // Tốc độ trôi (60 giây 1 vòng)
+            }}
+            style={{
+              position: "absolute", top: 0, left: 0,
+              width: "200vw", height: "100vh", display: "flex",
+              zIndex: -1, pointerEvents: "none"
+            }}
+          >
+            {/* 2 khung ảnh giống hệt nhau, mỗi ảnh chiếm đúng 1 màn hình */}
+            <div style={{ width: "50%", height: "100%", flexShrink: 0, backgroundImage: "url(/b2.jpg)", backgroundSize: "cover", backgroundPosition: "center" }} />
+            <div style={{ width: "50%", height: "100%", flexShrink: 0, backgroundImage: "url(/b2.jpg)", backgroundSize: "cover", backgroundPosition: "center" }} />
+          </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
