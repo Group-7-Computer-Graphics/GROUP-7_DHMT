@@ -8,7 +8,6 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { HUDControls } from "../src/components/HUDControls";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { AsteroidBelt } from "../src/components/AsteroidBelt";
-import BackgroundEffects from "../src/components/BackgroundEffects";
 
 import IntroScreen from "../src/components/IntroScreen";
 import Head from 'next/head';
@@ -23,14 +22,14 @@ import Neptune from "../src/components/planets/neptune";
 import Uranus from "../src/components/planets/uranus";
 import Venus from "../src/components/planets/venus";
 
-// ─── [NHIỆM VỤ 4] DỮ LIỆU HÀNH TINH — TIẾNG VIỆT HOÀN TOÀN ─────────────────
+// ─── PLANET DATA — ENGLISH ───────────────────────────────────────────────────
 const planetData: Record<string, any> = {
   "#mercury": {
     name: "MERCURY",
     type: "PLANET",
-    visit: "Mercury is the smallest planet in the Solar System and the closest to the Sun. Its surface is heavily cratered from ancient impacts, looking like a giant, scorched moon. During the day, temperatures can reach hundreds of degrees Celsius, while at night they drop extremely low due to the lack of a protective atmosphere. With such harsh conditions, no known life can exist here, making Mercury a mysterious and extreme world worth exploring.",
-    encyclopedia: "Mercury is the closest planet to the Sun and the smallest planet in the Solar System. It has a diameter of about 4,880 km and a rocky, cratered surface similar to the Moon. Mercury has almost no atmosphere to retain heat, leading to extreme temperature variations between day and night. It completes an orbit around the Sun in just 88 Earth days. Despite being closest to the Sun, it is not the hottest planet due to its lack of an atmosphere.",
-    structure: "Mercury has a very large metallic core accounting for about 70% of its mass, which is unusual for its size. The core consists mainly of iron and nickel, partly in a molten state. Surrounding the core is a relatively thin silicate mantle and a hard rocky crust. Because of its large core, Mercury has a weak but global magnetic field.",
+    visit: "Mercury is the smallest planet in the Solar System and the closest to the Sun. Its surface is densely scarred by ancient impact craters, resembling a giant scorched moon. During the day, temperatures can soar to hundreds of degrees Celsius, while at night they plummet to extreme lows due to the lack of a protective atmosphere. With such harsh conditions, no known life could survive here, making Mercury a mysterious and extreme world waiting to be explored.",
+    encyclopedia: "Mercury is the closest planet to the Sun and the smallest in the Solar System. With a diameter of about 4,880 km, its rocky surface is heavily cratered, resembling the Moon. Mercury has virtually no atmosphere, meaning it cannot retain heat, resulting in extreme temperature swings between day and night. It completes one orbit around the Sun in just 88 Earth days. Despite being closest to the Sun, it is not the hottest planet due to its lack of atmosphere.",
+    structure: "Mercury has an unusually large metallic core making up roughly 70% of its mass. The core consists mainly of iron and nickel, partially molten. Surrounding the core is a relatively thin silicate mantle and a hard rocky crust. Because of its large core, Mercury has a weak but global magnetic field.",
     question: "Which planet is closest to the Sun?",
     options: ["A. Venus", "B. Mercury", "C. Mars", "D. Jupiter"],
     correctAnswer: 1,
@@ -38,19 +37,19 @@ const planetData: Record<string, any> = {
   "#venus": {
     name: "VENUS",
     type: "PLANET",
-    visit: "Venus is completely shrouded by a thick atmosphere composed primarily of carbon dioxide, along with clouds of sulfuric acid. A runaway greenhouse effect traps heat so effectively that the surface is hot enough to melt lead. The atmospheric pressure is also extremely high, enough to crush spacecraft. Despite its deadly conditions, Venus shines brightly in the night sky and is often called Earth's 'twin planet' due to their similar size and structure.",
-    encyclopedia: "Venus is the second planet from the Sun, often referred to as Earth's 'sister planet' because of their similar size and composition. However, its environment is extremely harsh. The atmosphere is mostly carbon dioxide with thick clouds of sulfuric acid, creating a strong greenhouse effect. The average surface temperature is about 465°C, making it the hottest planet in the Solar System. Venus rotates very slowly and in the opposite direction to most planets.",
-    structure: "Venus has a structure similar to Earth, consisting of a central iron core, a rocky mantle, and a solid crust. However, unlike Earth, Venus does not appear to have active plate tectonics. Its interior is very hot and volcanic activity may still be ongoing, although most of its surface is covered by ancient lava and volcanic plains.",
-    question: "Which planet is the hottest in the solar system?",
+    visit: "Venus is completely shrouded in a dense atmosphere of carbon dioxide and thick clouds of sulfuric acid. A runaway greenhouse effect traps heat so effectively that the surface is hot enough to melt lead. Atmospheric pressure is also crushing, capable of destroying spacecraft. Despite its deadly conditions, Venus shines brilliantly in the night sky and is often called Earth's 'twin planet' due to similar size and composition.",
+    encyclopedia: "Venus is the second planet from the Sun, often called Earth's 'sister planet' due to similar size and composition. However, its environment is extremely hostile. Its atmosphere is mostly carbon dioxide with dense sulfuric acid clouds, creating a powerful greenhouse effect. The average surface temperature is around 465°C, making it the hottest planet in the Solar System. Venus rotates very slowly and in the opposite direction to most planets.",
+    structure: "Venus has a structure similar to Earth, with a central iron core, a rocky mantle, and a solid crust. Unlike Earth, however, Venus appears to lack active plate tectonics. The interior is very hot and volcanic activity may still be occurring, though much of the surface is covered by ancient lava flows and volcanic plains.",
+    question: "Which is the hottest planet in the Solar System?",
     options: ["A. Mercury", "B. Earth", "C. Venus", "D. Mars"],
     correctAnswer: 2,
   },
   "#earth": {
     name: "EARTH",
     type: "PLANET",
-    visit: "Earth is the only planet known to harbor life. With its vast oceans, breathable oxygen-rich atmosphere, and stable temperatures, it provides the perfect conditions for living organisms. From dense tropical rainforests to freezing polar regions, Earth contains an incredible diversity of life and dynamic ecosystems. It is truly a rare and precious world in the universe.",
-    encyclopedia: "Earth is the third planet from the Sun and the only known planet to support life. It has a diverse environment with oceans, continents, and a nitrogen-oxygen atmosphere that sustains life. About 71% of Earth's surface is water, and its climate allows for a rich variety of ecosystems. Earth has one natural satellite, the Moon, which affects tides and stabilizes its axial tilt. Earth completes an orbit around the Sun in about 365.25 days.",
-    structure: "Earth consists of four main layers: a solid inner core of iron and nickel, a liquid outer core, a viscous mantle, and a thin crust. The movement of molten iron in the outer core generates Earth's magnetic field. The mantle is responsible for plate tectonics, which shape continents and cause earthquakes and volcanoes.",
+    visit: "Earth is the only planet known to harbor life. With vast oceans, a breathable oxygen-rich atmosphere, and stable temperatures, it provides perfect conditions for living organisms. From dense tropical rainforests to frozen polar regions, Earth holds extraordinary biodiversity and dynamic ecosystems. It is truly a rare and precious world in the universe.",
+    encyclopedia: "Earth is the third planet from the Sun and the only world known to support life. It has a diverse environment with oceans, continents, and a nitrogen-oxygen atmosphere that sustains life. About 71% of Earth's surface is covered by water, and its climate supports a wide variety of rich ecosystems. Earth has one natural satellite — the Moon — which influences tides and stabilizes the axial tilt. Earth completes one orbit around the Sun in approximately 365.25 days.",
+    structure: "Earth consists of four main layers: a solid inner core of iron and nickel, a liquid outer core, a viscous mantle, and a thin crust. The movement of molten iron in the outer core generates Earth's magnetic field. The mantle drives plate tectonics, shaping continents and causing earthquakes and volcanic eruptions.",
     question: "Which planet do we live on?",
     options: ["A. Mars", "B. Earth", "C. Venus", "D. Jupiter"],
     correctAnswer: 1,
@@ -58,9 +57,9 @@ const planetData: Record<string, any> = {
   "#mars": {
     name: "MARS",
     type: "PLANET",
-    visit: "Mars is known as the Red Planet because its iron oxide-rich surface gives it a distinctive red color. It features giant volcanoes like Olympus Mons and deep canyons like Valles Marineris. Scientific evidence suggests that Mars once had liquid water on its surface, raising the possibility that it may have supported life in the distant past. Today, it remains one of the most explored planets in space research.",
-    encyclopedia: "Mars is the fourth planet from the Sun, often called the Red Planet due to iron oxide on its surface. It hosts the largest volcano in the Solar System, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has a thin atmosphere mainly composed of carbon dioxide and is very cold. Evidence suggests liquid water once existed on its surface, hinting at the possibility that Mars may have once supported microbial life. It has two small moons, Phobos and Deimos.",
-    structure: "Mars has a dense core rich in iron, nickel, and sulfur, surrounded by a silicate mantle and a crust. The planet may have had an active core in the past but has cooled significantly, weakening its magnetic field. This cooling contributed to the loss of its thick atmosphere and surface water.",
+    visit: "Mars is called the Red Planet because its iron oxide-rich surface gives it a distinctive red color. It is home to massive volcanoes like Olympus Mons and deep canyons like Valles Marineris. Scientific evidence shows that Mars once had liquid water on its surface, raising the possibility that it may have supported life in the distant past. Today, it remains one of the most actively explored planets in space research.",
+    encyclopedia: "Mars is the fourth planet from the Sun, commonly known as the Red Planet due to iron oxide on its surface. It hosts the largest volcano in the Solar System, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has a thin atmosphere composed mainly of carbon dioxide and is very cold. Evidence suggests liquid water once existed on the surface, raising the possibility that Mars may have once supported microbial life. It has two small moons: Phobos and Deimos.",
+    structure: "Mars has a dense core rich in iron, nickel, and sulfur, surrounded by a silicate mantle and crust. The planet may have had an active core in the past, but it has cooled significantly, weakening its magnetic field. This cooling contributed to the loss of its thick atmosphere and surface water.",
     question: "Which planet is known as the 'Red Planet'?",
     options: ["A. Jupiter", "B. Mars", "C. Venus", "D. Mercury"],
     correctAnswer: 1,
@@ -68,19 +67,19 @@ const planetData: Record<string, any> = {
   "#jupiter": {
     name: "JUPITER",
     type: "GAS GIANT",
-    visit: "Jupiter is the largest planet in the Solar System, composed primarily of hydrogen and helium. Its most famous feature is the Great Red Spot—a massive storm that has raged for centuries. Jupiter also has a powerful magnetic field and dozens of moons, some of which may harbor hidden oceans beneath their icy surfaces.",
-    encyclopedia: "Jupiter is the fifth planet from the Sun and the largest planet in the Solar System. It is a gas giant composed mostly of hydrogen and helium. Its most prominent feature is the Great Red Spot, a giant storm larger than Earth that has existed for centuries. Jupiter has a strong magnetic field and at least 90 known moons, including Ganymede, the largest moon in the Solar System. Its rapid rotation creates a day lasting only about 10 hours.",
-    structure: "Jupiter lacks a well-defined solid surface. It consists mostly of hydrogen and helium, transitioning from a gaseous outer layer to liquid metallic hydrogen inside. At its center, there may be a small rocky or metallic core, but its exact size and composition remain unknown due to extreme pressures.",
-    question: "Which planet is the largest in the solar system?",
+    visit: "Jupiter is the largest planet in the Solar System, composed mainly of hydrogen and helium. Its most famous feature is the Great Red Spot — a colossal storm that has raged for centuries. Jupiter also has an incredibly powerful magnetic field and dozens of moons, some of which may harbor hidden oceans beneath their icy surfaces.",
+    encyclopedia: "Jupiter is the fifth planet from the Sun and the largest in the Solar System. It is a gas giant composed primarily of hydrogen and helium. Its most prominent feature is the Great Red Spot — a massive storm larger than Earth that has persisted for centuries. Jupiter has a strong magnetic field and at least 90 known moons, including Ganymede — the largest moon in the Solar System. Its rapid rotation creates a day of only about 10 hours.",
+    structure: "Jupiter has no well-defined solid surface. It is composed mainly of hydrogen and helium, transitioning from an outer gaseous layer to liquid metallic hydrogen deep inside. At the center, there may be a small rocky or metallic core, though its exact size and composition remain uncertain due to extreme pressures.",
+    question: "Which is the largest planet in the Solar System?",
     options: ["A. Saturn", "B. Neptune", "C. Jupiter", "D. Uranus"],
     correctAnswer: 2,
   },
   "#saturn": {
     name: "SATURN",
     type: "GAS GIANT",
-    visit: "Saturn is famous for its spectacular ring system made of ice, rock, and dust. These rings create one of the most beautiful sights in the Solar System. Though it appears ethereal and light, Saturn is actually a massive gas giant with a complex internal structure. Its moons, particularly Titan, are of great interest to scientists due to its unique atmosphere and potential for prebiotic chemistry.",
-    encyclopedia: "Saturn is the sixth planet from the Sun, best known for its extensive ring system composed of ice, rock, and dust particles. Like Jupiter, it is a gas giant made primarily of hydrogen and helium. Saturn has such a low density that it could float in water if there were a large enough ocean. It has over 140 moons, including Titan, which has a thick atmosphere and lakes of liquid methane. Its rings make Saturn one of the most visually stunning planets.",
-    structure: "Saturn is also a gas giant with no solid surface. It mainly consists of hydrogen and helium, with layers of liquid metallic hydrogen beneath its atmosphere. There may be a small rocky core surrounded by icy and metallic materials. Saturn has the lowest density of all the planets in the Solar System.",
+    visit: "Saturn is famous for its spectacular ring system made of ice, rock, and dust. These rings create one of the most breathtaking sights in the Solar System. Despite looking graceful and delicate, Saturn is a massive gas giant with a complex interior structure. Its moons — especially Titan — fascinate scientists due to their unique atmospheres and potential for prebiotic chemistry.",
+    encyclopedia: "Saturn is the sixth planet from the Sun, renowned for its extensive ring system composed of ice, rock, and dust particles. Like Jupiter, it is a gas giant composed primarily of hydrogen and helium. Saturn has such low density that it would float on water if an ocean large enough existed. It has more than 140 moons, with Titan featuring a thick atmosphere and liquid methane lakes. The rings make Saturn one of the most visually spectacular planets.",
+    structure: "Saturn is also a gas giant with no solid surface. It consists mainly of hydrogen and helium, with layers of liquid metallic hydrogen beneath the atmosphere. There may be a small rocky core surrounded by icy and metallic material. Saturn has the lowest density of any planet in the Solar System.",
     question: "Which planet has the most prominent ring system?",
     options: ["A. Jupiter", "B. Saturn", "C. Venus", "D. Mars"],
     correctAnswer: 1,
@@ -88,9 +87,9 @@ const planetData: Record<string, any> = {
   "#uranus": {
     name: "URANUS",
     type: "ICE GIANT",
-    visit: "Uranus is an ice giant with a very unusual characteristic: it rotates on its side. This extreme tilt makes the planet look as if it's rolling around the Sun. Its blue-green color comes from methane gas in its atmosphere, which absorbs red light. Uranus also has faint rings and extremely cold temperatures, making it one of the most unusual planets in the Solar System.",
-    encyclopedia: "Uranus is the seventh planet from the Sun, classified as an ice giant. It has a blue-green hue due to methane gas in its atmosphere. Its most unusual feature is its axial tilt of about 98 degrees, causing it to spin on its side and creating extreme seasonal variations. Uranus has a faint ring system and at least 27 known moons. It is one of the coldest planets, with temperatures dropping to about -224°C.",
-    structure: "Uranus is an ice giant composed of water, ammonia, and methane ices, along with hydrogen and helium gas. Inside, there may be a small rocky core surrounded by a thick icy mantle and an outer gaseous envelope. Extreme internal pressures create unusual states of matter, including 'superionic ice'.",
+    visit: "Uranus is an ice giant with a very unusual feature: it rotates on its side. This extreme tilt makes the planet appear to roll around the Sun. Its blue-green color comes from methane gas in the atmosphere, which absorbs red light. Uranus also has faint rings and extremely cold temperatures, making it one of the most unusual planets in the Solar System.",
+    encyclopedia: "Uranus is the seventh planet from the Sun, classified as an ice giant. It has a blue-green color due to methane gas in the atmosphere. Its most unusual feature is an axial tilt of about 98 degrees, causing it to spin on its side and creating extreme seasonal variations. Uranus has a faint ring system and at least 27 known moons. It is one of the coldest planets, with temperatures dropping to around -224°C.",
+    structure: "Uranus is an ice giant composed of water, ammonia, and methane ices along with hydrogen and helium gases. The interior may contain a small rocky core, surrounded by a thick icy mantle and an outer gaseous layer. Extreme internal pressures create unusual states of matter, including 'superionic ice'.",
     question: "Which planet has a blue-green color due to methane gas?",
     options: ["A. Venus", "B. Uranus", "C. Mars", "D. Mercury"],
     correctAnswer: 1,
@@ -98,10 +97,10 @@ const planetData: Record<string, any> = {
   "#neptune": {
     name: "NEPTUNE",
     type: "ICE GIANT",
-    visit: "Dark, cold, and whipped by supersonic winds, Neptune is the farthest of the major planets in our solar system. It hides at the distant edge of the solar system, where the Sun's light is nothing more than a faint point of light in the dark sky.",
-    encyclopedia: "Neptune is the eighth and farthest planet in the solar system. It is an ice giant with a faint ring system and 14 known moons. Its atmosphere contains hydrogen, helium, and methane, which gives it its characteristic blue color. The winds on Neptune are the strongest in the Solar System, reaching speeds of up to 2,100 km/h.",
-    structure: "Its structure is similar to Uranus, consisting of a dense liquid or hot 'ice' mantle (water, ammonia, methane) surrounding a solid core about the size of Earth. The core temperature is estimated to be around 5,000°C.",
-    question: "Which planet is the farthest from the Sun in the solar system?",
+    visit: "Dark, frigid, and swept by supersonic winds, Neptune is the farthest of the major planets in our solar system. It hides at the remote edge of the solar system, where sunlight is reduced to little more than a faint glimmer in the darkness.",
+    encyclopedia: "Neptune is the eighth and most distant planet in the solar system. It is an ice giant with a faint ring system and 14 known moons. Its atmosphere contains hydrogen, helium, and methane, creating its distinctive blue color. Neptune's winds are the strongest in the Solar System, reaching speeds of up to 2,100 km/h.",
+    structure: "Similar in structure to Uranus, Neptune has a dense liquid or 'hot ice' mantle (water, ammonia, methane) surrounding a solid rocky core roughly the size of Earth. The core temperature is estimated at around 5,000°C.",
+    question: "Which planet is the farthest from the Sun in the Solar System?",
     options: ["A. Uranus", "B. Neptune", "C. Saturn", "D. Jupiter"],
     correctAnswer: 1,
   },
@@ -128,8 +127,27 @@ const ORBIT_CONFIG: Record<
   "#neptune": { radius: 1050, speed: 0.03, camOffset: [0, 20, 80],  ufoHeight: 20, ufoScale: 0.38 },
 };
 
-// ─── [NHIỆM VỤ 1] ANIMATED BACKGROUND — NỀN CHUYỂN ĐỘNG MỰT MÀ ──────────────
-function AnimatedBackground() {
+// ─── CAMERA ANGLE SYNC ─────────────────────────────────────────────────────────
+function CameraAngleSync({ angleRef, pitchRef }: { angleRef: React.MutableRefObject<number>; pitchRef: React.MutableRefObject<number> }) {
+  const { camera } = useThree();
+  const prevAzimuth = useRef(0);
+  const prevPitch = useRef(0);
+  useFrame(() => {
+    const azimuth = Math.atan2(camera.position.x, camera.position.z);
+    const radius = Math.hypot(camera.position.x, camera.position.z);
+    const pitch = Math.atan2(camera.position.y, radius);
+    
+    prevAzimuth.current += (azimuth - prevAzimuth.current) * 0.12;
+    prevPitch.current += (pitch - prevPitch.current) * 0.12;
+    
+    angleRef.current = prevAzimuth.current;
+    pitchRef.current = prevPitch.current;
+  });
+  return null;
+}
+
+// ─── ANIMATED BACKGROUND — SOLAR SYSTEM ROTATION ─────────────────────────────
+function AnimatedBackground({ cameraAngleRef, cameraPitchRef }: { cameraAngleRef: React.MutableRefObject<number>; cameraPitchRef: React.MutableRefObject<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -144,21 +162,33 @@ function AnimatedBackground() {
     canvas.width  = W;
     canvas.height = H;
 
-    // ── Stars: 3 lớp parallax ──────────────────────────────────────────────
+    // ── Solar angle: driven by camera azimuth + slow ambient drift ────────
+    let autoDrift = 0;
+    const DRIFT_SPEED = 0.00008;
+    // solarAngle is read from cameraAngleRef each frame + drift
+
+    // ── Stars: 3 parallax layers ──────────────────────────────────────────
     interface Star {
       x: number; y: number; r: number; alpha: number;
       twinkleSpeed: number; twinkleOffset: number; layer: number;
       color: string;
+      // polar coords from center for rotation
+      dist: number; baseAngle: number;
     }
     const STAR_COLORS = [
       "255,255,255", "200,220,255", "255,220,180", "180,200,255", "255,255,200"
     ];
     const stars: Star[] = [];
+    const cx0 = W / 2, cy0 = H / 2;
     for (let i = 0; i < 900; i++) {
       const layer = i < 400 ? 0 : i < 700 ? 1 : 2;
+      const rx = Math.random() * W - cx0;
+      const ry = Math.random() * H - cy0;
       stars.push({
         x: Math.random() * W,
         y: Math.random() * H,
+        dist: Math.hypot(rx, ry),
+        baseAngle: Math.atan2(ry, rx),
         r: layer === 2 ? 1.2 + Math.random() * 2.2 : layer === 1 ? 0.7 + Math.random() * 1.3 : 0.3 + Math.random() * 0.7,
         alpha: 0.35 + Math.random() * 0.65,
         twinkleSpeed: 0.4 + Math.random() * 3,
@@ -173,22 +203,30 @@ function AnimatedBackground() {
       cx: number; cy: number; rx: number; ry: number;
       hue: number; hue2: number; alpha: number; vx: number; vy: number;
       rotSpeed: number; rot: number;
+      // polar for solar rotation
+      dist: number; baseAngle: number;
     }
     const nebulae: Nebula[] = [
-      { cx: W*0.12, cy: H*0.20, rx: 520, ry: 360, hue: 215, hue2: 240, alpha: 0.18, vx:  0.10, vy:  0.05, rotSpeed: 0.0002, rot: 0 },
-      { cx: W*0.78, cy: H*0.55, rx: 600, ry: 420, hue: 265, hue2: 290, alpha: 0.14, vx: -0.07, vy:  0.08, rotSpeed: 0.0003, rot: 1 },
-      { cx: W*0.50, cy: H*0.85, rx: 480, ry: 300, hue: 185, hue2: 210, alpha: 0.16, vx:  0.05, vy: -0.06, rotSpeed: 0.0002, rot: 2 },
-      { cx: W*0.88, cy: H*0.08, rx: 400, ry: 300, hue: 295, hue2: 320, alpha: 0.13, vx: -0.08, vy:  0.10, rotSpeed: 0.0004, rot: 3 },
-      { cx: W*0.30, cy: H*0.65, rx: 360, ry: 280, hue: 160, hue2: 185, alpha: 0.12, vx:  0.09, vy:  0.04, rotSpeed: 0.0003, rot: 4 },
-      { cx: W*0.62, cy: H*0.30, rx: 300, ry: 220, hue: 340, hue2: 20,  alpha: 0.10, vx: -0.06, vy: -0.05, rotSpeed: 0.0002, rot: 5 },
+      { cx: W*0.12, cy: H*0.20, rx: 520, ry: 360, hue: 215, hue2: 240, alpha: 0.18, vx:  0.10, vy:  0.05, rotSpeed: 0.0002, rot: 0, dist: 0, baseAngle: 0 },
+      { cx: W*0.78, cy: H*0.55, rx: 600, ry: 420, hue: 265, hue2: 290, alpha: 0.14, vx: -0.07, vy:  0.08, rotSpeed: 0.0003, rot: 1, dist: 0, baseAngle: 0 },
+      { cx: W*0.50, cy: H*0.85, rx: 480, ry: 300, hue: 185, hue2: 210, alpha: 0.16, vx:  0.05, vy: -0.06, rotSpeed: 0.0002, rot: 2, dist: 0, baseAngle: 0 },
+      { cx: W*0.88, cy: H*0.08, rx: 400, ry: 300, hue: 295, hue2: 320, alpha: 0.13, vx: -0.08, vy:  0.10, rotSpeed: 0.0004, rot: 3, dist: 0, baseAngle: 0 },
+      { cx: W*0.30, cy: H*0.65, rx: 360, ry: 280, hue: 160, hue2: 185, alpha: 0.12, vx:  0.09, vy:  0.04, rotSpeed: 0.0003, rot: 4, dist: 0, baseAngle: 0 },
+      { cx: W*0.62, cy: H*0.30, rx: 300, ry: 220, hue: 340, hue2: 20,  alpha: 0.10, vx: -0.06, vy: -0.05, rotSpeed: 0.0002, rot: 5, dist: 0, baseAngle: 0 },
     ];
+    // init polar coords for nebulae
+    nebulae.forEach(n => {
+      const dx = n.cx - cx0, dy = n.cy - cy0;
+      n.dist = Math.hypot(dx, dy);
+      n.baseAngle = Math.atan2(dy, dx);
+    });
 
-    // ── [NHIỆM VỤ 3] SAO BĂNG — TRẮNG THUẦN, VỆT SÁNG DÀI ĐẸP ────────────
+    // ── Meteor streaks ─────────────────────────────────────────────────────
     interface Meteor {
       x: number; y: number; vx: number; vy: number;
       len: number; alpha: number; active: boolean;
       timer: number; maxTimer: number;
-      tailLen: number; // chiều dài đuôi riêng biệt
+      tailLen: number;
     }
     const meteors: Meteor[] = Array.from({ length: 10 }, () => ({
       x: 0, y: 0, vx: 0, vy: 0, len: 0, alpha: 0,
@@ -196,21 +234,19 @@ function AnimatedBackground() {
     }));
 
     function spawnMeteor(m: Meteor) {
-      // Xuất hiện từ vùng trên-phải hoặc trên, bay chéo xuống-phải
       m.x = Math.random() * W * 1.2 - W * 0.1;
       m.y = Math.random() * H * 0.35;
-      const angle = Math.PI / 5 + (Math.random() - 0.5) * 0.35; // ~36° ± 10°
-      const speed = 18 + Math.random() * 28; // nhanh hơn
+      const angle = Math.PI / 5 + (Math.random() - 0.5) * 0.35;
+      const speed = 18 + Math.random() * 28;
       m.vx      = Math.cos(angle) * speed;
       m.vy      = Math.sin(angle) * speed;
-      m.tailLen = 180 + Math.random() * 260; // đuôi dài hơn nhiều
+      m.tailLen = 180 + Math.random() * 260;
       m.len     = m.tailLen;
       m.alpha   = 0.85 + Math.random() * 0.15;
       m.active  = true;
       m.timer   = 0;
       m.maxTimer = 35 + Math.random() * 25;
     }
-    // Stagger ban đầu để không đồng loạt
     meteors.forEach((m, i) => { m.timer = -i * 90 - Math.random() * 250; });
 
     // ── Aurora waves ──────────────────────────────────────────────────────
@@ -238,6 +274,22 @@ function AnimatedBackground() {
       timer: Math.random() * 200,
     }));
 
+    // ── Galaxy arm hint (faint spiral overlay) ────────────────────────────
+    function drawGalaxyArm(angle: number, solarAngle: number) {
+      ctx!.save();
+      ctx!.translate(W / 2, H / 2);
+      ctx!.rotate(solarAngle * 0.3 + angle);
+      const armGrd = ctx!.createLinearGradient(-W * 0.6, 0, W * 0.6, 0);
+      armGrd.addColorStop(0,    "rgba(80,100,200,0)");
+      armGrd.addColorStop(0.35, "rgba(90,120,220,0.03)");
+      armGrd.addColorStop(0.5,  "rgba(100,140,255,0.05)");
+      armGrd.addColorStop(0.65, "rgba(90,120,220,0.03)");
+      armGrd.addColorStop(1,    "rgba(80,100,200,0)");
+      ctx!.fillStyle = armGrd;
+      ctx!.fillRect(-W * 0.6, -H * 0.08, W * 1.2, H * 0.16);
+      ctx!.restore();
+    }
+
     let t = 0;
 
     function drawAurora(w: AuroraWave) {
@@ -259,6 +311,11 @@ function AnimatedBackground() {
 
     function draw() {
       t += 0.01;
+      // Solar angle = camera azimuth (mirrored for parallax) + slow ambient drift
+      autoDrift += DRIFT_SPEED;
+      const solarAngle = -cameraAngleRef.current * 1.2 + autoDrift;
+      const verticalShift = cameraPitchRef.current * H * 0.3; // Vertical parallax based on camera pitch
+
       ctx!.clearRect(0, 0, W, H);
 
       // ── Deep space base gradient ──────────────────────────────────────
@@ -270,53 +327,47 @@ function AnimatedBackground() {
       ctx!.fillStyle = bg;
       ctx!.fillRect(0, 0, W, H);
 
+      // ── Galaxy arm overlay (rotates with solar system) ────────────────
+      ctx!.globalCompositeOperation = "screen";
+      drawGalaxyArm(0, solarAngle);
+      drawGalaxyArm(Math.PI, solarAngle);
+      drawGalaxyArm(Math.PI * 0.5, solarAngle);
+      ctx!.globalCompositeOperation = "source-over";
+
       ctx!.globalCompositeOperation = "screen";
       auroraWaves.forEach(drawAurora);
       ctx!.globalCompositeOperation = "source-over";
 
+      // ── Nebulae — orbit around center with solar rotation ─────────────
       ctx!.globalCompositeOperation = "screen";
       nebulae.forEach((n) => {
-        n.cx += n.vx; n.cy += n.vy; n.rot += n.rotSpeed;
-        if (n.cx < -n.rx * 1.5) n.cx = W + n.rx * 1.5;
-        if (n.cx > W + n.rx * 1.5) n.cx = -n.rx * 1.5;
-        if (n.cy < -n.ry * 1.5) n.cy = H + n.ry * 1.5;
-        if (n.cy > H + n.ry * 1.5) n.cy = -n.ry * 1.5;
-
-        const pulse   = 1 + 0.08 * Math.sin(t * 0.5 + n.hue * 0.05);
-        const breathe = 0.85 + 0.15 * Math.sin(t * 0.3 + n.hue * 0.02);
-
+        // Each nebula orbits slowly around center — outer ones faster parallax
+        const layerSpeed = 0.8 + (n.dist / (Math.max(W, H) * 0.7)) * 1.2;
+        const currentAngle = n.baseAngle + solarAngle * layerSpeed;
+        const nx = cx0 + Math.cos(currentAngle) * n.dist;
+        const ny = cy0 + Math.sin(currentAngle) * n.dist + verticalShift;
+        n.rot += n.rotSpeed;
         ctx!.save();
-        ctx!.translate(n.cx, n.cy);
-        ctx!.rotate(n.rot);
-
-        const outer = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 1.4);
-        outer.addColorStop(0,    `hsla(${n.hue}, 85%, 55%, ${n.alpha * breathe})`);
-        outer.addColorStop(0.3,  `hsla(${n.hue2}, 75%, 45%, ${n.alpha * breathe * 0.7})`);
-        outer.addColorStop(0.65, `hsla(${n.hue + 10}, 70%, 35%, ${n.alpha * breathe * 0.3})`);
-        outer.addColorStop(1,    `hsla(${n.hue}, 60%, 25%, 0)`);
+        ctx!.translate(nx, ny);
+        ctx!.rotate(n.rot + solarAngle * 0.15);
+        const grd = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx);
+        grd.addColorStop(0,   `hsla(${n.hue + Math.sin(t * 0.3) * 15}, 70%, 55%, ${n.alpha * 0.8})`);
+        grd.addColorStop(0.4, `hsla(${n.hue2}, 60%, 45%, ${n.alpha * 0.5})`);
+        grd.addColorStop(1,   "rgba(0,0,0,0)");
         ctx!.scale(1, n.ry / n.rx);
         ctx!.beginPath();
-        ctx!.arc(0, 0, n.rx * pulse * 1.4, 0, Math.PI * 2);
-        ctx!.fillStyle = outer;
-        ctx!.fill();
-
-        const core = ctx!.createRadialGradient(0, 0, 0, 0, 0, n.rx * pulse * 0.5);
-        core.addColorStop(0,   `hsla(${n.hue2}, 100%, 75%, ${n.alpha * 2.2 * breathe})`);
-        core.addColorStop(0.5, `hsla(${n.hue}, 90%, 60%, ${n.alpha * 1.2 * breathe})`);
-        core.addColorStop(1,   `hsla(${n.hue}, 80%, 40%, 0)`);
-        ctx!.beginPath();
-        ctx!.arc(0, 0, n.rx * pulse * 0.5, 0, Math.PI * 2);
-        ctx!.fillStyle = core;
+        ctx!.arc(0, 0, n.rx, 0, Math.PI * 2);
+        ctx!.fillStyle = grd;
         ctx!.fill();
         ctx!.restore();
       });
       ctx!.globalCompositeOperation = "source-over";
 
-      // Dải Ngân Hà mờ
+      // ── Milky way band (also rotates) ─────────────────────────────────
       ctx!.save();
-      ctx!.translate(W * 0.5, H * 0.5);
-      ctx!.rotate(-0.35);
-      const mw = ctx!.createLinearGradient(-W, -H * 0.12, -W, H * 0.12);
+      ctx!.translate(W / 2, H / 2 + verticalShift);
+      ctx!.rotate(solarAngle * 0.8 + Math.PI / 6);
+      const mw = ctx!.createLinearGradient(0, -H * 0.12, 0, H * 0.12);
       mw.addColorStop(0,    "rgba(70,90,160,0)");
       mw.addColorStop(0.25, "rgba(70,90,160,0.07)");
       mw.addColorStop(0.5,  "rgba(90,110,180,0.13)");
@@ -326,10 +377,14 @@ function AnimatedBackground() {
       ctx!.fillRect(-W, -H * 0.12, W * 2, H * 0.24);
       ctx!.restore();
 
-      // Vẽ ngôi sao
+      // ── Stars — rotate around center based on layer ───────────────────
       stars.forEach((s) => {
-        const driftSpeeds = [0, 0.025, 0.06];
-        s.x = (s.x + driftSpeeds[s.layer] + W) % W;
+        // Layer 0 (distant): very slow rotation; layer 2 (close): faster
+        const layerRotSpeed = [0.15, 0.5, 1.2][s.layer];
+        const rotatedAngle = s.baseAngle + solarAngle * layerRotSpeed;
+        s.x = cx0 + Math.cos(rotatedAngle) * s.dist;
+        s.y = cy0 + Math.sin(rotatedAngle) * s.dist + verticalShift;
+
         const twinkle = s.alpha * (0.55 + 0.45 * Math.sin(t * s.twinkleSpeed + s.twinkleOffset));
 
         if (s.r > 1.8) {
@@ -389,17 +444,15 @@ function AnimatedBackground() {
       });
       ctx!.globalCompositeOperation = "source-over";
 
-      // ── [NHIỆM VỤ 3] VẼ SAO BĂNG — TRẮNG TINH KHIẾT, VỆT DÀI ĐẸP ─────
+      // ── Meteors ───────────────────────────────────────────────────────
       meteors.forEach((m) => {
         m.timer++;
         if (!m.active) {
-          // Tần suất xuất hiện cao hơn một chút (0.005)
           if (m.timer > 0 && Math.random() < 0.005) spawnMeteor(m);
           return;
         }
 
         const progress = m.timer / m.maxTimer;
-        // Fade-in nhanh (0~15%), sáng đủ (15~75%), fade-out mượt (75~100%)
         const fade =
           progress < 0.15 ? progress / 0.15
           : progress > 0.75 ? 1 - (progress - 0.75) / 0.25
@@ -409,23 +462,17 @@ function AnimatedBackground() {
         m.y += m.vy;
 
         const speed = Math.hypot(m.vx, m.vy);
-        // Điểm đầu đuôi (cách đầu sao một đoạn tailLen)
         const tx = m.x - (m.vx / speed) * m.tailLen;
         const ty = m.y - (m.vy / speed) * m.tailLen;
 
-        // ── Lớp 1: Hào quang rộng (glow halo) — trắng-xanh rất mờ ────────
         const haloGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
         haloGrd.addColorStop(0,   `rgba(200,230,255,0)`);
         haloGrd.addColorStop(0.5, `rgba(220,240,255,${m.alpha * fade * 0.12})`);
         haloGrd.addColorStop(1,   `rgba(255,255,255,${m.alpha * fade * 0.18})`);
         ctx!.strokeStyle = haloGrd;
         ctx!.lineWidth = 10;
-        ctx!.beginPath();
-        ctx!.moveTo(tx, ty);
-        ctx!.lineTo(m.x, m.y);
-        ctx!.stroke();
+        ctx!.beginPath(); ctx!.moveTo(tx, ty); ctx!.lineTo(m.x, m.y); ctx!.stroke();
 
-        // ── Lớp 2: Đuôi ngoài — dày vừa, trắng ───────────────────────────
         const outerGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
         outerGrd.addColorStop(0,    `rgba(240,248,255,0)`);
         outerGrd.addColorStop(0.35, `rgba(245,250,255,${m.alpha * fade * 0.30})`);
@@ -435,12 +482,8 @@ function AnimatedBackground() {
         ctx!.lineWidth = 3.5;
         ctx!.shadowColor = "rgba(255,255,255,0.5)";
         ctx!.shadowBlur  = 12;
-        ctx!.beginPath();
-        ctx!.moveTo(tx, ty);
-        ctx!.lineTo(m.x, m.y);
-        ctx!.stroke();
+        ctx!.beginPath(); ctx!.moveTo(tx, ty); ctx!.lineTo(m.x, m.y); ctx!.stroke();
 
-        // ── Lớp 3: Lõi sáng trắng thuần ──────────────────────────────────
         const coreGrd = ctx!.createLinearGradient(tx, ty, m.x, m.y);
         coreGrd.addColorStop(0,    `rgba(255,255,255,0)`);
         coreGrd.addColorStop(0.55, `rgba(255,255,255,${m.alpha * fade * 0.70})`);
@@ -449,19 +492,14 @@ function AnimatedBackground() {
         ctx!.lineWidth = 1.5;
         ctx!.shadowColor = "rgba(255,255,255,0.9)";
         ctx!.shadowBlur  = 8;
-        ctx!.beginPath();
-        ctx!.moveTo(tx, ty);
-        ctx!.lineTo(m.x, m.y);
-        ctx!.stroke();
+        ctx!.beginPath(); ctx!.moveTo(tx, ty); ctx!.lineTo(m.x, m.y); ctx!.stroke();
 
-        // ── Lớp 4: Đầu sao — điểm sáng chói ─────────────────────────────
         ctx!.beginPath();
         ctx!.arc(m.x, m.y, Math.max(0.01, 2.2 * fade), 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(255,255,255,${m.alpha * fade})`;
         ctx!.shadowColor = "rgba(255,255,255,1)";
         ctx!.shadowBlur  = 15;
         ctx!.fill();
-
         ctx!.shadowBlur = 0;
 
         if (m.timer >= m.maxTimer) {
@@ -606,7 +644,7 @@ function PlanetArrivalEffect({ currentHash }: { currentHash: string }) {
         ctx!.fillStyle = theme.color;
         ctx!.font = "bold 11px 'Courier New', monospace";
         ctx!.textAlign = "center";
-        ctx!.fillText("// ĐANG VÀO QUỸ ĐẠO //", W/2, titleY - 10);
+        ctx!.fillText("// ENTERING ORBIT //", W/2, titleY - 10);
         ctx!.globalAlpha = titleAlpha;
         ctx!.shadowColor = theme.color;
         ctx!.shadowBlur = 30;
@@ -743,12 +781,12 @@ function PlanetInfoPanel({
     }
   };
 
-  // Tên hiển thị cho các tab — tiếng Việt
+  // Tab labels — English
   const VIEW_LABELS: Record<string, string> = {
-    visit:        "THAM QUAN",
-    encyclopedia: "BÁCH KHOA",
-    structure:    "CẤU TRÚC",
-    quiz:         "CÂU HỎI (QUIZ)",
+    visit:        "VISIT",
+    encyclopedia: "ENCYCLOPEDIA",
+    structure:    "STRUCTURE",
+    quiz:         "QUIZ",
   };
 
   return (
@@ -776,8 +814,8 @@ function PlanetInfoPanel({
           color: "#00f3ff", marginBottom: "15px", opacity: 0.8,
           letterSpacing: "2px", textTransform: "uppercase",
         }}>
-          <span>DỮ.LIỆU // {currentHash.replace("#", "")}</span>
-          <span>[ ĐĨA BAY ĐÃ KẾT NỐI ]</span>
+          <span>DATA // {currentHash.replace("#", "")}</span>
+          <span>[ UFO CONNECTED ]</span>
         </div>
 
         <div style={{
@@ -804,10 +842,10 @@ function PlanetInfoPanel({
             animate={{ opacity: 1 }}
             style={{ display: "flex", flexDirection: "column", gap: "12px" }}
           >
-            <MenuButton text="THAM QUAN"          onClick={() => setActiveView("visit")} />
-            <MenuButton text="BÁCH KHOA"          onClick={() => setActiveView("encyclopedia")} />
-            <MenuButton text="CẤU TRÚC"           onClick={() => setActiveView("structure")} />
-            <MenuButton text="CÂU HỎI (QUIZ)" highlight onClick={() => setActiveView("quiz")} />
+            <MenuButton text="VISIT"          onClick={() => setActiveView("visit")} />
+            <MenuButton text="ENCYCLOPEDIA"   onClick={() => setActiveView("encyclopedia")} />
+            <MenuButton text="STRUCTURE"      onClick={() => setActiveView("structure")} />
+            <MenuButton text="QUIZ" highlight onClick={() => setActiveView("quiz")} />
           </motion.div>
         )}
 
@@ -825,14 +863,14 @@ function PlanetInfoPanel({
             }}>
               {data[activeView]}
             </p>
-            <MenuButton text="QUAY LẠI MENU" onClick={() => setActiveView("menu")} highlight />
+            <MenuButton text="← BACK TO MENU" onClick={() => setActiveView("menu")} highlight />
           </motion.div>
         )}
 
         {activeView === "quiz" && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
             <h3 style={{ marginTop: 0, color: "#00f3ff", fontSize: "16px", textTransform: "uppercase" }}>
-              Câu Hỏi Kiểm Tra
+              Knowledge Check
             </h3>
             <p style={{ fontSize: "16px", lineHeight: "1.5", marginBottom: "20px", color: "#e0f7fa" }}>
               {data.question}
@@ -873,7 +911,7 @@ function PlanetInfoPanel({
             </div>
             {selectedAnswer !== null && (
               <MenuButton
-                text="QUAY LẠI MENU"
+                text="← BACK TO MENU"
                 onClick={() => { setActiveView("menu"); setSelectedAnswer(null); }}
                 highlight
               />
@@ -1118,27 +1156,19 @@ function RocketTrail({
     });
     sparkGeo.setDrawRange(0, spkDrawn); spkPos.needsUpdate = true; spkCol.needsUpdate = true;
   });
-  
-
-  // Tạo vỏ bọc đánh lừa TypeScript
-  const R3FLine = (props: any) => <line {...props} />;
-  const R3FPoints = (props: any) => <points {...props} />;
 
   return (
     <>
-      <R3FLine geometry={coreGeo}  material={coreMat}  />
-      <R3FLine geometry={core2Geo} material={core2Mat} />
-      <R3FLine geometry={haloGeo}  material={haloMat}  />
-      
+      <lineSegments geometry={coreGeo}  material={coreMat}  />
+      <lineSegments geometry={core2Geo} material={core2Mat} />
+      <lineSegments geometry={haloGeo}  material={haloMat}  />
       {outerGeos.map((geo, i) => (
-        <R3FLine key={`o${i}`} geometry={geo} material={outerMat} />
+        <lineSegments key={`o${i}`} geometry={geo} material={outerMat} />
       ))}
-      
       {ringGeos.map((geo, i) => (
-        <R3FLine key={`r${i}`} geometry={geo} material={ringMat} />
+        <lineSegments key={`r${i}`} geometry={geo} material={ringMat} />
       ))}
-      
-      <R3FPoints geometry={sparkGeo} material={sparkMat} />
+      <points geometry={sparkGeo} material={sparkMat} />
     </>
   );
 }
@@ -1534,6 +1564,10 @@ export default function SolarSystem() {
     "#jupiter": 0, "#saturn": 0, "#uranus": 0, "#neptune": 0,
   });
 
+  // Shared ref: camera azimuth angle written by CameraAngleSync, read by AnimatedBackground
+  const cameraAngleRef = useRef<number>(0);
+  const cameraPitchRef = useRef<number>(0);
+
   const planetHashes = [
     "#overview",
     "#mercury", "#venus", "#earth", "#mars",
@@ -1581,14 +1615,14 @@ export default function SolarSystem() {
       window.location.hash = planetHashes[idx + 1];
     } else {
       window.location.hash = "#overview";
-      setTimeout(() => alert("Chúc mừng Thuyền trưởng! Bạn đã chinh phục toàn bộ Hệ Mặt Trời!"), 500);
+      setTimeout(() => alert("Congratulations, Captain! You have conquered the entire Solar System!"), 500);
     }
   };
 
   return (
     <>
       <Head>
-        <title>Hệ Mặt Trời</title>
+        <title>Solar System Explorer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>{`
           @keyframes panBackground {
@@ -1622,7 +1656,7 @@ export default function SolarSystem() {
           transition={{ duration: 1 }}
           style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
         >
-          <AnimatedBackground />
+          <AnimatedBackground cameraAngleRef={cameraAngleRef} cameraPitchRef={cameraPitchRef} />
 
           <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
             <Canvas
@@ -1641,6 +1675,7 @@ export default function SolarSystem() {
                   dampingFactor={0.06}
                   rotateSpeed={0.8}
                 />
+                <CameraAngleSync angleRef={cameraAngleRef} pitchRef={cameraPitchRef} />
                 <CameraController
                   currentHash={currentHash}
                   isCinematic={isCinematic}
@@ -1697,7 +1732,6 @@ export default function SolarSystem() {
                 <EffectComposer>
                   <Bloom intensity={bloomIntensity} luminanceThreshold={0.2} mipmapBlur radius={0.5} />
                 </EffectComposer>
-                <BackgroundEffects />
               </Suspense>
             </Canvas>
           </div>
@@ -1759,7 +1793,7 @@ export default function SolarSystem() {
               {bgPanning ? "RETURNING..." : "BACK TO START"}
             </button>
 
-            {/* Nav bar hành tinh — tiếng Việt */}
+            {/* Planet nav bar */}
             <div style={{
               position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)",
               display: "flex", gap: "8px", padding: "10px",
