@@ -1,56 +1,36 @@
-"use client";
+"use client"
+import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react"
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+const SITE_NAME = "Solar System"
 
-// ============================================================
-// ✏️  CẤU HÌNH DỄ CHỈNH SỬA - Team chỉnh ở đây
-// ============================================================
+const MAIN_TITLE = "SOLAR SYSTEM\nEDUCATION"
 
-// Tên website hiển thị ở góc trái taskbar
-const SITE_NAME = "Solar System";
+const SUBTITLE = "AN INTERACTIVE 3D JOURNEY THROUGH THE COSMOS"
 
-// Tiêu đề lớn giữa màn hình
-const MAIN_TITLE = "SOLAR SYSTEM\nEDUCATION";
-
-// Dòng mô tả nhỏ dưới tiêu đề
-const SUBTITLE = "AN INTERACTIVE 3D JOURNEY THROUGH THE COSMOS";
-
-// Văn bản nút bấm chuyển vào 3D
-const CTA_TEXT = "EXPLORE THE UNIVERSE";
-
-// ── Danh sách thành viên ──────────────────────────────────
-// Thêm / xoá thành viên tại đây, gán link GitHub tương ứng
+const CTA_TEXT = "EXPLORE THE UNIVERSE"
 const TEAM_MEMBERS = [
   { name: "Nguyễn Hồng Đăng", github: "https://github.com/" },
   { name: "Phạm Thanh Vân", github: "https://github.com/" },
   { name: "Trần Thùy Trang", github: "https://github.com/" },
   { name: "Nguyễn Anh Đức", github: "https://github.com/" },
-  { name: "Nguyễn Phương Anh", github: "https://github.com/" },
-];
+  { name: "Nguyễn Phương Anh", github: "https://github.com/" }
+]
 
-// Link repository GitHub của cả team
-const GITHUB_REPO_URL = "https://github.com/";
+const GITHUB_REPO_URL = "https://github.com/"
 
-// ============================================================
-
-interface IntroScreenProps {
-  /** Hàm được gọi khi người dùng bấm nút "Explore" */
-  onEnter: () => void;
-}
-
-const IntroScreen: React.FC<IntroScreenProps> = ({ onEnter }) => {
+const IntroScreen = ({ onEnter }) => {
   // State để kiểm soát hiệu ứng mờ dần khi bấm nút
-  const [isExiting, setIsExiting] = useState(false);
+  const [isExiting, setIsExiting] = useState(false)
 
   // Khi bấm nút, chạy animation mờ dần rồi gọi onEnter()
   const handleEnter = () => {
-    setIsExiting(true);
+    setIsExiting(true)
     // Đợi animation kết thúc (1.5 giây) rồi chuyển sang 3D
     setTimeout(() => {
-      onEnter();
-    }, 1500);
-  };
+      onEnter()
+    }, 1500)
+  }
 
   return (
     <motion.div
@@ -90,13 +70,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onEnter }) => {
             target="_blank"
             rel="noopener noreferrer"
             style={styles.githubButton}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLElement).style.background =
-                "rgba(77,127,255,0.2)")
+            onMouseEnter={e =>
+              (e.currentTarget.style.background = "rgba(77,127,255,0.2)")
             }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLElement).style.background =
-                "transparent")
+            onMouseLeave={e =>
+              (e.currentTarget.style.background = "transparent")
             }
           >
             {/* Icon GitHub SVG */}
@@ -163,19 +141,19 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onEnter }) => {
           transition={{ duration: 0.8, delay: 1.4 }}
           onClick={handleEnter}
           style={styles.ctaButton}
-          onMouseEnter={(e) => {
-            const btn = e.currentTarget as HTMLButtonElement;
-            btn.style.background = "#4D7FFF";
-            btn.style.color = "#000";
-            btn.style.boxShadow = "0 0 40px rgba(77,127,255,0.6)";
-            btn.style.letterSpacing = "5px";
+          onMouseEnter={e => {
+            const btn = e.currentTarget
+            btn.style.background = "#4D7FFF"
+            btn.style.color = "#000"
+            btn.style.boxShadow = "0 0 40px rgba(77,127,255,0.6)"
+            btn.style.letterSpacing = "5px"
           }}
-          onMouseLeave={(e) => {
-            const btn = e.currentTarget as HTMLButtonElement;
-            btn.style.background = "transparent";
-            btn.style.color = "#fff";
-            btn.style.boxShadow = "0 0 20px rgba(77,127,255,0.2)";
-            btn.style.letterSpacing = "4px";
+          onMouseLeave={e => {
+            const btn = e.currentTarget
+            btn.style.background = "transparent"
+            btn.style.color = "#fff"
+            btn.style.boxShadow = "0 0 20px rgba(77,127,255,0.2)"
+            btn.style.letterSpacing = "4px"
           }}
         >
           {CTA_TEXT}
@@ -210,18 +188,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onEnter }) => {
         <span>Built with Three.js · Next.js · React</span>
       </motion.footer>
     </motion.div>
-  );
-};
-
-// ============================================================
-// Component: Dropdown tên thành viên
-// ============================================================
-interface MembersDropdownProps {
-  members: typeof TEAM_MEMBERS;
+  )
 }
 
-const MembersDropdown: React.FC<MembersDropdownProps> = ({ members }) => {
-  const [open, setOpen] = useState(false);
+const MembersDropdown = ({ members }) => {
+  const [open, setOpen] = useState(false)
 
   return (
     <div style={{ position: "relative" }}>
@@ -229,13 +200,11 @@ const MembersDropdown: React.FC<MembersDropdownProps> = ({ members }) => {
       <button
         onClick={() => setOpen(!open)}
         style={styles.membersButton}
-        onMouseEnter={(e) =>
-          ((e.currentTarget as HTMLElement).style.background =
-            "rgba(77,127,255,0.2)")
+        onMouseEnter={e =>
+          (e.currentTarget.style.background = "rgba(77,127,255,0.2)")
         }
-        onMouseLeave={(e) => {
-          if (!open)
-            (e.currentTarget as HTMLElement).style.background = "transparent";
+        onMouseLeave={e => {
+          if (!open) e.currentTarget.style.background = "transparent"
         }}
       >
         <svg
@@ -268,13 +237,11 @@ const MembersDropdown: React.FC<MembersDropdownProps> = ({ members }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.dropdownItem}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background =
-                    "rgba(77,127,255,0.15)")
+                onMouseEnter={e =>
+                  (e.currentTarget.style.background = "rgba(77,127,255,0.15)")
                 }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background =
-                    "transparent")
+                onMouseLeave={e =>
+                  (e.currentTarget.style.background = "transparent")
                 }
               >
                 <span style={styles.dropdownDot}>◆</span>
@@ -285,8 +252,8 @@ const MembersDropdown: React.FC<MembersDropdownProps> = ({ members }) => {
         )}
       </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
 // ============================================================
 // Component: Hiệu ứng sao nhấp nháy
@@ -300,12 +267,12 @@ const StarField = () => {
     size: Math.random() * 2 + 1,
     // Delay ngẫu nhiên để sao không nhấp nháy cùng lúc
     delay: Math.random() * 4,
-    duration: Math.random() * 3 + 2,
-  }));
+    duration: Math.random() * 3 + 2
+  }))
 
   return (
     <div style={styles.starField}>
-      {stars.map((star) => (
+      {stars.map(star => (
         <motion.div
           key={star.id}
           animate={{ opacity: [0.1, 0.8, 0.1] }}
@@ -313,7 +280,7 @@ const StarField = () => {
             duration: star.duration,
             delay: star.delay,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "easeInOut"
           }}
           style={{
             position: "absolute",
@@ -322,18 +289,18 @@ const StarField = () => {
             width: star.size,
             height: star.size,
             borderRadius: "50%",
-            backgroundColor: "white",
+            backgroundColor: "white"
           }}
         />
       ))}
     </div>
-  );
-};
+  )
+}
 
 // ============================================================
 // Styles - tập trung toàn bộ style ở đây cho dễ chỉnh
 // ============================================================
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   // Lớp bao ngoài cùng - phủ toàn màn hình
   wrapper: {
     position: "fixed",
@@ -345,7 +312,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     overflow: "hidden",
     cursor: "default",
-    fontFamily: "system-ui, sans-serif",
+    fontFamily: "system-ui, sans-serif"
   },
 
   // Nền tối với ảnh sao
@@ -357,7 +324,7 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundSize: "cover",
     backgroundPosition: "center",
     opacity: 0.6,
-    zIndex: 0,
+    zIndex: 0
   },
 
   // Gradient overlay tạo chiều sâu
@@ -366,7 +333,7 @@ const styles: Record<string, React.CSSProperties> = {
     inset: 0,
     background:
       "radial-gradient(ellipse at 50% 40%, rgba(10,20,60,0.7) 0%, rgba(0,0,5,0.95) 70%)",
-    zIndex: 1,
+    zIndex: 1
   },
 
   // Layer sao nhấp nháy
@@ -374,7 +341,7 @@ const styles: Record<string, React.CSSProperties> = {
     position: "absolute",
     inset: 0,
     zIndex: 2,
-    pointerEvents: "none",
+    pointerEvents: "none"
   },
 
   // ── TASKBAR ──────────────────────────────────────────────
@@ -391,19 +358,19 @@ const styles: Record<string, React.CSSProperties> = {
     background: "rgba(2, 5, 20, 0.7)",
     backdropFilter: "blur(12px)",
     borderBottom: "1px solid rgba(77, 127, 255, 0.2)",
-    zIndex: 10,
+    zIndex: 10
   },
 
   taskbarLeft: {
     display: "flex",
     alignItems: "center",
-    gap: 10,
+    gap: 10
   },
 
   taskbarLogo: {
     fontSize: 22,
     color: "#4D7FFF",
-    lineHeight: 1,
+    lineHeight: 1
   },
 
   taskbarSiteName: {
@@ -412,13 +379,13 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 15,
     letterSpacing: "3px",
     fontWeight: 400,
-    textTransform: "uppercase",
+    textTransform: "uppercase"
   },
 
   taskbarRight: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    gap: 8
   },
 
   // Nút "Thành Viên" (mở dropdown)
@@ -435,7 +402,7 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     fontFamily: "inherit",
     transition: "all 0.2s",
-    textTransform: "uppercase",
+    textTransform: "uppercase"
   },
 
   // Nút "GitHub"
@@ -452,7 +419,7 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     textDecoration: "none",
     transition: "all 0.2s",
-    textTransform: "uppercase",
+    textTransform: "uppercase"
   },
 
   // Dropdown menu
@@ -468,7 +435,7 @@ const styles: Record<string, React.CSSProperties> = {
     overflow: "hidden",
     boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
     zIndex: 100,
-    transformOrigin: "top right",
+    transformOrigin: "top right"
   },
 
   dropdownItem: {
@@ -481,13 +448,13 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     textTransform: "uppercase",
     transition: "background 0.15s",
-    cursor: "pointer",
+    cursor: "pointer"
   },
 
   dropdownDot: {
     color: "#4D7FFF",
     fontSize: 8,
-    marginRight: 10,
+    marginRight: 10
   },
 
   // ── NỘI DUNG TRUNG TÂM ───────────────────────────────────
@@ -500,15 +467,14 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 5,
     textAlign: "center",
     padding: "0 20px",
-    maxWidth: 900,
+    maxWidth: 900
   },
 
   // Đường kẻ trang trí ngang
   decorLine: {
     width: 120,
     height: 1,
-    background:
-      "linear-gradient(90deg, transparent, #4D7FFF, transparent)",
+    background: "linear-gradient(90deg, transparent, #4D7FFF, transparent)"
   },
 
   // Dòng chữ nhỏ phía trên tiêu đề
@@ -518,7 +484,7 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "5px",
     color: "#4D7FFF",
     margin: 0,
-    textTransform: "uppercase",
+    textTransform: "uppercase"
   },
 
   // Tiêu đề chính lớn
@@ -532,8 +498,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     textTransform: "uppercase",
     // Hiệu ứng glow nhẹ
-    textShadow:
-      "0 0 60px rgba(77,127,255,0.3), 0 0 120px rgba(77,127,255,0.1)",
+    textShadow: "0 0 60px rgba(77,127,255,0.3), 0 0 120px rgba(77,127,255,0.1)"
   },
 
   // Nút CTA
@@ -552,7 +517,7 @@ const styles: Record<string, React.CSSProperties> = {
     transition: "all 0.3s ease",
     boxShadow: "0 0 20px rgba(77,127,255,0.2)",
     display: "flex",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   // Chú thích nhỏ dưới nút
@@ -562,7 +527,7 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "3px",
     color: "rgba(255,255,255,0.4)",
     margin: 0,
-    textTransform: "uppercase",
+    textTransform: "uppercase"
   },
 
   // ── FOOTER ───────────────────────────────────────────────
@@ -581,8 +546,8 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "2px",
     color: "rgba(255,255,255,0.35)",
     borderTop: "1px solid rgba(255,255,255,0.06)",
-    zIndex: 10,
-  },
-};
+    zIndex: 10
+  }
+}
 
-export default IntroScreen;
+export default IntroScreen

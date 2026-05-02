@@ -62,7 +62,7 @@ const wingdings = localFont({
 });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }) {
 	return (
 		<main
 			className={`${episcene.variable} ${futura.variable} ${nasalization.variable} ${wingdings.variable} ${inter.className}`}
