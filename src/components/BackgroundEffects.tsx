@@ -9,11 +9,11 @@ const BackgroundEffects = () => {
 
   const config = {
     meteorCount: 50,
-    meteorMinSpeed: 2,
-    meteorMaxSpeed: 7,
+    meteorMinSpeed: 5,
+    meteorMaxSpeed: 10,
     spawnZ: -1800,
     limitZ: 600,
-    shootingStarCount: 25, // Tăng nhẹ để ngắm cho sướng
+    shootingStarCount: 50, // Tăng nhẹ để ngắm cho sướng
   };
 
   const meteorRef = useRef<THREE.Group>(null);
