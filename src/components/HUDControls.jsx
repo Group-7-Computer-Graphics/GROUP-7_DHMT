@@ -49,7 +49,7 @@ export function HUDControls({
         <input
           type="range"
           min="0"
-          max="5"
+          max="20"
           step="0.1"
           value={solarSpeed}
           onChange={e => setSolarSpeed(parseFloat(e.target.value))}
@@ -79,7 +79,7 @@ export function HUDControls({
         <input
           type="range"
           min="0"
-          max="3"
+          max="10"
           step="0.1"
           value={bloomIntensity}
           onChange={e => setBloomIntensity(parseFloat(e.target.value))}
