@@ -1961,6 +1961,7 @@ export default function SolarSystem() {
               </div>
             )}
 
+           
            <button
               onClick={() => {
                 playClick(); // 👉 Thêm tiếng Click
@@ -1995,7 +1996,6 @@ export default function SolarSystem() {
             >
               {bgPanning ? "RETURNING..." : "BACK TO START"}
             </button>
-
             {/* Planet nav bar */}
             <div style={{
               position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)",
@@ -2007,10 +2007,7 @@ export default function SolarSystem() {
               {Object.keys(ORBIT_CONFIG).map((hash) => (
                 <button
                   key={hash}
-                  onClick={() => {
-                    playClick(); // 👉 Thêm tiếng Click
-                    window.location.hash = hash;
-                  }}
+                  onClick={() => (window.location.hash = hash)}
                   style={{
                     padding: "8px 12px",
                     backgroundColor: currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent",
@@ -2021,10 +2018,7 @@ export default function SolarSystem() {
                     borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
                     whiteSpace: "nowrap",
                   }}
-                  onMouseEnter={(e) => { 
-                    playHover(); // 👉 Thêm tiếng lướt chuột (Hover)
-                    e.currentTarget.style.backgroundColor = "rgba(0,243,255,0.2)"; 
-                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,243,255,0.2)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent"; }}
                 >
                   {PLANET_VI[hash] ?? hash.replace("#", "")}
