@@ -1,86 +1,101 @@
 import React from "react";
 
-// Định nghĩa kiểu dữ liệu cho Props (để hết báo đỏ TypeScript)
-interface HUDControlsProps {
+export function HUDControls({
+  solarSpeed,
+  setSolarSpeed,
+  bloomIntensity,
+  setBloomIntensity,
+  isCinematic,
+  setIsCinematic,
+  playHover, // 👉 Nhận hàm âm thanh lướt chuột
+  playClick, // 👉 Nhận hàm âm thanh bấm
+}: {
   solarSpeed: number;
-  setSolarSpeed: (val: number) => void;
+  setSolarSpeed: (v: number) => void;
   bloomIntensity: number;
-  setBloomIntensity: (val: number) => void;
+  setBloomIntensity: (v: number) => void;
   isCinematic: boolean;
-  setIsCinematic: (val: boolean) => void;
-}
-
-export function HUDControls({ 
-  solarSpeed, setSolarSpeed, 
-  bloomIntensity, setBloomIntensity, 
-  isCinematic, setIsCinematic 
-}: HUDControlsProps) {
+  setIsCinematic: (v: boolean) => void;
+  playHover?: () => void;
+  playClick?: () => void;
+}) {
   return (
-    <div style={{
-      position: "fixed", top: "8%", right: "30px", width: "250px",
-      display: "flex", flexDirection: "column", gap: "20px", zIndex: 100
-    }}>
-      {/* CARD TỐC ĐỘ HỆ THỐNG */}
-      <div style={hudCardStyle}>
-        <div style={labelStyle}>SYSTEM VELOCITY</div>
-        <input 
-          type="range" min="0" max="20" step="0.1" 
-          value={solarSpeed} 
+    <div style={{ display: "flex", flexDirection: "column", gap: "18px", color: "#00f3ff", fontFamily: "'Courier New', Courier, monospace" }}>
+      
+      <h3 style={{ 
+        margin: "0", fontSize: "14px", letterSpacing: "3px", 
+        borderBottom: "1px dashed rgba(0,243,255,0.4)", paddingBottom: "10px", textTransform: "uppercase",
+        textShadow: "0 0 10px rgba(0,243,255,0.5)"
+      }}>
+        // System Settings
+      </h3>
+
+      {/* Orbit Speed Slider */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <label style={{ fontSize: "12px", letterSpacing: "1px", fontWeight: "bold" }}>
+          ORBIT SPEED: <span style={{ color: "white" }}>{solarSpeed.toFixed(1)}x</span>
+        </label>
+        <input
+          type="range" min="0" max="5" step="0.1"
+          value={solarSpeed}
           onChange={(e) => setSolarSpeed(parseFloat(e.target.value))}
-          style={sliderStyle}
+          onMouseEnter={() => playHover && playHover()} // 👉 Âm thanh chạm
+          onMouseDown={() => playClick && playClick()}  // 👉 Âm thanh bấm
+          style={{ 
+            accentColor: "#00f3ff", cursor: "pointer", height: "4px", 
+            background: "rgba(0,243,255,0.2)", outline: "none", borderRadius: "2px" 
+          }}
         />
-        <div style={{fontSize: "10px", textAlign: "right", color: "#00f3ff"}}>{solarSpeed}x</div>
       </div>
 
-      {/* CARD HIỆU ỨNG ÁNH SÁNG */}
-      <div style={hudCardStyle}>
-        <div style={labelStyle}>BLOOM INTENSITY</div>
-        <input 
-          type="range" min="0" max="10" step="0.5" 
-          value={bloomIntensity} 
+      {/* Bloom Intensity Slider */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <label style={{ fontSize: "12px", letterSpacing: "1px", fontWeight: "bold" }}>
+          GLOW INTENSITY: <span style={{ color: "white" }}>{bloomIntensity.toFixed(1)}</span>
+        </label>
+        <input
+          type="range" min="0" max="3" step="0.1"
+          value={bloomIntensity}
           onChange={(e) => setBloomIntensity(parseFloat(e.target.value))}
-          style={sliderStyle}
+          onMouseEnter={() => playHover && playHover()} // 👉 Âm thanh chạm
+          onMouseDown={() => playClick && playClick()}  // 👉 Âm thanh bấm
+          style={{ 
+            accentColor: "#00f3ff", cursor: "pointer", height: "4px", 
+            background: "rgba(0,243,255,0.2)", outline: "none", borderRadius: "2px" 
+          }}
         />
       </div>
 
-      {/* NÚT CINEMATIC MODE */}
-      <button 
-        onClick={() => setIsCinematic(!isCinematic)}
-        style={{
-          ...buttonStyle,
-          backgroundColor: isCinematic ? "rgba(0, 243, 255, 0.4)" : "rgba(0, 0, 0, 0.6)",
-          boxShadow: isCinematic ? "0 0 15px #00f3ff" : "none",
-          borderColor: isCinematic ? "#00f3ff" : "rgba(0, 243, 255, 0.5)"
-        }}
-      >
-        {isCinematic ? "DISABLE CINEMATIC" : "ENABLE CINEMATIC"}
-      </button>
+      {/* Cinematic Mode Toggle */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "5px" }}>
+        <label style={{ fontSize: "12px", letterSpacing: "1px", fontWeight: "bold" }}>CINEMATIC CAM</label>
+        <button
+          onClick={() => {
+            if (playClick) playClick(); // 👉 Âm thanh bấm
+            setIsCinematic(!isCinematic);
+          }}
+          onMouseEnter={(e) => {
+            if (playHover) playHover(); // 👉 Âm thanh chạm
+            e.currentTarget.style.backgroundColor = isCinematic ? "rgba(0, 243, 255, 0.4)" : "rgba(0, 243, 255, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = isCinematic ? "rgba(0, 243, 255, 0.3)" : "rgba(0, 0, 0, 0.5)";
+          }}
+          style={{
+            padding: "6px 12px",
+            backgroundColor: isCinematic ? "rgba(0, 243, 255, 0.3)" : "rgba(0, 0, 0, 0.5)",
+            color: isCinematic ? "#fff" : "#00f3ff",
+            border: `1px solid ${isCinematic ? "#00f3ff" : "rgba(0, 243, 255, 0.4)"}`,
+            borderRadius: "2px", cursor: "pointer",
+            fontSize: "11px", fontWeight: "bold", letterSpacing: "1px",
+            boxShadow: isCinematic ? "0 0 10px rgba(0,243,255,0.4)" : "none",
+            transition: "all 0.3s ease"
+          }}
+        >
+          {isCinematic ? "ACTIVE" : "STANDBY"}
+        </button>
+      </div>
+
     </div>
   );
 }
-
-// --- Styles giữ nguyên ---
-const hudCardStyle: React.CSSProperties = {
-  background: "rgba(0, 20, 40, 0.7)",
-  padding: "15px",
-  borderRadius: "8px",
-  border: "1px solid rgba(0, 243, 255, 0.3)",
-  color: "#00f3ff",
-  fontFamily: "monospace",
-  backdropFilter: "blur(10px)"
-};
-
-const labelStyle: React.CSSProperties = { fontSize: "10px", letterSpacing: "2px", marginBottom: "10px" };
-
-const sliderStyle: React.CSSProperties = { width: "100%", accentColor: "#00f3ff", cursor: "pointer" };
-
-const buttonStyle: React.CSSProperties = {
-  padding: "12px",
-  border: "1px solid #00f3ff",
-  color: "#fff",
-  cursor: "pointer",
-  fontSize: "10px",
-  letterSpacing: "2px",
-  transition: "0.3s",
-  borderRadius: "4px"
-};

@@ -1555,6 +1555,60 @@ export default function SolarSystem() {
   const [showIntro,       setShowIntro]       = useState(true);
   const [sceneVisible,    setSceneVisible]    = useState(false);
   const [bgPanning,       setBgPanning]       = useState(false);
+  // Thêm state này vào cùng cụm với các useState khác
+  const [showSettings, setShowSettings] = useState(false);
+  //Music state
+  const [showMusic, setShowMusic] = useState(false); 
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.5);
+
+  // 👉 CẬP NHẬT: Thêm ref cho âm thanh hover
+  const bgAudioRef = useRef<HTMLAudioElement | null>(null);
+  const clickAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hoverAudioRef = useRef<HTMLAudioElement | null>(null); 
+
+  useEffect(() => {
+    bgAudioRef.current = new Audio("/bg-music.mp3"); 
+    bgAudioRef.current.loop = true;
+    bgAudioRef.current.volume = 0.5;
+
+    clickAudioRef.current = new Audio("/click.mp3"); 
+    hoverAudioRef.current = new Audio("/click1.mp3"); // Load âm thanh khi chạm (hover)
+  }, []);
+
+  // Hàm phát tiếng khi BẤM
+  const playClick = () => {
+    if (clickAudioRef.current) {
+      clickAudioRef.current.currentTime = 0; // Reset về 0 để phát được liên tục khi bấm nhanh
+      clickAudioRef.current.play().catch(() => {});
+    }
+  };
+
+  // 👉 THÊM MỚI: Hàm phát tiếng khi CHẠM (Hover)
+  const playHover = () => {
+    if (hoverAudioRef.current) {
+      hoverAudioRef.current.currentTime = 0; 
+      hoverAudioRef.current.play().catch(() => {});
+    }
+  };
+
+  // Hàm Play/Pause nhạc giữ nguyên...
+  const toggleMusic = () => {
+    playClick();
+    if (!bgAudioRef.current) return;
+    if (isPlaying) {
+      bgAudioRef.current.pause();
+    } else {
+      bgAudioRef.current.play().catch(() => {});
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const vol = parseFloat(e.target.value);
+    setVolume(vol);
+    if (bgAudioRef.current) bgAudioRef.current.volume = vol;
+  };
 
   const ufoWorldPos  = useRef(new THREE.Vector3());
   const ufoVelWorld  = useRef(new THREE.Vector3());
@@ -1747,14 +1801,156 @@ export default function SolarSystem() {
           )}
 
           <div style={{ position: "absolute", inset: 0, zIndex: 6, pointerEvents: "none" }}>
-            <div style={{ pointerEvents: "auto" }}>
-              <HUDControls
-                solarSpeed={solarSpeed} setSolarSpeed={setSolarSpeed}
-                bloomIntensity={bloomIntensity} setBloomIntensity={setBloomIntensity}
-                isCinematic={isCinematic} setIsCinematic={setIsCinematic}
-              />
+            
+            {/* VÙNG CHỨA NÚT SETTING, MUSIC VÀ BẢNG ĐIỀU KHIỂN */}
+          <div style={{ position: "absolute", inset: 0, zIndex: 50, pointerEvents: "none" }}>
+            
+            {/* Cột Nút Bấm bên phải */}
+            <div style={{ pointerEvents: "auto", position: "absolute", top: "20px", right: "20px", display: "flex", flexDirection: "column", gap: "15px" }}>
+              
+              {/* Nút Setting (Icon ⚙️) */}
+              <button
+                onClick={() => { playClick(); setShowSettings(!showSettings); setShowMusic(false); }}
+                style={{
+                  width: "45px", height: "45px", borderRadius: "50%",
+                  backgroundColor: showSettings ? "rgba(0, 243, 255, 0.2)" : "rgba(0, 0, 0, 0.6)",
+                  color: showSettings ? "#fff" : "#00f3ff",
+                  border: "1px solid rgba(0, 243, 255, 0.4)", cursor: "pointer",
+                  display: "flex", justifyContent: "center", alignItems: "center",
+                  backdropFilter: "blur(5px)", fontSize: "20px", transition: "all 0.3s ease",
+                  boxShadow: showSettings ? "0 0 15px rgba(0, 243, 255, 0.4)" : "0 0 10px rgba(0,0,0,0.5)",
+                }}
+                onMouseEnter={(e) => { 
+                  playHover(); // 👉 Gọi âm thanh hover
+                  e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.3)"; 
+                  e.currentTarget.style.transform = "scale(1.1)"; 
+                }}
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.backgroundColor = showSettings ? "rgba(0, 243, 255, 0.2)" : "rgba(0, 0, 0, 0.6)"; 
+                  e.currentTarget.style.transform = "scale(1)"; 
+                }}
+              >
+                {showSettings ? "✕" : "⚙️"}
+              </button>
+
+              {/* Nút Music (Icon 🎵) */}
+              <button
+                onClick={() => { playClick(); setShowMusic(!showMusic); setShowSettings(false); }}
+                style={{
+                  width: "45px", height: "45px", borderRadius: "50%",
+                  backgroundColor: showMusic ? "rgba(0, 243, 255, 0.2)" : "rgba(0, 0, 0, 0.6)",
+                  color: showMusic ? "#fff" : "#00f3ff",
+                  border: "1px solid rgba(0, 243, 255, 0.4)", cursor: "pointer",
+                  display: "flex", justifyContent: "center", alignItems: "center",
+                  backdropFilter: "blur(5px)", fontSize: "20px", transition: "all 0.3s ease",
+                  boxShadow: showMusic ? "0 0 15px rgba(0, 243, 255, 0.4)" : "0 0 10px rgba(0,0,0,0.5)",
+                }}
+                onMouseEnter={(e) => { 
+                  playHover(); // 👉 Gọi âm thanh hover
+                  e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.3)"; 
+                  e.currentTarget.style.transform = "scale(1.1)"; 
+                }}
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.backgroundColor = showMusic ? "rgba(0, 243, 255, 0.2)" : "rgba(0, 0, 0, 0.6)"; 
+                  e.currentTarget.style.transform = "scale(1)"; 
+                }}
+              >
+                {showMusic ? "✕" : "🎵"}
+              </button>
+
             </div>
 
+            {/* Bảng Music Player */}
+            <AnimatePresence>
+              {showMusic && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, x: 20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, x: 20 }}
+                  transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                  style={{
+                    position: "absolute", top: "80px", right: "80px", pointerEvents: "auto",
+                    background: "rgba(2, 11, 26, 0.85)", border: "1px solid rgba(0, 243, 255, 0.3)",
+                    borderTop: "3px solid #00f3ff", boxShadow: "0 0 30px rgba(0, 243, 255, 0.15)",
+                    borderRadius: "8px", padding: "20px", width: "260px", backdropFilter: "blur(15px)",
+                    color: "#00f3ff", fontFamily: "'Courier New', Courier, monospace"
+                  }}
+                >
+                  <h3 style={{ margin: "0 0 15px 0", fontSize: "14px", letterSpacing: "2px", borderBottom: "1px dashed rgba(0,243,255,0.4)", paddingBottom: "10px", textTransform: "uppercase" }}>
+                    // AUDIO COMMS
+                  </h3>
+
+                  <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                    <div style={{ fontSize: "11px", color: "#aaddff", letterSpacing: "1px", marginBottom: "5px" }}>NOW PLAYING</div>
+                    <div style={{ fontSize: "16px", fontWeight: "bold", color: "#fff", textShadow: "0 0 10px rgba(0,243,255,0.5)" }}>
+                      Hành Trình Vô Tận
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "20px" }}>
+                    <button onClick={toggleMusic} style={{
+                      width: "50px", height: "50px", borderRadius: "50%",
+                      backgroundColor: "rgba(0, 243, 255, 0.15)", color: "#fff",
+                      border: "1px solid #00f3ff", cursor: "pointer", fontSize: "20px",
+                      display: "flex", justifyContent: "center", alignItems: "center",
+                      boxShadow: "0 0 15px rgba(0,243,255,0.3)", transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      playHover(); // 👉 Gọi âm thanh hover cho nút Play
+                      e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.3)";
+                    }}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(0, 243, 255, 0.15)"}
+                    >
+                      {isPlaying ? "⏸" : "▶"}
+                    </button>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", fontWeight: "bold" }}>
+                      <span>VOLUME</span>
+                      <span style={{ color: "white" }}>{Math.round(volume * 100)}%</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange}
+                      style={{ accentColor: "#00f3ff", cursor: "pointer", height: "4px", background: "rgba(0,243,255,0.2)", outline: "none", borderRadius: "2px" }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+          </div>
+
+            {/* Bảng chứa các thanh kéo (Chỉ hiện khi bấm vào Ký hiệu Setting) */}
+            <AnimatePresence>
+              {showSettings && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: -20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                  transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                  style={{
+                    position: "absolute", top: "75px", right: "20px", pointerEvents: "auto",
+                    background: "rgba(2, 11, 26, 0.85)",
+                    border: "1px solid rgba(0, 243, 255, 0.3)",
+                    borderTop: "3px solid #00f3ff",
+                    boxShadow: "0 0 30px rgba(0, 243, 255, 0.15)",
+                    borderRadius: "8px", padding: "20px",
+                    backdropFilter: "blur(15px)", minWidth: "260px",
+                  }}
+                >
+                  <HUDControls
+                    solarSpeed={solarSpeed} setSolarSpeed={setSolarSpeed}
+                    bloomIntensity={bloomIntensity} setBloomIntensity={setBloomIntensity}
+                    isCinematic={isCinematic} setIsCinematic={setIsCinematic}
+                    playHover={playHover} // 👉 Truyền hàm chạm xuống
+                    playClick={playClick}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Giữ nguyên các phần code cũ ở dưới (PlanetInfoPanel, button BACK TO START...) */}
             {currentHash !== "#overview" && (
               <div style={{ pointerEvents: "auto" }}>
                 <PlanetInfoPanel
