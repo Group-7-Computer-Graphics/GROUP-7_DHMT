@@ -1883,7 +1883,7 @@ export default function SolarSystem() {
                   <div style={{ textAlign: "center", marginBottom: "20px" }}>
                     <div style={{ fontSize: "11px", color: "#aaddff", letterSpacing: "1px", marginBottom: "5px" }}>NOW PLAYING</div>
                     <div style={{ fontSize: "16px", fontWeight: "bold", color: "#fff", textShadow: "0 0 10px rgba(0,243,255,0.5)" }}>
-                      Hành Trình Vô Tận
+                      Space Galaxy Universe Music
                     </div>
                   </div>
 
@@ -1961,8 +1961,9 @@ export default function SolarSystem() {
               </div>
             )}
 
-            <button
+           <button
               onClick={() => {
+                playClick(); // 👉 Thêm tiếng Click
                 if (bgPanning) return; // ngăn bấm 2 lần
                 setBgPanning(true);
                 // Navigate về overview sau 7s (camera đã sweep xong)
@@ -1983,7 +1984,13 @@ export default function SolarSystem() {
                 transition: "all 0.5s ease",
                 boxShadow: bgPanning ? "0 0 20px rgba(0,243,255,0.4)" : "none",
               }}
-              onMouseEnter={(e) => { if (!bgPanning) { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(255,255,255,0.2)"; }}}
+              onMouseEnter={(e) => { 
+                playHover(); // 👉 Thêm tiếng lướt chuột (Hover)
+                if (!bgPanning) { 
+                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; 
+                  e.currentTarget.style.boxShadow = "0 0 20px rgba(255,255,255,0.2)"; 
+                }
+              }}
               onMouseLeave={(e) => { if (!bgPanning) { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.boxShadow = "none"; }}}
             >
               {bgPanning ? "RETURNING..." : "BACK TO START"}
@@ -2000,7 +2007,10 @@ export default function SolarSystem() {
               {Object.keys(ORBIT_CONFIG).map((hash) => (
                 <button
                   key={hash}
-                  onClick={() => (window.location.hash = hash)}
+                  onClick={() => {
+                    playClick(); // 👉 Thêm tiếng Click
+                    window.location.hash = hash;
+                  }}
                   style={{
                     padding: "8px 12px",
                     backgroundColor: currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent",
@@ -2011,7 +2021,10 @@ export default function SolarSystem() {
                     borderBottom: currentHash === hash ? "2px solid #00f3ff" : "none",
                     whiteSpace: "nowrap",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(0,243,255,0.2)"; }}
+                  onMouseEnter={(e) => { 
+                    playHover(); // 👉 Thêm tiếng lướt chuột (Hover)
+                    e.currentTarget.style.backgroundColor = "rgba(0,243,255,0.2)"; 
+                  }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = currentHash === hash ? "rgba(0,243,255,0.3)" : "transparent"; }}
                 >
                   {PLANET_VI[hash] ?? hash.replace("#", "")}
