@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
-import "@/styles/globals.css";
-import { AppProps } from "next/app";
+import "../src/input.css";
 import { Inter } from "next/font/google";
 
 // Font files can be colocated inside of `pages`
