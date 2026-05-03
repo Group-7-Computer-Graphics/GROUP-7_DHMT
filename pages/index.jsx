@@ -195,7 +195,7 @@ const ORBIT_CONFIG = {
   }
 }
 
-// ─── CAMERA ANGLE SYNC ─────────────────────────────────────────────────────────
+// ─── hàm Góc nhìn camera ─────────────────────────────────────────────────────────
 function CameraAngleSync({ angleRef, pitchRef }) {
   const { camera } = useThree()
   const prevAzimuth = useRef(0)
@@ -214,7 +214,7 @@ function CameraAngleSync({ angleRef, pitchRef }) {
   return null
 }
 
-// ─── ANIMATED BACKGROUND — SOLAR SYSTEM ROTATION ─────────────────────────────
+// ─── Hàm hiệu ứng nền  ─────────────────────────────
 function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
   const canvasRef = useRef(null)
 
@@ -230,7 +230,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
     canvas.width = W
     canvas.height = H
 
-    // ── Solar angle: driven by camera azimuth + slow ambient drift ────────
+    // ── Góc Mặt Trời: được điều khiển bởi góc phương vị của camera + sự trôi nhẹ của môi trường xung quanh.
     let autoDrift = 0
     const DRIFT_SPEED = 0.00008
     const STAR_COLORS = [
@@ -358,7 +358,8 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         baseAngle: 0
       }
     ]
-    // init polar coords for nebulae
+    // Khởi tạo tọa độ cực cho các tinh.
+
     nebulae.forEach(n => {
       const dx = n.cx - cx0,
         dy = n.cy - cy0
@@ -378,7 +379,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       maxTimer: 0,
       tailLen: 0
     }))
-
+//khởi tạo và điều khiển vòng đời của một sao băng
     function spawnMeteor(m) {
       m.x = Math.random() * W * 1.2 - W * 0.1
       m.y = Math.random() * H * 0.35
@@ -396,7 +397,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
     meteors.forEach((m, i) => {
       m.timer = -i * 90 - Math.random() * 250
     })
-
+//cấu hình dữ liệu cho hiệu ứng cực quang
     const auroraWaves = [
       {
         baseY: H * 0.15,
@@ -439,7 +440,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         width: 45
       }
     ]
-
+//tạo các vệt sáng “warp speed / hyperspace”-sao biến thành đường kẻ dài thay vì chấm
     const warpStreaks = Array.from({ length: 25 }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -450,7 +451,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       timer: Math.random() * 200
     }))
 
-    // ── Galaxy arm hint (faint spiral overlay) ────────────────────────────
+    //vẽ một dải sáng dài, mờ, xoay quanh tâm màn hình 
     function drawGalaxyArm(angle, solarAngle) {
       ctx.save()
       ctx.translate(W / 2, H / 2)
@@ -467,7 +468,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
     }
 
     let t = 0
-
+//phần vẽ thực tế cho mỗi wave trong auroraWaves
     function drawAurora(w) {
       w.phase += w.phaseSpeed
       ctx.beginPath()
@@ -487,17 +488,16 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       ctx.stroke()
       ctx.shadowBlur = 0
     }
-
+//bộ điều khiển chuyển động toàn cảnh background theo camera
     function draw() {
       t += 0.01
-      // Solar angle = camera azimuth (mirrored for parallax) + slow ambient drift
       autoDrift += DRIFT_SPEED
       const solarAngle = -cameraAngleRef.current * 1.2 + autoDrift
       const verticalShift = cameraPitchRef.current * H * 0.3 // Vertical parallax based on camera pitch
 
       ctx.clearRect(0, 0, W, H)
 
-      // ── Deep space base gradient ──────────────────────────────────────
+// tạo lớp nền sâu nhất của vũ trụ
       const bg = ctx.createRadialGradient(
         W * 0.4,
         H * 0.3,
@@ -513,7 +513,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       ctx.fillStyle = bg
       ctx.fillRect(0, 0, W, H)
 
-      // ── Galaxy arm overlay (rotates with solar system) ────────────────
+      // thiết lập thứ tự layer + chế độ hòa trộn ánh sáng để galaxy arm và aurora phát sáng đúng kiểu vũ trụ
       ctx.globalCompositeOperation = "screen"
       drawGalaxyArm(0, solarAngle)
       drawGalaxyArm(Math.PI, solarAngle)
@@ -524,10 +524,8 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       auroraWaves.forEach(drawAurora)
       ctx.globalCompositeOperation = "source-over"
 
-      // ── Nebulae — orbit around center with solar rotation ─────────────
       ctx.globalCompositeOperation = "screen"
       nebulae.forEach(n => {
-        // Each nebula orbits slowly around center — outer ones faster parallax
         const layerSpeed = 0.8 + (n.dist / (Math.max(W, H) * 0.7)) * 1.2
         const currentAngle = n.baseAngle + solarAngle * layerSpeed
         const nx = cx0 + Math.cos(currentAngle) * n.dist
@@ -552,7 +550,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       })
       ctx.globalCompositeOperation = "source-over"
 
-      // ── Milky way band (also rotates) ─────────────────────────────────
+      // layer tạo dải Ngân Hà (Milky Way band) chạy ngang màn hình
       ctx.save()
       ctx.translate(W / 2, H / 2 + verticalShift)
       ctx.rotate(solarAngle * 0.8 + Math.PI / 6)
@@ -566,7 +564,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       ctx.fillRect(-W, -H * 0.12, W * 2, H * 0.24)
       ctx.restore()
 
-      // ── Stars — rotate around center based on layer ───────────────────
+      // layer sao nền 
       stars.forEach(s => {
         // Layer 0 (distant): very slow rotation; layer 2 (close): faster
         const layerRotSpeed = [0.15, 0.5, 1.2][s.layer]
@@ -611,7 +609,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         ctx.fill()
       })
 
-      // Warp streaks
+      // làm warp streak “xuất hiện – sáng lên – tắt đi” như tia sáng bay ngang
       ctx.globalCompositeOperation = "screen"
       warpStreaks.forEach(ws => {
         ws.timer++
@@ -644,7 +642,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       })
       ctx.globalCompositeOperation = "source-over"
 
-      // ── Meteors ───────────────────────────────────────────────────────
+      // vòng đời đầy đủ của sao băng (meteor): chờ → xuất hiện → bay → mờ dần → biến mất.
       meteors.forEach(m => {
         m.timer++
         if (!m.active) {
@@ -666,18 +664,18 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         const speed = Math.hypot(m.vx, m.vy)
         const tx = m.x - (m.vx / speed) * m.tailLen
         const ty = m.y - (m.vy / speed) * m.tailLen
-
+//àm đuôi sao băng trông “phát sáng, có lõi, có halo
         const haloGrd = ctx.createLinearGradient(tx, ty, m.x, m.y)
         haloGrd.addColorStop(0, `rgba(200,230,255,0)`)
         haloGrd.addColorStop(0.5, `rgba(220,240,255,${m.alpha * fade * 0.12})`)
         haloGrd.addColorStop(1, `rgba(255,255,255,${m.alpha * fade * 0.18})`)
         ctx.strokeStyle = haloGrd
         ctx.lineWidth = 10
-        ctx.beginPath()
+        ctx.beginPath()   
         ctx.moveTo(tx, ty)
         ctx.lineTo(m.x, m.y)
         ctx.stroke()
-
+//lớp “lõi sáng” (core streak) của đuôi sao băng
         const outerGrd = ctx.createLinearGradient(tx, ty, m.x, m.y)
         outerGrd.addColorStop(0, `rgba(240,248,255,0)`)
         outerGrd.addColorStop(0.35, `rgba(245,250,255,${m.alpha * fade * 0.3})`)
@@ -694,7 +692,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         ctx.moveTo(tx, ty)
         ctx.lineTo(m.x, m.y)
         ctx.stroke()
-
+//lớp cuối cùng – “white hot filament” của sao băng
         const coreGrd = ctx.createLinearGradient(tx, ty, m.x, m.y)
         coreGrd.addColorStop(0, `rgba(255,255,255,0)`)
         coreGrd.addColorStop(0.55, `rgba(255,255,255,${m.alpha * fade * 0.7})`)
@@ -707,7 +705,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
         ctx.moveTo(tx, ty)
         ctx.lineTo(m.x, m.y)
         ctx.stroke()
-
+//phần vẽ “đầu sao băng” (meteor head) và reset vòng đời
         ctx.beginPath()
         ctx.arc(m.x, m.y, Math.max(0.01, 2.2 * fade), 0, Math.PI * 2)
         ctx.fillStyle = `rgba(255,255,255,${m.alpha * fade})`
@@ -726,7 +724,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
     }
 
     draw()
-
+//vệ sinh vòng đời canvas animation trong React
     const onResize = () => {
       W = window.innerWidth
       H = window.innerHeight
@@ -739,7 +737,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
       window.removeEventListener("resize", onResize)
     }
   }, [])
-
+//trả về lớp nền vũ trụ
   return (
     <canvas
       ref={canvasRef}
@@ -755,7 +753,7 @@ function AnimatedBackground({ cameraAngleRef, cameraPitchRef }) {
   )
 }
 
-// ─── PLANET ARRIVAL EFFECT ────────────────────────────────────────────────────
+// màu chủ đạo của hành tinh mỗi khi chuyển cảnh
 const PLANET_THEME = {
   "#mercury": { color: "#c0a060", glow: "rgba(192,160,96,", label: "MERCURY" },
   "#venus": { color: "#ffcc66", glow: "rgba(255,204,102,", label: "VENUS" },
@@ -767,7 +765,7 @@ const PLANET_THEME = {
   "#neptune": { color: "#4466ff", glow: "rgba(68,102,255,", label: "NEPTUNE" },
   "#overview": { color: "#ffffff", glow: "rgba(255,255,255,", label: "" }
 }
-
+//hàm overlay điện ảnh khi chuyển hash sang 1 hành tinh.
 function PlanetArrivalEffect({ currentHash }) {
   const canvasRef = useRef(null)
   const animRef = useRef(0)
@@ -805,7 +803,7 @@ function PlanetArrivalEffect({ currentHash }) {
     let overallAlpha = 1
 
     cancelAnimationFrame(animRef.current)
-
+//FLASH → SHOCK RING → TITLE REVEAL → SCAN PASS → FADE OUT(tất cả hiệu ứng khi chuyển sang hành tinh mới)
     function tick() {
       ctx.clearRect(0, 0, W, H)
       timer++
@@ -967,7 +965,7 @@ function PlanetArrivalEffect({ currentHash }) {
     animRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(animRef.current)
   }, [currentHash])
-
+//trả về 
   return (
     <canvas
       ref={canvasRef}
@@ -1036,7 +1034,7 @@ function MenuButton({ text, onClick, highlight = false }) {
   )
 }
 
-// ─── [NHIỆM VỤ 4] BẢNG THÔNG TIN — TIẾNG VIỆT ───────────────────────────────
+//  BẢNG THÔNG TIN 
 function PlanetInfoPanel({ currentHash, onCorrect, onWrong }) {
   const [activeView, setActiveView] = useState("menu")
   const [selectedAnswer, setSelectedAnswer] = useState(null)
@@ -1060,14 +1058,13 @@ function PlanetInfoPanel({ currentHash, onCorrect, onWrong }) {
     }
   }
 
-  // Tab labels — English
   const VIEW_LABELS = {
     visit: "VISIT",
     encyclopedia: "ENCYCLOPEDIA",
     structure: "STRUCTURE",
     quiz: "QUIZ"
   }
-
+//trả về bảng thông tin hành tinh với hiệu ứng chuyển cảnh mượt mà, có 4 lựa chọn menu chính và phần quiz có hiệu ứng highlight khi chọn đáp án đúng/sai
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -1319,7 +1316,7 @@ function PlanetInfoPanel({ currentHash, onCorrect, onWrong }) {
   )
 }
 
-// ─── ĐƯỜNG QUỸ ĐẠO ───────────────────────────────────────────────────────────
+// hàm vẽ ĐƯỜNG QUỸ ĐẠO 
 function OrbitLine({ radius }) {
   const points = useMemo(() => {
     const pts = []
@@ -1342,7 +1339,7 @@ function OrbitLine({ radius }) {
   )
 }
 
-// ─── [NHIỆM VỤ 2] TRỤC QUAY HÀNH TINH — DELTA CAP + SMOOTH ──────────────────
+//  TRỤC QUAY HÀNH TINH  
 function OrbitGroup({ speed, children, planetHash, anglesRef }) {
   const groupRef = useRef(null)
   // Tích lũy góc riêng để tránh nhảy khi fps thấp
@@ -1372,7 +1369,7 @@ function OrbitGroup({ speed, children, planetHash, anglesRef }) {
   return <group ref={groupRef}>{children}</group>
 }
 
-// ─── ĐUÔI SÁNG UFO ───────────────────────────────────────────────────────────
+//  ĐUÔI SÁNG UFO
 const TRAIL_RAW_MAX = 120
 const TRAIL_STEPS = 80
 const TRAIL_MAX_W = 5.5
@@ -1760,7 +1757,7 @@ function RocketTrail({ posRef, velRef, currentHash }) {
   )
 }
 
-// ─── UFO ERROR EFFECT ─────────────────────────────────────────────────────────
+// hiệu ứng UFO khi bị lỗi, có tia sét và vòng shockwave lan ra 
 function UFOErrorEffect({ isShaking, ufoPos }) {
   const BOLT_COUNT = 8
   const boltGeos = useMemo(
@@ -1889,7 +1886,7 @@ function UFOErrorEffect({ isShaking, ufoPos }) {
   )
 }
 
-// ─── UFO GLOW RING — VÀNH SÁNG BÊN DƯỚI ─────────────────────────────────────
+// vành sáng bên dưới UFO, có hiệu ứng nhấp nháy và quay chậm
 function UFOGlowRing({ scale, color, pulseSpeed }) {
   const ringRef = useRef(null)
   const matRef = useRef(null)
@@ -1923,7 +1920,7 @@ function UFOGlowRing({ scale, color, pulseSpeed }) {
   )
 }
 
-// ─── UFO ENGINE THRUSTER — LUỒNG ĐẶC BIỆT ───────────────────────────────────
+// luồng sáng chính dưới UFO, có hiệu ứng nhấp nháy và dao động khi bay
 function UFOThruster({ scale, active }) {
   const coneRef = useRef(null)
   const matRef = useRef(null)
@@ -1953,7 +1950,7 @@ function UFOThruster({ scale, active }) {
   )
 }
 
-// ─── UFO SCAN BEAM — TIA QUÉT XUỐNG MẶT HÀNH TINH ───────────────────────────
+// tia quét sáng dưới UFO, có hiệu ứng nhấp nháy và dao động khi bay
 function UFOScanBeam({ scale, active }) {
   const beamRef = useRef(null)
   const matRef = useRef(null)
@@ -1982,7 +1979,7 @@ function UFOScanBeam({ scale, active }) {
   )
 }
 
-// ─── MÔ HÌNH ĐĨA BAY — NÂNG CẤP ─────────────────────────────────────────────
+// mô hình UFO chính, có hiệu ứng di chuyển , banking khi vào quỹ đạo, và phản ứng với hiệu ứng rung khi bị lỗi 
 function UFO({ currentHash, isShaking, worldPosRef, velWorldRef, anglesRef }) {
   const ufoRef = useRef(null)
   const prevPosition = useRef(new THREE.Vector3())
@@ -2022,7 +2019,7 @@ function UFO({ currentHash, isShaking, worldPosRef, velWorldRef, anglesRef }) {
     if (prevHash.current !== currentHash) {
       shouldSnap.current = true
       prevHash.current = currentHash
-      // Uranus rất xa — dùng lerp chậm hơn để không bị giật/va vào hành tinh
+      
       lerpFactor.current =
         currentHash === "#uranus" || currentHash === "#neptune" ? 0.028 : 0.055
     }
@@ -2032,12 +2029,10 @@ function UFO({ currentHash, isShaking, worldPosRef, velWorldRef, anglesRef }) {
     if (!ufoRef.current) return
     const time = clock.getElapsedTime()
 
-    // ── Tính target — Uranus offset xa hơn để không va vào hành tinh ──────
     _target.current.set(0, 30, 80)
     if (currentHash !== "#overview" && ORBIT_CONFIG[currentHash]) {
       const cfg = ORBIT_CONFIG[currentHash]
       const angle = anglesRef.current[currentHash] ?? 0
-      // Uranus: đẩy UFO ra xa hành tinh thêm 12 đơn vị, lên cao hơn 8
       const extraR = currentHash === "#uranus" ? 12 : 0
       const extraY = currentHash === "#uranus" ? 8 : 0
       _target.current.set(
@@ -2058,9 +2053,7 @@ function UFO({ currentHash, isShaking, worldPosRef, velWorldRef, anglesRef }) {
     ufoRef.current.position.lerp(_target.current, lerpFactor.current)
     velocity.current.subVectors(ufoRef.current.position, prevPosition.current)
 
-    // Nhẹ nhàng hơn — bobbing mượt
     ufoRef.current.position.y += Math.sin(time * 1.1) * 0.035
-    // Xoay từ từ, hiện đại hơn
     ufoRef.current.rotation.y += 0.012
 
     // Banking mượt — phản ứng với vận tốc
@@ -2158,7 +2151,7 @@ function UFO({ currentHash, isShaking, worldPosRef, velWorldRef, anglesRef }) {
   )
 }
 
-// ─── [NHIỆM VỤ 2] CAMERA CONTROLLER — MỰT MÀ ───────────────────────────────
+// camera controller chính, điều khiển chuyển động camera mượt mà, cinematic mode, và hiệu ứng back to start quét vòng quanh mặt trời
 function CameraController({
   currentHash,
   isCinematic,
@@ -2170,7 +2163,6 @@ function CameraController({
   const cinematicWasOn = useRef(false)
   const backStartTimer = useRef(0)
 
-  // Vị trí & target mượt (lerp riêng tốc độ)
   const smoothCamPos = useRef(new THREE.Vector3(250, 150, 500))
   const smoothTarget = useRef(new THREE.Vector3(0, 0, 0))
   const prevHash = useRef(currentHash)
@@ -2185,7 +2177,6 @@ function CameraController({
   }, [controls])
 
   useEffect(() => {
-    // Reset drag khi đổi hành tinh
     isUserDragging.current = false
   }, [currentHash])
 
@@ -2206,14 +2197,13 @@ function CameraController({
     if (!controls) return
     const safeDelta = Math.min(delta, 0.05)
 
-    // ── BACK TO START: camera quét vòng quanh mặt trời, zoom ra xa ──────────
     if (isBackingToStart) {
       backStartTimer.current += safeDelta
       const t = backStartTimer.current
       // Bắt đầu từ vị trí hiện tại, bay vòng cung ra xa dần
-      const sweepAngle = t * 0.55 // tốc độ quay vừa phải
+      const sweepAngle = t * 0.55 
       const startDist = camera.position.distanceTo(new THREE.Vector3(0, 0, 0))
-      const dist = Math.min(startDist + t * 180, 2200) // zoom out nhanh ra xa
+      const dist = Math.min(startDist + t * 180, 2200) 
       const height = 80 + t * 35 + Math.sin(t * 0.4) * 40
       camera.position.x = Math.sin(sweepAngle) * dist
       camera.position.z = Math.cos(sweepAngle) * dist
@@ -2259,8 +2249,6 @@ function CameraController({
       prevHash.current = currentHash
     }
 
-    // Lerp mượt với delta-aware factor (tốc độ không phụ thuộc fps)
-    // factor = 1 - exp(-k * dt), k ~ 3 → ~95% sau 1s, k ~ 2 → ~87%
     const camK = 2.5
     const targK = 3.0
     const camF = 1 - Math.exp(-camK * safeDelta)
@@ -2280,7 +2268,7 @@ function CameraController({
   return null
 }
 
-// ─── COMPONENT CHÍNH ─────────────────────────────────────────────────────────
+// componets chính của app, quản lý state toàn cục, điều khiển hiển thị các phần tử UI như intro, settings, music control, và truyền props xuống các component con như UFO và CameraController
 export default function SolarSystem() {
   const [currentHash, setCurrentHash] = useState("#overview")
   const [controlsEnabled, setControlsEnabled] = useState(true)
@@ -2291,14 +2279,10 @@ export default function SolarSystem() {
   const [showIntro, setShowIntro] = useState(true)
   const [sceneVisible, setSceneVisible] = useState(false)
   const [bgPanning, setBgPanning] = useState(false)
-  // Thêm state này vào cùng cụm với các useState khác
   const [showSettings, setShowSettings] = useState(false)
-  //Music state
   const [showMusic, setShowMusic] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(0.5)
-
-  // 👉 CẬP NHẬT: Thêm ref cho âm thanh hover
   const bgAudioRef = useRef(null)
   const clickAudioRef = useRef(null)
   const hoverAudioRef = useRef(null)
@@ -2309,18 +2293,18 @@ export default function SolarSystem() {
     bgAudioRef.current.volume = 0.5
 
     clickAudioRef.current = new Audio("/click.mp3")
-    hoverAudioRef.current = new Audio("/click1.mp3") // Load âm thanh khi chạm (hover)
+    hoverAudioRef.current = new Audio("/click1.mp3") 
   }, [])
 
   // Hàm phát tiếng khi BẤM
   const playClick = () => {
     if (clickAudioRef.current) {
-      clickAudioRef.current.currentTime = 0 // Reset về 0 để phát được liên tục khi bấm nhanh
+      clickAudioRef.current.currentTime = 0 
       clickAudioRef.current.play().catch(() => {})
     }
   }
 
-  // 👉 THÊM MỚI: Hàm phát tiếng khi CHẠM (Hover)
+  //  phát tiếng khi CHẠM 
   const playHover = () => {
     if (hoverAudioRef.current) {
       hoverAudioRef.current.currentTime = 0
@@ -2328,7 +2312,7 @@ export default function SolarSystem() {
     }
   }
 
-  // Hàm Play/Pause nhạc giữ nguyên...
+  // Hàm Play/Pause nhạc giữ nguyên thời điểm, có hiệu ứng âm thanh khi bấm
   const toggleMusic = () => {
     playClick()
     if (!bgAudioRef.current) return
@@ -2360,7 +2344,6 @@ export default function SolarSystem() {
     "#neptune": 0
   })
 
-  // Shared ref: camera azimuth angle written by CameraAngleSync, read by AnimatedBackground
   const cameraAngleRef = useRef(0)
   const cameraPitchRef = useRef(0)
 
@@ -2431,7 +2414,7 @@ export default function SolarSystem() {
       )
     }
   }
-
+//trả về phần UI chính, bao gồm hiệu ứng nền, canvas 3D, và các component con như UFO và CameraController. Cũng xử lý sự kiện cuộn chuột để chuyển đổi giữa các hành tinh, và điều khiển hiển thị intro và scene chính. Hiệu ứng nền sẽ có animation quét chậm khi ở overview, và chuyển sang animation quét nhanh khi vào orbit của hành tinh.
   return (
     <>
       <Head>
@@ -2982,7 +2965,6 @@ export default function SolarSystem() {
               )}
             </AnimatePresence>
 
-            {/* Giữ nguyên các phần code cũ ở dưới (PlanetInfoPanel, button BACK TO START...) */}
             {currentHash !== "#overview" && (
               <div style={{ pointerEvents: "auto" }}>
                 <PlanetInfoPanel
@@ -2995,10 +2977,10 @@ export default function SolarSystem() {
 
             <button
               onClick={() => {
-                playClick() // 👉 Thêm tiếng Click
-                if (bgPanning) return // ngăn bấm 2 lần
+                playClick() 
+                if (bgPanning) return 
                 setBgPanning(true)
-                // Navigate về overview sau 7s (camera đã sweep xong)
+               
                 setTimeout(() => {
                   window.location.hash = "#overview"
                   setTimeout(() => setBgPanning(false), 1000)
@@ -3067,7 +3049,7 @@ export default function SolarSystem() {
                 <button
                   key={hash}
                   onClick={() => {
-                    playClick() // 👉 Thêm tiếng Click
+                    playClick() // 
                     window.location.hash = hash
                   }}
                   style={{
@@ -3089,7 +3071,7 @@ export default function SolarSystem() {
                     whiteSpace: "nowrap"
                   }}
                   onMouseEnter={e => {
-                    playHover() // 👉 Thêm tiếng lướt chuột (Hover)
+                    playHover() // Thêm tiếng lướt chuột (Hover)
                     e.currentTarget.style.backgroundColor =
                       "rgba(0,243,255,0.2)"
                   }}
