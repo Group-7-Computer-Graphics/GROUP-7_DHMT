@@ -9,7 +9,7 @@ const Mercury = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/icons/2k_mercury.jpg"
         spinSpeed={0.004}
-        size={4}
+        size={3}
         onClick={onClick}
       />
     </group>

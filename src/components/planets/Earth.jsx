@@ -10,7 +10,7 @@ const Earth = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/earth_map.jpeg"
         spinSpeed={0.005}
-        size={10}
+        size={7}
         onClick={onClick}
       />
     </group>

@@ -12,7 +12,7 @@ const Uranus = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/icons/2k_uranus.jpg"
         spinSpeed={0.003}
-        size={25}
+        size={18}
         onClick={onClick}
       />
 

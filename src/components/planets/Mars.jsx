@@ -14,7 +14,7 @@ const Mars = ({
         position={pos}
         meshMaterialPath="/mars.jpeg"
         spinSpeed={0.002}
-        size={6}
+        size={5}
         onClick={onClick}
       />
     </group>

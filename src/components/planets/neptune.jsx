@@ -9,7 +9,7 @@ const Neptune = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/icons/2k_neptune.jpg"
         spinSpeed={0.003}
-        size={18}
+        size={14}
         onClick={onClick}
       />
     </group>

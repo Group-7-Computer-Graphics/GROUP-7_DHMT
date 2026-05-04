@@ -9,7 +9,7 @@ const Venus = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/icons/2k_venus_surface.jpg"
         spinSpeed={0.002}
-        size={10}
+        size={6.8}
         onClick={onClick}
       />
     </group>
