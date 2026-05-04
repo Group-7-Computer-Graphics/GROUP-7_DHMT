@@ -12,7 +12,7 @@ const Saturn = ({ setControlsEnabled, isActive, onClick }) => {
         position={pos}
         meshMaterialPath="/icons/Saturn.jpg"
         spinSpeed={0.002}
-        size={35}
+        size={29}
         onClick={
           onClick ||
           (() => {
@@ -22,7 +22,7 @@ const Saturn = ({ setControlsEnabled, isActive, onClick }) => {
       />
 
       <mesh position={pos} rotation={[Math.PI / 2.2, Math.PI / 6, 0]}>
-        <ringGeometry args={[38, 70, 80]} />
+        <ringGeometry args={[32, 47, 80]} />
         <meshStandardMaterial
           map={ringTexture}
           transparent={true}

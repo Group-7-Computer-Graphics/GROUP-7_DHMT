@@ -2,7 +2,7 @@ import Planet from "./Planet"
 
 const Jupiter = ({ setControlsEnabled, isActive, onClick }) => {
   const pos = [0, 0, 480]
-  const size = 12
+  const size = 50
 
   return (
     <group>
