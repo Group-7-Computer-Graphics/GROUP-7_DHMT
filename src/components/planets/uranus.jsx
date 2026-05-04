@@ -17,7 +17,7 @@ const Uranus = ({ setControlsEnabled, isActive, onClick }) => {
       />
 
       <mesh position={pos} rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[35, 60, 128]} />
+        <ringGeometry args={[21, 35, 128]} />
         <meshStandardMaterial
           map={ringTexture}
           transparent={true}
